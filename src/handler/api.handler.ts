@@ -4,10 +4,26 @@ const instance = axios.create({
   baseURL: process.env.baseURL,
 });
 
-const get = async (url: string, token: any, lang = "en") => {
+type ResponseType = {
+  status: boolean;
+  message: string;
+  status_code: number;
+  data: Array<any>;
+  page?: number;
+  perPage?: number;
+  total?: number;
+};
+
+const get = async (
+  url: string,
+  params?: any,
+  token?: any,
+  lang = "en"
+): Promise<ResponseType | null> => {
   let res;
   try {
     res = await instance.get(url, {
+      params: params,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -21,7 +37,12 @@ const get = async (url: string, token: any, lang = "en") => {
   return res?.data;
 };
 
-const post = async (url: string, form_data: any, token: any, lang = "en") => {
+const post = async (
+  url: string,
+  form_data: any,
+  token = null,
+  lang = "en"
+): Promise<ResponseType | null> => {
   let res;
   try {
     res = await instance.post(url, form_data, {
@@ -34,13 +55,17 @@ const post = async (url: string, form_data: any, token: any, lang = "en") => {
     });
   } catch (error) {
     console.log(error);
-    return error;
+    return null;
   }
 
   return res?.data;
 };
 
-const multipart = async (url: string, token: any, lang = "en") => {
+const multipart = async (
+  url: string,
+  token = null,
+  lang = "en"
+): Promise<ResponseType | null> => {
   let res;
   try {
     res = await instance.get(url, {
@@ -58,7 +83,11 @@ const multipart = async (url: string, token: any, lang = "en") => {
   return res?.data;
 };
 
-const destroy = async (url: string, token: any, lang = "en") => {
+const destroy = async (
+  url: string,
+  token = null,
+  lang = "en"
+): Promise<ResponseType | null> => {
   let res;
   try {
     res = await instance.delete(url, {

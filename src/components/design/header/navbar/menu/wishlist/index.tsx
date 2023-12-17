@@ -1,9 +1,8 @@
 import { WishListType } from "@/components/types/wishlist.types";
 import Wishlist from "@/components/widgets/wishlist";
 import { useAppSelector } from "@/store/hooks";
-import { Badge, Box, Button, Typography } from "@mui/material";
+import { Badge, Box, Button, Link, Typography } from "@mui/material";
 import { FiHeart } from "@react-icons/all-files/fi/FiHeart";
-import Link from "next/link";
 import React, { useState } from "react";
 
 function WishlistNavItem() {
@@ -21,20 +20,15 @@ function WishlistNavItem() {
     <>
       <Box>
         <Link
-          href={{
-            pathname: "wishlist",
-            query: {},
-          }}
+          underline="none"
+          variant="button"
+          color={"primary"}
+          textTransform={"capitalize"}
+          ml={0.4}
+          mr={0.5}
+          href={"/wishlist"}
         >
-          <Button
-            variant="text"
-            color="secondary"
-            sx={{
-              "&:hover": { backgroundColor: "transparent" },
-              minWidth: 20,
-              ml: { sm: 0.3, xs: 1 },
-            }}
-          >
+          <Button>
             <Box
               sx={{
                 display: "flex",

@@ -1,9 +1,7 @@
 import { CartType } from "@/components/types/cart.types";
-import Cart from "@/components/widgets/cart";
 import { useAppSelector } from "@/store/hooks";
-import { Badge, Box, Button, Typography } from "@mui/material";
+import { Badge, Box, Button, Link, Typography } from "@mui/material";
 import { RiShoppingCart2Line } from "@react-icons/all-files/ri/RiShoppingCart2Line";
-import Link from "next/link";
 import React, { useState } from "react";
 
 function CartNavItem() {
@@ -13,7 +11,6 @@ function CartNavItem() {
   //Cart  items
   const [cart, setCart] = useState<CartType[]>([]);
 
-
   React.useEffect(() => {
     setCart(cartState);
   }, [cartState]);
@@ -22,14 +19,17 @@ function CartNavItem() {
     <>
       <Box>
         <Link
-          href={{
-            pathname: "cart",
-            query: {},
-          }}
+          underline="none"
+          variant="button"
+          color={"primary"}
+          textTransform={"capitalize"}
+          ml={0.4}
+          mr={0.5}
+          href={"/cart"}
         >
           <Button
             variant="text"
-            color="secondary"
+            color="primary"
             sx={{
               "&:hover": { backgroundColor: "transparent" },
               minWidth: 20,

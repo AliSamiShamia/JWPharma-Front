@@ -1,5 +1,6 @@
-import Layout from "@/components/design/layout";
+import dynamic from "next/dynamic";
 import React from "react";
+const Layout = dynamic(() => import("@/components/design/layout"));
 
 function WishList() {
   return <Layout>Hi</Layout>;
