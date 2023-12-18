@@ -10,6 +10,7 @@ const Fade = dynamic(() =>
 
 const properties = {
   arrows: false,
+  duration: 3000,
 };
 
 function Banner({ data }: BannerType) {
@@ -22,7 +23,11 @@ function Banner({ data }: BannerType) {
               <Box
                 component={"img"}
                 alt={"Banner-" + image.title}
-                style={{ width: "100%" }}
+                sx={{
+                  width: "100%",
+                  maxHeight: { xs: 500, sm: 600 },
+                  objectFit: "cover",
+                }}
                 src={image.url}
               />
             </Box>

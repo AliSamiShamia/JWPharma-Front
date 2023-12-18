@@ -1,6 +1,7 @@
 import themeColor from "@/components/constant/color";
+import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { ReactNode } from "react";
 const FadeLoader = dynamic(() =>
   import("react-spinners/FadeLoader").then((module) => module.default)
 );
@@ -10,11 +11,25 @@ const Grid = dynamic(() =>
 
 interface ItemSpinnerInterface {
   loading: boolean;
+  children?: ReactNode;
 }
-function CustomSpinner({ loading }: ItemSpinnerInterface) {
+function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
   return (
     <>
-      <Grid display={"flex"} justifyContent={"center"}>
+      <Grid
+        container
+        display={"flex"}
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        position={"fixed"}
+        top={0}
+        left={0}
+        width={"100%"}
+        height={"100%"}
+        zIndex={9999}
+      >
+        <Box sx={{ mb: 2 }}>{children}</Box>
         <FadeLoader
           color={themeColor.secondary.main}
           loading={loading}

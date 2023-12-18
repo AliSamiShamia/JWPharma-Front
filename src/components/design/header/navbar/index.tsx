@@ -1,25 +1,29 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
 import { RiMenu2Line } from "@react-icons/all-files/ri/RiMenu2Line";
 
-import Logo from "@/components/widgets/logo";
 import themeColor from "@/components/constant/color";
-import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import CustomMenu from "./menu";
-import CustomBottomNavigation from "./menu/bottom-navigation";
+import dynamic from "next/dynamic";
+import { AppBar } from "@mui/material";
 
+const Logo = dynamic(() => import("@/components/widgets/logo"));
+const CustomMenu = dynamic(
+  () => import("@/components/design/header/navbar/menu")
+);
+const CustomBottomNavigation = dynamic(
+  () => import("@/components/design/header/navbar/menu/bottom-navigation")
+);
+const Link = dynamic(() => import("@mui/material/Link"));
+const Toolbar = dynamic(() => import("@mui/material/Toolbar"));
+const ListItemText = dynamic(() => import("@mui/material/ListItemText"));
+const ListItemButton = dynamic(() => import("@mui/material/ListItemButton"));
+const ListItem = dynamic(() => import("@mui/material/ListItem"));
+const List = dynamic(() => import("@mui/material/List"));
+const IconButton = dynamic(() => import("@mui/material/IconButton"));
+const Drawer = dynamic(() => import("@mui/material/Drawer"));
+const Divider = dynamic(() => import("@mui/material/Divider"));
+const CssBaseline = dynamic(() => import("@mui/material/CssBaseline"));
 interface Props {
   /**
    * Injected by the documentation to work in an iframe.
@@ -29,38 +33,27 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
 
 const menuNavItems = [
   {
     title: "Home",
-    icon: null,
-    mobile: true,
-    badge: true,
+    action: "/",
   },
   {
     title: "Product",
-    icon: null,
-    mobile: false,
-    badge: false,
+    action: "/product",
   },
   {
     title: "Collection",
-    icon: null,
-    mobile: true,
-    badge: false,
+    action: "/collection",
   },
   {
     title: "About Us",
-    icon: null,
-    mobile: true,
-    badge: true,
+    action: "/who-we-are",
   },
   {
     title: "Contact Us",
-    icon: null,
-    mobile: true,
-    badge: true,
+    action: "/contact",
   },
 ];
 export default function DrawerAppBar(props: Props) {
@@ -97,7 +90,7 @@ export default function DrawerAppBar(props: Props) {
     <Box component={"header"} sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
-        component="nav"
+        component={"nav"}
         position="sticky"
         color="transparent"
         elevation={0}
@@ -123,8 +116,12 @@ export default function DrawerAppBar(props: Props) {
               sx={{
                 flexGrow: 1,
                 display: "flex",
-                justifyContent: { xs: "flex-start", sm: "center" },
-                alignItems: { xs: "flex-start", sm: "center" },
+                justifyContent: {
+                  xs: "flex-end",
+                  sm: "flex-start",
+                  md: "center",
+                },
+                alignItems: { xs: "center", sm: "flex-start", md: "center" },
               }}
             >
               <Logo color="white" />
@@ -145,34 +142,18 @@ export default function DrawerAppBar(props: Props) {
               }}
             >
               {menuNavItems.map((item, key) => (
-                <Button
-                  variant="text"
+                <Link
                   key={key}
-                  color="secondary"
-                  sx={{
-                    "&:hover": { backgroundColor: "transparent" },
-                    minWidth: 20,
-                    ml: { sm: 0.3, xs: 1 },
-                  }}
+                  href={item.action}
+                  underline="none"
+                  variant="body1"
+                  color={"primary"}
+                  textTransform={"capitalize"}
+                  ml={1}
+                  mr={1}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Typography
-                      ml={0.4}
-                      mr={0.5}
-                      variant="body2"
-                      textTransform={"capitalize"}
-                      sx={{ display: { xs: "none", md: "flex" } }}
-                    >
-                      {item.title}
-                    </Typography>
-                  </Box>
-                </Button>
+                  {item.title}
+                </Link>
               ))}
             </Box>
           </Toolbar>

@@ -1,14 +1,20 @@
 import { LayoutType } from "@/components/types/layout.types";
-import React, { Fragment, useEffect, useState } from "react";
-import DrawerAppBar from "../header/navbar";
-import Container from "@mui/material/Container";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import NProgress from "nprogress";
 import { Router } from "next/router";
 import styles from "@/styles/Home.module.css";
 import { Inter } from "next/font/google";
-import CustomSpinner from "@/components/widgets/spinner";
+import dynamic from "next/dynamic";
 const inter = Inter({ subsets: ["latin"] });
+
+const DrawerAppBar = dynamic(() => import("@/components/design/header/navbar"));
+const Container = dynamic(() => import("@mui/material/Container"));
+const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
+const Logo = dynamic(() => import("@/components/widgets/logo"));
+const Fragment = dynamic(() =>
+  import("react").then((module) => module.Fragment)
+);
 
 Router.events.on("routeChangeStart", () => {
   NProgress.start();
@@ -22,29 +28,31 @@ Router.events.on("routeChangeComplete", () => {
 
 function Layout(props: LayoutType) {
   const { children } = props;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const handleRouteChangeStart = () => setLoading(true);
-    const handleRouteChangeComplete = () => setLoading(false);
-
-    Router.events.on("routeChangeStart", handleRouteChangeStart);
-    Router.events.on("routeChangeComplete", handleRouteChangeComplete);
-
-    return () => {
-      Router.events.off("routeChangeStart", handleRouteChangeStart);
-      Router.events.off("routeChangeComplete", handleRouteChangeComplete);
-    };
+    if (document.readyState === "complete") {
+      init();
+    } else {
+      window.addEventListener("load", init, false);
+      // Remove the event listener when component unmounts
+      return () => window.removeEventListener("load", init);
+    }
   }, []);
+
+  const init = () => {
+    setLoading(false);
+  };
 
   return (
     <>
       {loading ? (
-        <CustomSpinner loading={loading} />
+        <CustomSpinner loading={loading}>
+          <Logo />
+        </CustomSpinner>
       ) : (
         <Fragment>
           <DrawerAppBar />
-
           <Box
             component={"main"}
             className={`${styles.main} ${inter.className}`}

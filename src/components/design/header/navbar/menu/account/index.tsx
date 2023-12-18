@@ -21,7 +21,7 @@ function UserNavItem() {
         <Button
           onClick={() => {}}
           variant="text"
-          color="secondary"
+          color="primary"
           sx={{
             "&:hover": { backgroundColor: "transparent" },
             minWidth: 20,
