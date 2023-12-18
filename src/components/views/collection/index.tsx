@@ -16,6 +16,9 @@ type PropType = {
   showAll?: boolean;
 };
 type CollectionType={
+  id: number,
+  slug: string,
+  name: string,
   url:string,
 }
 function Collection({ perPage, loadMore, showAll }: PropType) {
@@ -30,7 +33,6 @@ function Collection({ perPage, loadMore, showAll }: PropType) {
     });
     setLoading(false);
     if (res && res.status_code == 200) {
-      console.log(res);
       setData(res.data);
     }
   };
@@ -70,7 +72,7 @@ function Collection({ perPage, loadMore, showAll }: PropType) {
             </Box>
             <Box display="grid" gridTemplateColumns={"repeat(3, 1fr)"} gap={2}>
               {data.map((item,key)=>{
-                return <CollectionItem id="1" slug={"coll-1"} title={"Test"} image={"https://b797b0-3.myshopify.com/cdn/shop/collections/pexels-photo-3762881.webp?v=1702016304&width=1100"} />
+                return <CollectionItem key={key} id={item.id} slug={item.slug} title={item.name} image={item.url ?? "https://b797b0-3.myshopify.com/cdn/shop/collections/pexels-photo-3762881.webp?v=1702016304&width=1100"} />
               })}
             </Box>
 

@@ -9,7 +9,7 @@ const CardActions = dynamic(() => import("@mui/material/CardActions"));
 const CardHeader = dynamic(() => import("@mui/material/CardHeader"));
 
 type PropType = {
-  id: string;
+  id: number;
   slug: string;
   title: string;
   image: string;
@@ -18,10 +18,10 @@ type PropType = {
 function CollectionItem({ id, slug, title, image }: PropType) {
   return (
     <CustomLink
-      url={"/collection/i"}
+      url={"/collection/products"}
       link={true}
       params={{
-        slug: slug,
+        category: slug,
       }}
     >
       <Box
