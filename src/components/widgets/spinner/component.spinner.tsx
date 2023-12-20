@@ -13,7 +13,7 @@ interface ItemSpinnerInterface {
   loading: boolean;
   children?: ReactNode;
 }
-function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
+function ComponentSpinner({ loading, children }: ItemSpinnerInterface) {
   return (
     <>
       <Grid
@@ -22,15 +22,6 @@ function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
         direction="column"
         justifyContent="center"
         alignItems="center"
-        position={"fixed"}
-        top={0}
-        left={0}
-        width={"100%"}
-        height={"100%"}
-        zIndex={9999}
-        sx={{
-          backgroundColor: themeColor.backgroundColor,
-        }}
       >
         <Box sx={{ mb: 2 }}>{children}</Box>
         <FadeLoader
@@ -44,4 +35,4 @@ function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
   );
 }
 
-export default CustomSpinner;
+export default ComponentSpinner;

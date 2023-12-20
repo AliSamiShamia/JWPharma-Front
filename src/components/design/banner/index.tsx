@@ -3,10 +3,12 @@ import { BannerType } from "@/components/types/banner.types";
 import dynamic from "next/dynamic";
 import "react-slideshow-image/dist/styles.css";
 import Box from "@mui/material/Box";
-
+import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 const Fade = dynamic(() =>
   import("react-slideshow-image").then((module) => module.Fade)
 );
+const CustomLink = dynamic(() => import("@/components/widgets/link"));
+const Typography = dynamic(() => import("@mui/material/Typography"));
 
 const properties = {
   arrows: false,
@@ -15,11 +17,26 @@ const properties = {
 
 function Banner({ data }: BannerType) {
   return (
-    <Box sx={{ mt: 1 }}>
-      <Box component={"div"} className="slide-container">
+    <Box sx={{ mt: 1,  }}>
+      <Box component={"div"} position={"relative"} className="slide-container">
         <Fade {...properties}>
           {data.map((image, index) => (
-            <Box component={"div"} key={index}>
+            <Box
+              component={"div"}
+              key={index}
+              sx={{
+                "&::before": {
+                  content: "''",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  backgroundColor: "#00000055",
+                  width: "100%",
+                  height: "100%",
+                  zIndex: 9999,
+                },
+              }}
+            >
               <Box
                 component={"img"}
                 alt={"Banner-" + image.title}
@@ -30,6 +47,50 @@ function Banner({ data }: BannerType) {
                 }}
                 src={image.url}
               />
+              <Box
+                position={"absolute"}
+                top={0}
+                left={0}
+                sx={{
+                  width: { sm: "50%", xs: "100%" },
+                  height: "100%",
+                  zIndex: 9999,
+                  display: "flex",
+                  alignItems: "center",
+                  p: 5,
+                }}
+              >
+                <Box>
+                  <Typography
+                    color={"white"}
+                    variant="h3"
+                    sx={{
+                      
+                    }}
+                    mb={3}
+                    textTransform={"uppercase"}
+                  >
+                    {image.title}
+                  </Typography>
+                  <Typography
+                    color={"white"}
+                    variant="subtitle1"
+
+                    maxWidth={500}
+                  >
+                    {image.subtitle}
+                  </Typography>
+                  <CustomLink
+                    url={"/collection"}
+                    link={true}
+                    title="SHOP ALL"
+                    endIcon={<FaArrowRight />}
+                    type="outlined"
+                    color={"light"}
+                    size={"large"}
+                  />
+                </Box>
+              </Box>
             </Box>
           ))}
         </Fade>

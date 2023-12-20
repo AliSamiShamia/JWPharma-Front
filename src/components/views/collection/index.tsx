@@ -1,27 +1,52 @@
 import routeConfig from "@/components/constant/route";
 import CustomLink from "@/components/widgets/link";
 import { get } from "@/handler/api.handler";
-import { Link } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Container = dynamic(() => import("@mui/material/Container"));
-const Typography = dynamic(() => import("@mui/material/Typography"));
-const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
+const ComponentSpinner = dynamic(
+  () => import("@/components/widgets/spinner/component.spinner")
+);
+import "react-slideshow-image/dist/styles.css";
+import ResponsiveSlider from "@/components/design/slider";
 
-type PropType = {
-  perPage: number;
-  loadMore?: boolean;
-  showAll?: boolean;
-};
-type CollectionType={
-  url:string,
-}
-function Collection({ perPage, loadMore, showAll }: PropType) {
+const responsiveSettings = [
+  {
+    breakpoint: 1200,
+    settings: {
+      slidesToShow: 3,
+      slidesToScroll: 3,
+    },
+  },
+  {
+    breakpoint: 800,
+    settings: {
+      slidesToShow: 3,
+      slidesToScroll: 3,
+    },
+  },
+  {
+    breakpoint: 500,
+    settings: {
+      slidesToShow: 2,
+      slidesToScroll: 2,
+    },
+  },
+  {
+    breakpoint: 380,
+    settings: {
+      slidesToShow: 1,
+      slidesToScroll: 1,
+    },
+  },
+];
+
+function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [data,setData]=useState([] as CollectionType[]);
+  const [data, setData] = useState([] as CollectionType[]);
 
   const loadData = async (page: number) => {
     const res = await get(routeConfig.collection.list, {
@@ -40,39 +65,44 @@ function Collection({ perPage, loadMore, showAll }: PropType) {
   };
 
   useEffect(() => {
-    if (document.readyState=="complete") {
+    if (document.readyState == "complete") {
       loadData(page);
     }
-    return () => {
-    };
+    return () => {};
   }, [page]);
 
   return (
     <Box>
       {loading ? (
-        <CustomSpinner loading={loading} />
+        <ComponentSpinner loading={loading} />
       ) : (
         <>
           <Container disableGutters maxWidth={"xl"}>
             <Box component={"div"} display={"flex"} mt={1}>
               <Box component={"div"} flexGrow={1}>
-                {/* <Typography variant="h4">Collections</Typography> */}
+                {/* <Typography variant="h4">Featured Collections</Typography> */}
               </Box>
-              <Box component={"div"}>
-                <CustomLink
-                  url={"/collection"}
-                  title={"Show All"}
-                  color={"primary"}
-                  type="outlined"
-                  link={true}
-                />
-              </Box>
+              {showAll ? (
+                <Box component={"div"}>
+                  <CustomLink
+                    url={"/collection"}
+                    title={"Show All"}
+                    color={"primary"}
+                    type="outlined"
+                    link={true}
+                  />
+                </Box>
+              ) : null}
             </Box>
-            <Box display="grid" gridTemplateColumns={"repeat(3, 1fr)"} gap={2}>
-              {data.map((item,key)=>{
-                return <CollectionItem id="1" slug={"coll-1"} title={"Test"} image={"https://b797b0-3.myshopify.com/cdn/shop/collections/pexels-photo-3762881.webp?v=1702016304&width=1100"} />
+            <ResponsiveSlider
+              autoplay={false}
+              arrows={false}
+              responsiveSettings={responsiveSettings}
+            >
+              {data.map((item, key) => {
+                return <CollectionItem key={key} {...item} />;
               })}
-            </Box>
+            </ResponsiveSlider>
 
             {loadMore ? (
               <CustomLink

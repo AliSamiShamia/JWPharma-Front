@@ -2,14 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["b797b0-3.myshopify.com"],
+    domains: ["jwpharma.me", "images.pexels.com"],
+    minimumCacheTTL: 60,
   },
 
   env: {
     baseURL: process.env.BASE_URL,
-    
-
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
