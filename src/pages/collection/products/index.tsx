@@ -64,7 +64,7 @@ function ProductsByCategory({
                             <Grid container padding={5}>
                                 {data.map((item, key) => {
                                     return (
-                                        <Grid padding={2} item sm={2} md={3} lg={4} key={key}>
+                                        <Grid padding={1} item sm={2} md={3} lg={4} key={key}>
                                             <ProductItem
                                                 key={key}
                                                 id={item.id}

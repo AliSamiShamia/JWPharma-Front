@@ -27,7 +27,7 @@ function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
         left={0}
         width={"100%"}
         height={"100%"}
-        zIndex={9999}
+        zIndex={10000}
       >
         <Box sx={{ mb: 2 }}>{children}</Box>
         <FadeLoader
