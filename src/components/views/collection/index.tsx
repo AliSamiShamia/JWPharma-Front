@@ -1,47 +1,13 @@
 import routeConfig from "@/components/constant/route";
 import CustomLink from "@/components/widgets/link";
 import { get } from "@/handler/api.handler";
+import { Link } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Container = dynamic(() => import("@mui/material/Container"));
-const ComponentSpinner = dynamic(
-  () => import("@/components/widgets/spinner/component.spinner")
-);
-import "react-slideshow-image/dist/styles.css";
-import ResponsiveSlider from "@/components/design/slider";
-
-const responsiveSettings = [
-  {
-    breakpoint: 1200,
-    settings: {
-      slidesToShow: 3,
-      slidesToScroll: 3,
-    },
-  },
-  {
-    breakpoint: 800,
-    settings: {
-      slidesToShow: 3,
-      slidesToScroll: 3,
-    },
-  },
-  {
-    breakpoint: 500,
-    settings: {
-      slidesToShow: 2,
-      slidesToScroll: 2,
-    },
-  },
-  {
-    breakpoint: 380,
-    settings: {
-      slidesToShow: 1,
-      slidesToScroll: 1,
-    },
-  },
-];
+const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
 
 function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
@@ -55,7 +21,6 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
     });
     setLoading(false);
     if (res && res.status_code == 200) {
-      console.log(res);
       setData(res.data);
     }
   };
@@ -74,15 +39,15 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   return (
     <Box>
       {loading ? (
-        <ComponentSpinner loading={loading} />
+        <CustomSpinner loading={loading} />
       ) : (
         <>
-          <Container disableGutters maxWidth={"xl"}>
-            <Box component={"div"} display={"flex"} mt={1}>
-              <Box component={"div"} flexGrow={1}>
-                {/* <Typography variant="h4">Featured Collections</Typography> */}
-              </Box>
-              {showAll ? (
+          {data.length > 0 ? (
+            <Container disableGutters maxWidth={"xl"}>
+              <Box component={"div"} display={"flex"} mt={1}>
+                <Box component={"div"} flexGrow={1}>
+                  {/* <Typography variant="h4">Collections</Typography> */}
+                </Box>
                 <Box component={"div"}>
                   <CustomLink
                     url={"/collection"}
@@ -92,29 +57,29 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
                     link={true}
                   />
                 </Box>
-              ) : null}
-            </Box>
-            <ResponsiveSlider
-              autoplay={false}
-              arrows={false}
-              responsiveSettings={responsiveSettings}
-            >
-              {data.map((item, key) => {
-                return <CollectionItem key={key} {...item} />;
-              })}
-            </ResponsiveSlider>
+              </Box>
+              <Box
+                display="grid"
+                gridTemplateColumns={"repeat(3, 1fr)"}
+                gap={2}
+              >
+                {data.map((item, key) => {
+                  return <CollectionItem key={key} {...item} />;
+                })}
+              </Box>
 
-            {loadMore ? (
-              <CustomLink
-                url={"#"}
-                title={"Load More"}
-                color={"primary"}
-                type="contained"
-                link={false}
-                action={handleLoadMore}
-              />
-            ) : null}
-          </Container>
+              {loadMore ? (
+                <CustomLink
+                  url={"#"}
+                  title={"Load More"}
+                  color={"primary"}
+                  type="contained"
+                  link={false}
+                  action={handleLoadMore}
+                />
+              ) : null}
+            </Container>
+          ) : null}
         </>
       )}
     </Box>

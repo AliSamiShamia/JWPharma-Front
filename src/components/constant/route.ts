@@ -4,6 +4,7 @@ const routeConfig = {
   },
   product: {
     list: "product",
+    // addToCart: "store",
   },
   cart: {
     list: "cart",

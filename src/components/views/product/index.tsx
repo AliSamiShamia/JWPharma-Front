@@ -55,7 +55,6 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     });
     setLoading(false);
     if (res && res.status_code == 200) {
-      console.log(res);
       setData(res.data);
     }
   };
@@ -77,70 +76,65 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
         <ComponentSpinner loading={loading} />
       ) : (
         <>
-          <Container disableGutters maxWidth={"xl"}>
-            <Box
-              component={"div"}
-              display={"flex"}
-              sx={{
-                m: {
-                  xs: 2,
-                  sm: 5,
-                },
-                ml: {
-                  xs: 2,
-                  sm: 2,
-                },
-                mr: {
-                  xs: 2,
-                  sm: 0,
-                },
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Box component={"div"} flexGrow={1}>
-                <Typography variant="h3">Featured products</Typography>
+          {data.length > 0 ? (
+            <Container disableGutters maxWidth={"xl"}>
+              <Box
+                component={"div"}
+                display={"flex"}
+                sx={{
+                  m: {
+                    xs: 2,
+                    sm: 5,
+                  },
+                  ml: {
+                    xs: 2,
+                    sm: 2,
+                  },
+                  mr: {
+                    xs: 2,
+                    sm: 0,
+                  },
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box component={"div"} flexGrow={1}>
+                  <Typography variant="h3">Featured products</Typography>
+                </Box>
+                <Box component={"div"}>
+                  <CustomLink
+                    url={"/product"}
+                    title={"Show All"}
+                    color={"primary"}
+                    type="outlined"
+                    link={true}
+                  />
+                </Box>
               </Box>
-              <Box component={"div"}>
+              <ResponsiveSlider
+                responsiveSettings={responsiveSettings}
+                autoplay={false}
+              >
+                {data.map((item, key) => {
+                  return (
+                    <Box key={key}  m={1} justifyContent={"center"} alignItems={"center"}>
+                      <ProductItem {...item} />
+                    </Box>
+                  );
+                })}
+              </ResponsiveSlider>
+              {loadMore ? (
                 <CustomLink
-                  url={"/product"}
-                  title={"Show All"}
+                  url={"#"}
+                  title={"Load More"}
                   color={"primary"}
-                  type="outlined"
-                  link={true}
+                  type="contained"
+                  link={false}
+                  action={handleLoadMore}
                 />
-              </Box>
-            </Box>
-            <ResponsiveSlider
-              responsiveSettings={responsiveSettings}
-              autoplay={false}
-              
-              
-            >
-              {data.map((item, key) => {
-                return (
-                  <Box
-                    display={"flex"}
-                    width={1}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <ProductItem key={key} {...item} />
-                  </Box>
-                );
-              })}
-            </ResponsiveSlider>
-            {loadMore ? (
-              <CustomLink
-                url={"#"}
-                title={"Load More"}
-                color={"primary"}
-                type="contained"
-                link={false}
-                action={handleLoadMore}
-              />
-            ) : null}
-          </Container>
+              ) : null}
+            </Container>
+          ) : null}
         </>
       )}
     </Box>

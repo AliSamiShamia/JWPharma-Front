@@ -37,7 +37,7 @@ type CollectionType = {
   id: number;
   slug: string;
   name: string;
-  parent: string;
-  products: string;
+  parent?: string;
+  products: ProductType[];
   url: string;
 };
