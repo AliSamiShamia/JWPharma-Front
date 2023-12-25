@@ -4,7 +4,7 @@ import themeColor from "@/components/constant/color";
 import type { EmotionCache } from "@emotion/cache";
 import { Provider } from "react-redux";
 import { store } from "@/store";
-import type { NextPage } from "next";
+import type { NextComponentType } from "next";
 import type { AppProps } from "next/app";
 import { createEmotionCache } from "@/components/utils/create-emotion-cache";
 
@@ -15,9 +15,10 @@ import { createTheme } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/material";
 import GlobalStyling from "./_global";
 import CustomSpinner from "@/components/widgets/spinner";
+import { AuthProvider } from "@/components/context/AuthContext";
 
 type ExtendedAppProps = AppProps & {
-  Component: NextPage;
+  Component: NextComponentType & { auth?: boolean };
   emotionCache: EmotionCache;
 };
 // Update the Button's color options to include a violet option
@@ -95,7 +96,6 @@ const theme = createTheme({
         fontSize: "1.2em",
       },
     },
-   
   },
 
   palette: {
@@ -131,7 +131,13 @@ const App = (props: ExtendedAppProps) => {
                 content="initial-scale=1, width=device-width"
               />
             </Head>
-            <Component {...pageProps} />
+            {Component.auth ? (
+              <AuthProvider>
+                <Component {...pageProps} />
+              </AuthProvider>
+            ) : (
+              <Component {...pageProps} />
+            )}
           </CacheProvider>
         </ThemeProvider>
       </Provider>

@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import { Fade } from "react-slideshow-image";
@@ -6,11 +6,14 @@ import { MdAddShoppingCart } from "@react-icons/all-files/md/MdAddShoppingCart";
 import { MdFavoriteBorder } from "@react-icons/all-files/md/MdFavoriteBorder";
 const Typography = dynamic(() => import("@mui/material/Typography"));
 import "react-slideshow-image/dist/styles.css";
-import { get } from "@/handler/api.handler";
+import { get, post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import CustomSpinner from "@/components/widgets/spinner";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/apps/cart";
+import { addToWishlist } from "@/store/apps/wishlist";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/router";
 
 function ProductItem(product: ProductType) {
   const properties = {
@@ -22,23 +25,54 @@ function ProductItem(product: ProductType) {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
+  const auth = useAuth();
+  const router = useRouter();
 
   const handleAddToCart = async (event: any) => {
-    dispatch(
-      addToCart({
-        quantity: 1,
-        id: product.id,
-      })
-    );
-    event.preventDefault();
-    setLoading(true);
-    const res = await get(routeConfig.product.list, {
-      productId: product.id,
-    });
-    setLoading(false);
-    if (res && res.status_code == 200) {
+    if (auth.user) {
+      event.preventDefault();
+      setLoading(true);
+      const res = await post(routeConfig.cart.store, {
+        productId: product.id,
+      });
+      setLoading(false);
+      if (res && res.status_code == 200) {
+        dispatch(
+          addToCart({
+            quantity: 1,
+            id: product.id,
+          })
+        );
+      }
+    } else {
+      router.push({
+        pathname: "/login",
+      });
     }
   };
+
+  const handleAddToWishlist = async (event: any) => {
+    if (auth.user) {
+      event.preventDefault();
+      setLoading(true);
+      const res = await get(routeConfig.product.list, {
+        productId: product.id,
+      });
+      setLoading(false);
+      if (res && res.status_code == 200) {
+        dispatch(
+          addToWishlist({
+            id: product.id,
+          })
+        );
+      }
+    } else {
+      router.push({
+        pathname: "/login",
+      });
+    }
+  };
+
   return (
     <Box
       component={"div"}
@@ -69,9 +103,17 @@ function ProductItem(product: ProductType) {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        <a href="#">
+        <IconButton
+          color="primary"
+          onClick={(e) => handleAddToCart(e)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <MdFavoriteBorder size={22} />
-        </a>
+        </IconButton>
       </Box>
       <Fade {...properties}>
         {product.media.map((image, index) => (
@@ -100,7 +142,7 @@ function ProductItem(product: ProductType) {
       >
         <Box
           position={"absolute"}
-          bottom={60}
+          bottom={0}
           right={15}
           width={40}
           height={40}
@@ -112,42 +154,29 @@ function ProductItem(product: ProductType) {
           padding={0}
           textAlign={"center"}
         >
-          {product.stock == 0 ? (
-            <div
-              style={{
-                display: "flex",
-                width: "100%",
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <MdAddShoppingCart size={22} />
-            </div>
-          ) : (
-            <a
-              href="#"
+          {product.stock > 0 ? (
+            <IconButton
+              color="primary"
               onClick={(e) => handleAddToCart(e)}
               style={{
                 display: "flex",
-                width: "100%",
-                height: "100%",
-                fontSize: "2rem",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <MdAddShoppingCart size={22} />
-            </a>
-          )}
+            </IconButton>
+          ) : null}
         </Box>
+      </Box>
+      <Box>
         <Stack
           direction={"column"}
           alignItems={"start"}
           paddingRight={1}
           paddingLeft={1}
         >
-          <Typography color={"black"}>
+          <Typography color={"black"} width={280}>
             {product.name + " " + product.name}
           </Typography>
           <Stack

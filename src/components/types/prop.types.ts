@@ -41,3 +41,38 @@ type CollectionType = {
   products: ProductType[];
   url: string;
 };
+
+
+type ErrCallbackType = (err: { [key: string]: string }) => void
+
+type LoginParams = {
+  email: string
+  password: string
+  rememberMe?: boolean
+}
+
+ type RegisterParams = {
+  email: string
+  username: string
+  password: string
+}
+
+ type UserDataType = {
+  id: number
+  role: string
+  email: string
+  fullName: string
+  username: string
+  password: string
+  avatar?: string | null
+}
+
+ type AuthValuesType = {
+  loading: boolean
+  logout: () => void
+  user: UserDataType | null
+  setLoading: (value: boolean) => void
+  setUser: (value: UserDataType | null) => void
+  login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
+  register: (params: RegisterParams, errorCallback?: ErrCallbackType) => void
+}

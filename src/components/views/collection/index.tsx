@@ -1,7 +1,6 @@
 import routeConfig from "@/components/constant/route";
 import CustomLink from "@/components/widgets/link";
 import { get } from "@/handler/api.handler";
-import { Link } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
