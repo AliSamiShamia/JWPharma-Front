@@ -1,30 +1,55 @@
 import routeConfig from "@/components/constant/route";
-import Layout from "@/components/design/layout";
-import ProductItem from "@/components/views/product/item";
-import CustomLink from "@/components/widgets/link";
 import { get } from "@/handler/api.handler";
-import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 const Box = dynamic(() => import("@mui/material/Box"));
+const Typography = dynamic(() => import("@mui/material/Typography"));
 const Container = dynamic(() => import("@mui/material/Container"));
-const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
+const ProductItem = dynamic(() => import("./item"));
+const CustomLink = dynamic(() => import("@/components/widgets/link"));
+const ComponentSpinner = dynamic(
+  () => import("@/components/widgets/spinner/component.spinner")
+);
+const ResponsiveSlider = dynamic(() => import("@/components/design/slider"));
 
-function ProductsByCategory({
-  perPage,
-  loadMore,
-  showAll,
-}: PaginationPropType) {
+const responsiveSettings = [
+  {
+    breakpoint: 1200,
+    settings: {
+      slidesToShow: 4,
+      slidesToScroll: 4,
+    },
+  },
+  {
+    breakpoint: 800,
+    settings: {
+      slidesToShow: 3,
+      slidesToScroll: 3,
+    },
+  },
+  {
+    breakpoint: 500,
+    settings: {
+      slidesToShow: 2,
+      slidesToScroll: 2,
+    },
+  },
+  {
+    breakpoint: 380,
+    settings: {
+      slidesToShow: 2,
+      slidesToScroll: 2,
+    },
+  },
+];
+
+function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({} as CollectionType);
-  const router = useRouter();
-  const { s } = router.query;
-  //   const params = params;
+  const [data, setData] = useState([] as ProductType[]);
 
   const loadData = async (page: number) => {
-    const res = await get(routeConfig.collection.list + "/" + s, {
+    const res = await get(routeConfig.product.list, {
       page: page,
       per_page: perPage,
     });
@@ -39,58 +64,65 @@ function ProductsByCategory({
   };
 
   useEffect(() => {
-    if (s) {
+    if (document.readyState == "complete") {
       loadData(page);
     }
     return () => {};
-  }, [page, s]);
+  }, [page]);
 
   return (
-    <Layout>
-      <Box>
-        {loading ? (
-          <CustomSpinner loading={loading} />
-        ) : (
-          <>
+    <Box>
+      {loading ? (
+        <ComponentSpinner loading={loading} />
+      ) : (
+        <>
+          {data.length > 0 ? (
             <Container disableGutters maxWidth={"xl"}>
-              <Grid
-                container
-                padding={5}
+              <Box
+                component={"div"}
                 display={"flex"}
-                justifyContent={"center"}
+                sx={{
+                  m: {
+                    xs: 2,
+                    sm: 5,
+                  },
+                  ml: {
+                    xs: 2,
+                    sm: 2,
+                  },
+                  mr: {
+                    xs: 2,
+                    sm: 0,
+                  },
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
               >
-                <Grid
-                  item
-                  md={3}
-                  border={1}
-                  padding={2}
-                  sx={{
-                    display: { md: "flex", xs: "none" },
-                    borderColor: "#F7F7FA",
-                    backgroundColor: "#F7F7FA",
-                  }}
-                >
-                  <Typography color={"primary"} variant="h5">
-                    Filters
-                  </Typography>
-                </Grid>
-                <Grid
-                  display={"flex"}
-                  justifyContent={"center"}
-                  item
-                  md={9}
-                  xs={12}
-                >
-                  {data?.products.map((item, key) => {
-                    return (
-                      <Grid padding={1} item sm={2} md={3} lg={4} key={key}>
-                        <ProductItem key={key} {...item} />
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </Grid>
-
+                <Box component={"div"} flexGrow={1}>
+                  <Typography variant="h3">Featured products</Typography>
+                </Box>
+                <Box component={"div"}>
+                  <CustomLink
+                    url={"/product"}
+                    title={"Show All"}
+                    color={"primary"}
+                    type="outlined"
+                    link={true}
+                  />
+                </Box>
+              </Box>
+              <ResponsiveSlider
+                responsiveSettings={responsiveSettings}
+                autoplay={false}
+              >
+                {data.map((item, key) => {
+                  return (
+                    <Box key={key}  m={1} justifyContent={"center"} alignItems={"center"}>
+                      <ProductItem {...item} />
+                    </Box>
+                  );
+                })}
+              </ResponsiveSlider>
               {loadMore ? (
                 <CustomLink
                   url={"#"}
@@ -102,11 +134,11 @@ function ProductsByCategory({
                 />
               ) : null}
             </Container>
-          </>
-        )}
-      </Box>
-    </Layout>
+          ) : null}
+        </>
+      )}
+    </Box>
   );
 }
 
-export default ProductsByCategory;
+export default Product;
