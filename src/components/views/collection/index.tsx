@@ -10,6 +10,7 @@ const Container = dynamic(() => import("@mui/material/Container"));
 const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
 
 function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
+
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as CollectionType[]);
