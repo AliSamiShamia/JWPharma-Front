@@ -1,4 +1,6 @@
 const routeConfig = {
+  onTokenExpiration: 'refreshToken', 
+  storageTokenKeyName:"accessToken",
   collection: {
     list: "category",
   },
@@ -8,6 +10,7 @@ const routeConfig = {
   },
   cart: {
     list: "cart",
+    store:"cart",
     clear: "clear-cart",
     total: "",
   },

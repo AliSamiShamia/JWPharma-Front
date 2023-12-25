@@ -1,4 +1,5 @@
 import axios from "axios";
+import routeConfig from "@/components/constant/route";
 
 const instance = axios.create({
   baseURL: process.env.baseURL,
@@ -17,9 +18,9 @@ type ResponseType = {
 const get = async (
   url: string,
   params?: any,
-  token?: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
   let res;
   try {
     res = await instance.get(url, {
@@ -40,10 +41,10 @@ const get = async (
 const post = async (
   url: string,
   form_data: any,
-  token = null,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
   try {
     res = await instance.post(url, form_data, {
       headers: {
@@ -63,10 +64,10 @@ const post = async (
 
 const multipart = async (
   url: string,
-  token = null,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
   try {
     res = await instance.get(url, {
       headers: {
@@ -85,10 +86,10 @@ const multipart = async (
 
 const destroy = async (
   url: string,
-  token = null,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
   try {
     res = await instance.delete(url, {
       headers: {
