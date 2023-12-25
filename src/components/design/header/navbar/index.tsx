@@ -159,7 +159,7 @@ export default function DrawerAppBar(props: Props) {
           </Toolbar>
         </Box>
       </AppBar>
-
+     
       <nav>
         <Drawer
           container={container}
@@ -180,7 +180,7 @@ export default function DrawerAppBar(props: Props) {
           {drawer}
         </Drawer>
       </nav>
-      <Box sx={{ display: { xs: "block", sm: "none" } }}>
+      <Box sx={{ display: { xs: "block", sm: "none", } }}>
         <CustomBottomNavigation />
       </Box>
     </Box>

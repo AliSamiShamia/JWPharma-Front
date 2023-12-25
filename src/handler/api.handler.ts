@@ -8,7 +8,7 @@ type ResponseType = {
   status: boolean;
   message: string;
   status_code: number;
-  data: Array<any>;
+  data: any;
   page?: number;
   perPage?: number;
   total?: number;

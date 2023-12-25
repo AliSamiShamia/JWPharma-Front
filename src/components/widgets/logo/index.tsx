@@ -10,7 +10,7 @@ function Logo(props: LogoType) {
         component="img"
         sx={{ height: { sm: 65, xs: 50 } }}
         alt="Logo"
-        src={"/static/images/common/logo.jpg"}
+        src={"/static/images/common/logo.png"}
       />
     </Link>
   );

@@ -8,21 +8,17 @@ import { OverridableStringUnion } from "@mui/types";
 type PropType = {
   url?: string;
   title?: string;
-  color?: OverridableStringUnion<
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning"
-  >;
+  color?: any;
+  size?: any;
   type?: OverridableStringUnion<"text" | "outlined" | "contained">;
   target?: string;
   link?: boolean;
   action?: () => any;
   children?: ReactNode;
+  padding?: any;
   params?: any;
+  endIcon?: any;
+  startIcon?: any;
 };
 function CustomLink({
   url,
@@ -30,13 +26,17 @@ function CustomLink({
   color,
   type,
   target,
+  size,
   link,
   action,
   children,
+  padding,
   params,
+  endIcon,
+  startIcon,
 }: PropType) {
   return (
-    <Box m={1}>
+    <Box sx={{ width: "100%" }}>
       {link ? (
         <Link
           href={{
@@ -47,8 +47,16 @@ function CustomLink({
         >
           <Button
             variant={type}
-            sx={{ borderRadius: 6, width: "100%" }}
+            size={size ? size : "medium"}
+            sx={{
+              borderRadius: 6,
+              borderWidth: 1,
+              width: "100%",
+              p: padding >= 0 ? padding : "auto",
+            }}
             color={color}
+            endIcon={endIcon}
+            startIcon={startIcon}
           >
             {children ? children : title}
           </Button>
@@ -56,9 +64,12 @@ function CustomLink({
       ) : (
         <Button
           onClick={action}
+          size={size ? size : "medium"}
           variant={type}
-          sx={{ borderRadius: 6, width: "100%" }}
+          sx={{ borderRadius: 6, width: "100%", p: padding ? padding : "auto" }}
           color={color}
+          endIcon={endIcon}
+          startIcon={startIcon}
         >
           {children ? children : title}
         </Button>
