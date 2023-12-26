@@ -19,6 +19,7 @@ type PropType = {
   params?: any;
   endIcon?: any;
   startIcon?: any;
+  width?: any;
 };
 function CustomLink({
   url,
@@ -34,9 +35,10 @@ function CustomLink({
   params,
   endIcon,
   startIcon,
+  width,
 }: PropType) {
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: width ?? "100%" }}>
       {link ? (
         <Link
           href={{

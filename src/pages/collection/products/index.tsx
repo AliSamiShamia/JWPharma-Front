@@ -3,11 +3,10 @@ import { get } from "@/handler/api.handler";
 import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Container = dynamic(() => import("@mui/material/Container"));
-// const ProductItem = dynamic(() => import("./item"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
@@ -45,7 +44,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     if (document.readyState == "complete" && s) {
       loadData(page);
     }
-    return () => {};
+    return () => { };
   }, [page, s]);
 
   return (
@@ -54,68 +53,75 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
         <ComponentSpinner loading={loading} />
       ) : (
         <>
-          {data.products.length > 0 ? (
-            <Grid p={2} container maxWidth={"xl"}>
-              <Grid
-                item
-                md={3}
-                border={1}
-                borderColor={"#F7F7FA"}
-                sx={{
-                  display: { md: "flex", xs: "none" },
-                  backgroundColor: "#F7F7FA",
-                }}
-              >
-                <Box>
-                  <Typography variant="h5" color={"primary"}>
-                    Filter
-                  </Typography>
-                  <Grid>
-                    {data.filter.map((item, key) => {
+          {
+            data.products.length > 0 ? (
+              <Grid p={2} container maxWidth={"xl"}>
+                <Grid
+                  item
+                  sm={12}
+                  md={3}
+                  border={1}
+                  borderColor={"#F7F7FA"}
+                  sx={{
+                    display: { md: "flex", xs: "none" },
+                    backgroundColor: "#F7F7FA",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h5" color={"primary"}>
+                      Filter
+                    </Typography>
+                    <Grid>
+                      {data.filter.map((item, key) => {
+                        return (
+                          <Grid key={key}>
+                            <Typography>{item.title}</Typography>
+                            {Object.entries(item.values).map((value, key1) => {
+                              return <Fragment key={key1}>{JSON.stringify(value)}</Fragment>;
+                            })}
+                            {/* {typeof(item.values)==Array?(<></>):(<></>)} */}
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </Box>
+                </Grid>
+                <Grid item sm={12} md={9}>
+                  <Grid container>
+                    {data.products.map((item, key) => {
                       return (
-                        <Grid key={key}>
-                          <Typography>{item.title}</Typography>
-                          {Object.entries(item.values).map((value, key1) => {
-                            return <>{JSON.stringify(value)}</>;
-                          })}
-                          {/* {typeof(item.values)==Array?(<></>):(<></>)} */}
+                        <Grid
+                          item
+                          key={key}
+                          md={4}
+                          lg={3}
+                          sm={6}
+                          xs={12}
+                          p={1}
+                          justifyContent={"center"}
+                          alignItems={"center"}
+                          width={"100%"}
+                        >
+                          <ProductItem {...item} />
                         </Grid>
                       );
                     })}
                   </Grid>
-                </Box>
-              </Grid>
-              <Grid item md={9}>
-                <Grid container>
-                  {data.products.map((item, key) => {
-                    return (
-                      <Grid
-                        item
-                        key={key}
-                        md={3}
-                        m={1}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        <ProductItem {...item} />
-                      </Grid>
-                    );
-                  })}
-                </Grid>
 
-                {loadMore ? (
-                  <CustomLink
-                    url={"#"}
-                    title={"Load More"}
-                    color={"primary"}
-                    type="contained"
-                    link={false}
-                    action={handleLoadMore}
-                  />
-                ) : null}
+                  {loadMore ? (
+                    <CustomLink
+                      url={"#"}
+                      title={"Load More"}
+                      color={"primary"}
+                      type="contained"
+                      link={false}
+                      action={handleLoadMore}
+                    />
+                  ) : null}
+                </Grid>
               </Grid>
-            </Grid>
-          ) : null}
+            ) : null
+          }
         </>
       )}
     </Layout>
