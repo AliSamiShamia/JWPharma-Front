@@ -1,55 +1,29 @@
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
+import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Container = dynamic(() => import("@mui/material/Container"));
-const ProductItem = dynamic(() => import("./item"));
+// const ProductItem = dynamic(() => import("./item"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
 );
-const ResponsiveSlider = dynamic(() => import("@/components/design/slider"));
-
-const responsiveSettings = [
-  {
-    breakpoint: 1200,
-    settings: {
-      slidesToShow: 4,
-      slidesToScroll: 4,
-    },
-  },
-  {
-    breakpoint: 800,
-    settings: {
-      slidesToShow: 3,
-      slidesToScroll: 3,
-    },
-  },
-  {
-    breakpoint: 500,
-    settings: {
-      slidesToShow: 2,
-      slidesToScroll: 2,
-    },
-  },
-  {
-    breakpoint: 380,
-    settings: {
-      slidesToShow: 2,
-      slidesToScroll: 2,
-    },
-  },
-];
+const Layout = dynamic(() => import("@/components/design/layout"));
+const ProductItem = dynamic(() => import("@/components/views/product/item"));
 
 function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [data, setData] = useState([] as ProductType[]);
+  const [data, setData] = useState({} as CollectionType);
+  const router = useRouter();
+  const { s } = router.query;
 
   const loadData = async (page: number) => {
-    const res = await get(routeConfig.product.list, {
+    const res = await get(routeConfig.collection.list + "/" + s, {
       page: page,
       per_page: perPage,
     });
@@ -64,80 +38,87 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   };
 
   useEffect(() => {
-    if (document.readyState == "complete") {
+    if (!router.isReady) {
+      return;
+    }
+
+    if (document.readyState == "complete" && s) {
       loadData(page);
     }
     return () => {};
-  }, [page]);
+  }, [page, s]);
 
   return (
-    <Box>
+    <Layout>
       {loading ? (
         <ComponentSpinner loading={loading} />
       ) : (
         <>
-          {data.length > 0 ? (
-            <Container disableGutters maxWidth={"xl"}>
-              <Box
-                component={"div"}
-                display={"flex"}
+          {data.products.length > 0 ? (
+            <Grid p={2} container maxWidth={"xl"}>
+              <Grid
+                item
+                md={3}
+                border={1}
+                borderColor={"#F7F7FA"}
                 sx={{
-                  m: {
-                    xs: 2,
-                    sm: 5,
-                  },
-                  ml: {
-                    xs: 2,
-                    sm: 2,
-                  },
-                  mr: {
-                    xs: 2,
-                    sm: 0,
-                  },
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  display: { md: "flex", xs: "none" },
+                  backgroundColor: "#F7F7FA",
                 }}
               >
-                <Box component={"div"} flexGrow={1}>
-                  <Typography variant="h3">Featured products</Typography>
+                <Box>
+                  <Typography variant="h5" color={"primary"}>
+                    Filter
+                  </Typography>
+                  <Grid>
+                    {data.filter.map((item, key) => {
+                      return (
+                        <Grid key={key}>
+                          <Typography>{item.title}</Typography>
+                          {Object.entries(item.values).map((value, key1) => {
+                            return <>{JSON.stringify(value)}</>;
+                          })}
+                          {/* {typeof(item.values)==Array?(<></>):(<></>)} */}
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
                 </Box>
-                <Box component={"div"}>
+              </Grid>
+              <Grid item md={9}>
+                <Grid container>
+                  {data.products.map((item, key) => {
+                    return (
+                      <Grid
+                        item
+                        key={key}
+                        md={3}
+                        m={1}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <ProductItem {...item} />
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+
+                {loadMore ? (
                   <CustomLink
-                    url={"/product"}
-                    title={"Show All"}
+                    url={"#"}
+                    title={"Load More"}
                     color={"primary"}
-                    type="outlined"
-                    link={true}
+                    type="contained"
+                    link={false}
+                    action={handleLoadMore}
                   />
-                </Box>
-              </Box>
-              <ResponsiveSlider
-                responsiveSettings={responsiveSettings}
-                autoplay={false}
-              >
-                {data.map((item, key) => {
-                  return (
-                    <Box key={key}  m={1} justifyContent={"center"} alignItems={"center"}>
-                      <ProductItem {...item} />
-                    </Box>
-                  );
-                })}
-              </ResponsiveSlider>
-              {loadMore ? (
-                <CustomLink
-                  url={"#"}
-                  title={"Load More"}
-                  color={"primary"}
-                  type="contained"
-                  link={false}
-                  action={handleLoadMore}
-                />
-              ) : null}
-            </Container>
+                ) : null}
+              </Grid>
+            </Grid>
           ) : null}
         </>
       )}
-    </Box>
+    </Layout>
   );
 }
 

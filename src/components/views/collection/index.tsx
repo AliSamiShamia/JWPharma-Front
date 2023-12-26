@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Container = dynamic(() => import("@mui/material/Container"));
-const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
+const ComponentSpinner = dynamic(() => import("@/components/widgets/spinner/component.spinner"));
 
 function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
 
@@ -39,7 +39,7 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   return (
     <Box>
       {loading ? (
-        <CustomSpinner loading={loading} />
+        <ComponentSpinner loading={loading} />
       ) : (
         <>
           {data.length > 0 ? (
