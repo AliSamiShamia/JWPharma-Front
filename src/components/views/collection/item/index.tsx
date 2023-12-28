@@ -46,7 +46,7 @@ function CollectionItem(collection: CollectionType) {
           height={"100%"}
           zIndex={9999}
         >
-          <Typography color={"white"}>{collection.name}</Typography>
+          <Typography color={"white"} variant="h5">{collection.name}</Typography>
         </Box>
       </Box>
     </CustomLink>

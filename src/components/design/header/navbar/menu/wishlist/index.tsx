@@ -1,4 +1,5 @@
 import { WishListType } from "@/components/types/wishlist.types";
+import CustomLink from "@/components/widgets/link";
 import Wishlist from "@/components/widgets/wishlist";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Button, Link, Typography } from "@mui/material";
@@ -19,40 +20,22 @@ function WishlistNavItem() {
   return (
     <>
       <Box>
-        <Link
-          underline="none"
-          variant="button"
-          color={"primary"}
-          textTransform={"capitalize"}
-          ml={0.4}
-          mr={0.5}
-          href={"/wishlist"}
-        >
-          <Button>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+        <CustomLink url={"/wishlist"} link>
+          <Box sx={{ display: { sm: "flex", xs: "none" } }}>
+            <Typography
+              ml={0.4}
+              mr={0.5}
+              variant="body2"
+              textTransform={"capitalize"}
+              sx={{ display: { xs: "none", md: "flex" } }}
             >
-              <Box sx={{ display: { sm: "flex", xs: "none" } }}>
-                <Typography
-                  ml={0.4}
-                  mr={0.5}
-                  variant="body2"
-                  textTransform={"capitalize"}
-                  sx={{ display: { xs: "none", md: "flex" } }}
-                >
-                  Wishlist
-                </Typography>
-              </Box>
-              <Badge badgeContent={wishlist.length} color="info" max={10}>
-                <FiHeart size={22} />
-              </Badge>
-            </Box>
-          </Button>
-        </Link>
+              Wishlist
+            </Typography>
+          </Box>
+          <Badge badgeContent={wishlist.length} color="info" max={10}>
+            <FiHeart size={22} />
+          </Badge>
+        </CustomLink>
       </Box>
       {/* <Wishlist open={wishlistOpen} toggleDrawer={handleWishlistToggle} /> */}
     </>
