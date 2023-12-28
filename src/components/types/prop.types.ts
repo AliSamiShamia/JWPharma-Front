@@ -40,12 +40,8 @@ type CollectionType = {
   parent?: string;
   products: ProductType[];
   url: string;
-  filter: Array<FilterType>;
-};
-
-type FilterType = {
-  title: string;
-  values: object | Array<any>;
+  filter: Array<FilterItem>;
+  price_range: PriceRangeType;
 };
 
 type ErrCallbackType = (err: { [key: string]: string }) => void;
@@ -80,4 +76,26 @@ type AuthValuesType = {
   setUser: (value: UserDataType | null) => void;
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void;
   register: (params: RegisterParams, errorCallback?: ErrCallbackType) => void;
+};
+
+type FilterProps = {
+  filters: FilterItem[];
+  params?: any;
+  handleAction: (page: number) => void;
+  setFilterParam: (params: any) => void;
+};
+
+type PriceRangeType = {
+  min: number;
+  max: number;
+};
+type FilterItem = {
+  id: number;
+  title: string;
+  values: FilterValueProps[];
+};
+
+type FilterValueProps = {
+  value: string;
+  id: number;
 };

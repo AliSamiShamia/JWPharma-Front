@@ -4,6 +4,7 @@ const Link = dynamic(() => import("next/link"));
 const Button = dynamic(() => import("@mui/material/Button"));
 const Box = dynamic(() => import("@mui/material/Box"));
 import { OverridableStringUnion } from "@mui/types";
+import themeColor from "@/components/constant/color";
 
 type PropType = {
   url?: string;
@@ -55,6 +56,7 @@ function CustomLink({
               borderWidth: 1,
               width: "100%",
               p: padding >= 0 ? padding : "auto",
+              "&:hover": { backgroundColor: "transparent" },
             }}
             color={color}
             endIcon={endIcon}
@@ -68,7 +70,15 @@ function CustomLink({
           onClick={action}
           size={size ? size : "medium"}
           variant={type}
-          sx={{ borderRadius: 6, width: "100%", p: padding ? padding : "auto" }}
+          sx={{
+            borderRadius: 6,
+            width: "100%",
+            p: padding ? padding : "auto",
+            "&:hover": {
+              backgroundColor: "transparent",
+              color: themeColor.primary.dark,
+            },            
+          }}
           color={color}
           endIcon={endIcon}
           startIcon={startIcon}

@@ -1,4 +1,5 @@
 import { UserType } from "@/components/types/user.types";
+import CustomLink from "@/components/widgets/link";
 import { useAppSelector } from "@/store/hooks";
 import { Box, Button, Typography } from "@mui/material";
 import { MdPersonOutline } from "@react-icons/all-files/md/MdPersonOutline";
@@ -18,16 +19,7 @@ function UserNavItem() {
   return (
     <>
       <Box>
-        <Button
-          onClick={() => {}}
-          variant="text"
-          color="primary"
-          sx={{
-            "&:hover": { backgroundColor: "transparent" },
-            minWidth: 20,
-            ml: { sm: 0.3, xs: 0 },
-          }}
-        >
+        <CustomLink url={"/login"} link>
           <Box
             sx={{
               display: "flex",
@@ -48,7 +40,7 @@ function UserNavItem() {
             </Box>
             <MdPersonOutline size={22} />
           </Box>
-        </Button>
+        </CustomLink>
       </Box>
     </>
   );

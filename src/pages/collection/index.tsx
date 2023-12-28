@@ -1,6 +1,7 @@
+import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -9,7 +10,9 @@ const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
 );
 const Layout = dynamic(() => import("@/components/design/layout"));
-const CollectionItem = dynamic(() => import("@/components/views/collection/item"));
+const CollectionItem = dynamic(
+  () => import("@/components/views/collection/item")
+);
 
 function Collection({ perPage }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
@@ -27,7 +30,11 @@ function Collection({ perPage }: PaginationPropType) {
     });
     setLoading(false);
     if (res && res.status_code == 200) {
-      setData([...data, ...res.data]);
+      if (page <= 1) {
+        setData(res.data);
+      } else {
+        setData([...data, ...res.data]);
+      }
       if ((res.perPage ?? 0) * (res.page ?? 1) < (res.total ?? 0)) {
         setLoadMore(true);
       }
@@ -48,7 +55,7 @@ function Collection({ perPage }: PaginationPropType) {
     if (document.readyState == "complete") {
       loadData(page);
     }
-    return () => { };
+    return () => {};
   }, [page]);
 
   return (
@@ -56,50 +63,45 @@ function Collection({ perPage }: PaginationPropType) {
       {loading ? (
         <ComponentSpinner loading={loading} />
       ) : (
-        <>
-          {
-            data.length > 0 ? (
-              <Grid p={2} container maxWidth={"xl"}>
-                {
-                  data.map((item, key) => {
-                    return (
-                      <Grid
-                        item
-                        key={key}
-                        md={4}
-                        lg={3}
-                        sm={6}
-                        xs={6}
-                        p={1}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        <CollectionItem {...item}></CollectionItem>
-                      </Grid>
-                    );
-                  })
-                }
-                {
-                  loadingMore && <ComponentSpinner loading={true} />
-                }
-                {
-                  loadMore && (
-                    <Box display={"flex"} sx={{ width: "100%", justifyContent: "center" }}>
-                      <CustomLink
-                        url={"#"}
-                        title={"Load More"}
-                        color={"primary"}
-                        type="contained"
-                        link={false}
-                        action={handleLoadMore}
-                        width={"200px"}
-                      />
-                    </Box>
-                  )
-                }
-              </Grid>
-            ) : null}
-        </>
+        <Grid
+          p={3}
+          display={"flex"}
+          justifyContent={"center"}
+          flexDirection={"column"}
+        >
+          {data.length > 0 ? (
+            <Grid p={2} container>
+              {data.map((item, key) => {
+                return (
+                  <Grid item key={key} lg={4} md={4} sm={6} xs={12}>
+                    <CollectionItem {...item} />
+                  </Grid>
+                );
+              })}
+              {loadingMore && <ComponentSpinner loading={true} />}
+              {loadMore && (
+                <Box
+                  display={"flex"}
+                  sx={{ width: "100%", justifyContent: "center" }}
+                >
+                  <CustomLink
+                    url={"#"}
+                    title={"Load More"}
+                    color={"primary"}
+                    type="contained"
+                    link={false}
+                    action={handleLoadMore}
+                    width={"200px"}
+                  />
+                </Box>
+              )}
+            </Grid>
+          ) : (
+            <Typography variant="h6" color={themeColor.secondary.dark} display={"flex"} justifyContent={"center"}>
+              Oops, there are currently no collections available.
+            </Typography>
+          )}
+        </Grid>
       )}
     </Layout>
   );
