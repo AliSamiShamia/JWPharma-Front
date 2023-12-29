@@ -1,7 +1,7 @@
 import { CartType } from "@/components/types/cart.types";
 import CustomLink from "@/components/widgets/link";
 import { useAppSelector } from "@/store/hooks";
-import { Badge, Box,  Typography } from "@mui/material";
+import { Badge, Box, Typography } from "@mui/material";
 import { RiShoppingCart2Line } from "@react-icons/all-files/ri/RiShoppingCart2Line";
 import React, { useState } from "react";
 
@@ -11,9 +11,17 @@ function CartNavItem() {
 
   //Cart  items
   const [cart, setCart] = useState<CartType[]>([]);
+  const [cartLength, setCartLength] = useState(0);
+
+  // Function to calculate total
+  const calculateTotal = () => {
+    let counts = cartState.reduce((total, item) => total + item.quantity, 0);
+    setCartLength(counts);
+  };
 
   React.useEffect(() => {
     setCart(cartState);
+    calculateTotal();
   }, [cartState]);
 
   return (
@@ -38,7 +46,7 @@ function CartNavItem() {
                 Cart
               </Typography>
             </Box>
-            <Badge badgeContent={cart.length} color="info" max={10}>
+            <Badge badgeContent={cartLength} color="info" max={10}>
               <RiShoppingCart2Line size={22} />
             </Badge>
           </Box>

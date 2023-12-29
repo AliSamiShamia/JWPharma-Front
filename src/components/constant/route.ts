@@ -1,16 +1,17 @@
 const routeConfig = {
-  onTokenExpiration: 'refreshToken', 
-  storageTokenKeyName:"accessToken",
+  onTokenExpiration: "refreshToken",
+  storageTokenKeyName: "accessToken",
   collection: {
     list: "category",
   },
   product: {
     list: "product",
+    listWihtoutFilter: "product/blank",
     // addToCart: "store",
   },
   cart: {
     list: "cart",
-    store:"cart",
+    store: "cart",
     clear: "clear-cart",
     total: "",
   },

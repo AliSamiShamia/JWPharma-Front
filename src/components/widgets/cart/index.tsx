@@ -48,7 +48,7 @@ function Cart({ open, toggleDrawer }: CartProp) {
         />
         <CardContent>
           {cart.map((item: CartType, key) => {
-            return <Grid key={key}>{item.product.title}</Grid>;
+            return <Grid key={key}>{item.product.name}</Grid>;
           })}
         </CardContent>
       </Card>

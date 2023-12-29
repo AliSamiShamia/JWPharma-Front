@@ -4,12 +4,45 @@ import { get } from "@/handler/api.handler";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
+import ResponsiveSlider from "@/components/design/slider";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Container = dynamic(() => import("@mui/material/Container"));
-const ComponentSpinner = dynamic(() => import("@/components/widgets/spinner/component.spinner"));
+const ComponentSpinner = dynamic(
+  () => import("@/components/widgets/spinner/component.spinner")
+);
+
+const responsiveSettings = [
+  {
+    breakpoint: 1200,
+    settings: {
+      slidesToShow: 3,
+      slidesToScroll: 3,
+    },
+  },
+  {
+    breakpoint: 800,
+    settings: {
+      slidesToShow: 2,
+      slidesToScroll: 2,
+    },
+  },
+  {
+    breakpoint: 500,
+    settings: {
+      slidesToShow: 2,
+      slidesToScroll: 2,
+    },
+  },
+  {
+    breakpoint: 380,
+    settings: {
+      slidesToShow: 1,
+      slidesToScroll: 1,
+    },
+  },
+];
 
 function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
-
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as CollectionType[]);
@@ -43,11 +76,14 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
       ) : (
         <>
           {data.length > 0 ? (
-            <Container disableGutters maxWidth={"xl"}>
-              <Box component={"div"} display={"flex"} mt={1}>
-                <Box component={"div"} flexGrow={1}>
-                  {/* <Typography variant="h4">Collections</Typography> */}
-                </Box>
+            <Container maxWidth={"xl"}>
+              <Box
+                component={"div"}
+                display={"flex"}
+                justifyContent={"flex-end"}
+                mb={4}
+                mt={4}
+              >
                 <Box component={"div"}>
                   <CustomLink
                     url={"/collection"}
@@ -55,18 +91,19 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
                     color={"primary"}
                     type="outlined"
                     link={true}
+                    size={"large"}
                   />
                 </Box>
               </Box>
-              <Box
-                display="grid"
-                gridTemplateColumns={"repeat(3, 1fr)"}
-                gap={2}
+              <ResponsiveSlider
+                arrows={false}
+                responsiveSettings={responsiveSettings}
+                autoplay={true}
               >
                 {data.map((item, key) => {
                   return <CollectionItem key={key} {...item} />;
                 })}
-              </Box>
+              </ResponsiveSlider>
 
               {loadMore ? (
                 <CustomLink

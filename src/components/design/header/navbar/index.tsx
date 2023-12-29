@@ -40,8 +40,8 @@ const menuNavItems = [
     action: "/",
   },
   {
-    title: "Product",
-    action: "/product",
+    title: "Products",
+    action: "/products",
   },
   {
     title: "Collection",

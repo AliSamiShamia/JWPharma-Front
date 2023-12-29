@@ -14,6 +14,7 @@ import { addToCart } from "@/store/apps/cart";
 import { addToWishlist } from "@/store/apps/wishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/router";
+import CustomLink from "@/components/widgets/link";
 
 function ProductItem(product: ProductType) {
   const properties = {
@@ -40,7 +41,7 @@ function ProductItem(product: ProductType) {
         dispatch(
           addToCart({
             quantity: 1,
-            id: product.id,
+            product: product,
           })
         );
       }
@@ -118,18 +119,20 @@ function ProductItem(product: ProductType) {
       <Fade {...properties}>
         {product.media.map((image, index) => (
           <Box component={"div"} key={index}>
-            <Box
-              component={"img"}
-              alt={"product-" + name}
-              sx={{
-                width: "100%",
-                height: { xs: 250, sm: 300 },
-                objectFit: "cover",
-                borderTopLeftRadius: "1rem",
-                borderTopRightRadius: "1rem",
-              }}
-              src={image.url}
-            />
+            <CustomLink padding={0} link url={`/products/${product.slug}`}>
+              <Box
+                component={"img"}
+                alt={"product-" + name}
+                sx={{
+                  width: "100%",
+                  height: { xs: 250, sm: 300 },
+                  objectFit: "cover",
+                  borderTopLeftRadius: "1rem",
+                  borderTopRightRadius: "1rem",
+                }}
+                src={image.url}
+              />
+            </CustomLink>
           </Box>
         ))}
       </Fade>
@@ -169,46 +172,48 @@ function ProductItem(product: ProductType) {
           ) : null}
         </Box>
       </Box>
-      <Box>
+      <Stack
+        direction={"column"}
+        alignItems={"start"}
+        paddingRight={1}
+        paddingLeft={1}
+      >
+        <Typography color={"black"} width={280}>
+          {product.name}
+        </Typography>
         <Stack
-          direction={"column"}
-          alignItems={"start"}
-          paddingRight={1}
-          paddingLeft={1}
+          direction={"row"}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Typography color={"black"} width={280}>
-            {product.name + " " + product.name}
+          <Typography color={"black"} m={1}>
+            {product.price}$
           </Typography>
-          <Stack
-            direction={"row"}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography color={"black"} m={1}>
-              {product.price}$
+          {product.price != product.pre_price && (
+            <Typography
+              m={1}
+              color={"#8C0013"}
+              fontSize={14}
+              sx={{ textDecoration: "line-through" }}
+            >
+              {product.pre_price}$
             </Typography>
-            {product.price != product.pre_price && (
-              <Typography
-                m={1}
-                color={"#8C0013"}
-                fontSize={14}
-                sx={{ textDecoration: "line-through" }}
-              >
-                {product.pre_price}$
-              </Typography>
-            )}
-          </Stack>
-          {product.stock > 0 && product.stock <= 5 && (
-            <Typography color={"black"}>Almost sold out!!</Typography>
-          )}
-          {product.stock == 0 && (
-            <Typography color={"black"}>Item out of stock</Typography>
           )}
         </Stack>
-      </Box>
+        {product.stock > 0 && product.stock <= 5 && (
+          <Typography color={"black"} pb={2}>
+            Almost sold out!!
+          </Typography>
+        )}
+        {product.stock == 0 && (
+          <Typography color={"black"} pb={2}>
+            Item out of stock
+          </Typography>
+        )}
+      </Stack>
     </Box>
   );
 }
