@@ -17,10 +17,9 @@ const ProductItem = dynamic(() => import("@/components/views/product/item"));
 function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({} as CollectionType);
+  const [data, setData] = useState({} as ProductListType);
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
-  const { s } = router.query;
 
   const loadData = async (page: number, action?: (status: boolean) => void) => {
     let data = {
@@ -46,7 +45,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       }
     }
     setLoading(true);
-    const res = await get(routeConfig.collection.list + "/" + s, data);
+    const res = await get(routeConfig.product.list, data);
     setLoading(false);
     action ? action(false) : null;
 
@@ -69,11 +68,11 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       return;
     }
 
-    if (document.readyState == "complete" && s) {
+    if (document.readyState == "complete") {
       loadData(page);
     }
     return () => {};
-  }, [page, s, filterParams]);
+  }, [page, filterParams]);
 
   return (
     <Layout>
@@ -114,7 +113,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       alignItems={"center"}
                       width={"100%"}
                     >
-                      <ProductItem {...item} />
+                        <ProductItem {...item} />
                     </Grid>
                   );
                 })}

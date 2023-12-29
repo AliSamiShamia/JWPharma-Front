@@ -49,7 +49,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [data, setData] = useState([] as ProductType[]);
 
   const loadData = async (page: number) => {
-    const res = await get(routeConfig.product.list, {
+    const res = await get(routeConfig.product.listWihtoutFilter, {
       page: page,
       per_page: perPage,
     });
@@ -77,7 +77,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       ) : (
         <>
           {data.length > 0 ? (
-            <Container disableGutters maxWidth={"xl"}>
+            <Container maxWidth={"xl"}>
               <Box
                 component={"div"}
                 display={"flex"}
@@ -103,11 +103,12 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                 </Box>
                 <Box component={"div"}>
                   <CustomLink
-                    url={"/product"}
+                    url={"/products"}
                     title={"Show All"}
                     color={"primary"}
                     type="outlined"
                     link={true}
+                    size={"large"}
                   />
                 </Box>
               </Box>
@@ -117,7 +118,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
               >
                 {data.map((item, key) => {
                   return (
-                    <Box key={key}  m={1} justifyContent={"center"} alignItems={"center"}>
+                    <Box key={key} m={1}>
                       <ProductItem {...item} />
                     </Box>
                   );

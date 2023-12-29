@@ -55,6 +55,7 @@ function CustomLink({
               borderRadius: 6,
               borderWidth: 1,
               width: "100%",
+              fontWeight: "bold",
               p: padding >= 0 ? padding : "auto",
               "&:hover": { backgroundColor: "transparent" },
             }}
@@ -74,10 +75,11 @@ function CustomLink({
             borderRadius: 6,
             width: "100%",
             p: padding ? padding : "auto",
+            fontWeight: "bold",
             "&:hover": {
               backgroundColor: "transparent",
               color: themeColor.primary.dark,
-            },            
+            },
           }}
           color={color}
           endIcon={endIcon}

@@ -3,7 +3,10 @@ type PaginationPropType = {
   loadMore?: boolean;
   showAll?: boolean;
 };
-
+type ProductListType = {
+  filter: Array<FilterItem>;
+  products: ProductType[];
+};
 type ProductType = {
   id: number;
   slug: string;
@@ -14,6 +17,7 @@ type ProductType = {
   weight: number;
   stock: number;
   brief: string;
+  categories: ProductCollectionType[];
   is_trending: boolean;
   is_featured: boolean;
   discount: DiscountType;
@@ -32,7 +36,11 @@ type DiscountType = {
   description: string;
   discount_percent: string;
 };
-
+type ProductCollectionType = {
+  id: number;
+  slug: string;
+  name: string;
+}
 type CollectionType = {
   id: number;
   slug: string;
@@ -81,7 +89,7 @@ type AuthValuesType = {
 type FilterProps = {
   filters: FilterItem[];
   params?: any;
-  handleAction: (page: number) => void;
+  handleAction: (page: number, action: (status: boolean) => void) => void;
   setFilterParam: (params: any) => void;
 };
 

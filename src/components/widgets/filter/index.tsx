@@ -65,6 +65,14 @@ function FilterList(props: FilterProps) {
     }
   };
 
+  const handleDrawer = (status: boolean) => {
+    if (status) {
+      handleDrawerOpen();
+    } else {
+      handleDrawerClose();
+    }
+  };
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -230,7 +238,7 @@ function FilterList(props: FilterProps) {
               color={"primary"}
               action={() => {
                 setFilterParam(form_data);
-                handleAction(1);
+                handleAction(1, handleDrawer);
                 handleDrawerClose();
               }}
             >
