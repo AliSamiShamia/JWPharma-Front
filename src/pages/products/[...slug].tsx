@@ -92,7 +92,7 @@ function ProductDetails() {
                       <Grid>
                         <CustomLink
                           link
-                          url={"/collection/" + item.slug}
+                          url={"/collection/products/" + item.slug}
                           padding={0}
                         >
                           <Typography variant="caption">{item.name}</Typography>
@@ -143,9 +143,7 @@ function ProductDetails() {
                     >
                       {product.price}$
                     </Typography>
-                    <Typography variant="body2" color={"primary"}>
-                      Inclusive of VAT
-                    </Typography>
+                    
                   </Grid>
                 </Grid>
               </Grid>

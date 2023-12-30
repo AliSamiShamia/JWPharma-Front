@@ -28,6 +28,7 @@ const routeConfig = {
     register: "register",
     profile: "profile",
     refresh: "register",
+    addresses:"user/addresses",
     otp: {
       send: "otp/send",
       check: "otp/check",

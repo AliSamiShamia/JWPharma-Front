@@ -105,7 +105,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       item
                       key={key}
                       md={4}
-                      lg={4}
+                      lg={3}
                       sm={6}
                       xs={12}
                       p={2}

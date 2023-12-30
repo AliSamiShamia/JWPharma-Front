@@ -57,7 +57,10 @@ function CustomLink({
               width: "100%",
               fontWeight: "bold",
               p: padding >= 0 ? padding : "auto",
-              "&:hover": { backgroundColor: "transparent" },
+              "&:hover": {
+                backgroundColor: "transparent",
+                color: themeColor.primary.dark,
+              },
             }}
             color={color}
             endIcon={endIcon}

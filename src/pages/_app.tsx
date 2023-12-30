@@ -16,6 +16,7 @@ import { GlobalStyles } from "@mui/material";
 import GlobalStyling from "./_global";
 import CustomSpinner from "@/components/widgets/spinner";
 import { AuthProvider } from "@/components/context/AuthContext";
+import AuthMiddleware from "@/components/context/AuthMiddleware";
 
 type ExtendedAppProps = AppProps & {
   Component: NextComponentType & { auth?: boolean };
@@ -132,9 +133,9 @@ const App = (props: ExtendedAppProps) => {
               />
             </Head>
             {Component.auth ? (
-              <AuthProvider>
+              <AuthMiddleware>
                 <Component {...pageProps} />
-              </AuthProvider>
+              </AuthMiddleware>
             ) : (
               <Component {...pageProps} />
             )}

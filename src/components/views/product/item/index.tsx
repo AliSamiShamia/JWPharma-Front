@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack, useTheme } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import { Fade } from "react-slideshow-image";
@@ -22,6 +22,7 @@ function ProductItem(product: ProductType) {
     duration: 700,
     autoplay: false,
   };
+  const theme = useTheme();
 
   const [loading, setLoading] = useState(false);
 
@@ -46,9 +47,12 @@ function ProductItem(product: ProductType) {
         );
       }
     } else {
-      router.push({
-        pathname: "/login",
-      });
+      dispatch(
+        addToCart({
+          quantity: 1,
+          product: product,
+        })
+      );
     }
   };
 
@@ -188,13 +192,15 @@ function ProductItem(product: ProductType) {
             justifyContent: "center",
             alignItems: "center",
           }}
+          gap={1}
+          py={1}
         >
-          <Typography color={"black"} m={1}>
+          <Typography color={"black"} fontWeight={"bold"}>
             {product.price}$
           </Typography>
           {product.price != product.pre_price && (
             <Typography
-              m={1}
+              // m={1}
               color={"#8C0013"}
               fontSize={14}
               sx={{ textDecoration: "line-through" }}
@@ -204,12 +210,16 @@ function ProductItem(product: ProductType) {
           )}
         </Stack>
         {product.stock > 0 && product.stock <= 5 && (
-          <Typography color={"black"} pb={2}>
+          <Typography
+            color={theme.palette.warning.main}
+            variant="caption"
+            pb={2}
+          >
             Almost sold out!!
           </Typography>
         )}
         {product.stock == 0 && (
-          <Typography color={"black"} pb={2}>
+          <Typography color={theme.palette.error.main} variant="caption" pb={2}>
             Item out of stock
           </Typography>
         )}

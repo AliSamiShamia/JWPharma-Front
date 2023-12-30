@@ -41,12 +41,13 @@ function Collection({ perPage }: PaginationPropType) {
     }
     setLoadingMore(false);
   };
+  
   const handleLoadMore = () => {
     setLoadingMore(true);
     let newPage = page + 1;
     setPage(newPage);
   };
-
+ 
   useEffect(() => {
     if (!router.isReady) {
       return;
@@ -85,11 +86,9 @@ function Collection({ perPage }: PaginationPropType) {
                   sx={{ width: "100%", justifyContent: "center" }}
                 >
                   <CustomLink
-                    url={"#"}
                     title={"Load More"}
                     color={"primary"}
                     type="contained"
-                    link={false}
                     action={handleLoadMore}
                     width={"200px"}
                   />
