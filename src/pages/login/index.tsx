@@ -3,53 +3,33 @@ import { useState } from "react";
 
 // ** Next Imports
 import Link from "next/link";
+import { useRouter, useSearchParams } from 'next/navigation';
 
-// ** MUI Components
-import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import Checkbox from "@mui/material/Checkbox";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
-import IconButton from "@mui/material/IconButton";
 import Box, { BoxProps } from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import { styled } from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
-import Typography, { TypographyProps } from "@mui/material/Typography";
-import MuiFormControlLabel, {
-  FormControlLabelProps,
-} from "@mui/material/FormControlLabel";
 
 // ** Icon Imports
 import { FaRegEye } from "@react-icons/all-files/fa/FaRegEye";
 import { FaRegEyeSlash } from "@react-icons/all-files/fa/FaRegEyeSlash";
-import { Grid } from "@mui/material";
+import { FaSignInAlt } from "@react-icons/all-files/fa/FaSignInAlt";
+import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
+import { Alert, Button, FormControlLabelProps, FormHelperText, Grid, TypographyProps } from "@mui/material";
 import Layout from "@/components/design/layout";
+import dynamic from "next/dynamic";
+import { post } from "@/handler/api.handler";
+import routeConfig from "@/components/constant/route";
+import { ClipLoader } from "react-spinners";
 
-// ** Styled Components
-const LoginIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  padding: theme.spacing(20),
-  paddingRight: "0 !important",
-  [theme.breakpoints.down("lg")]: {
-    padding: theme.spacing(10),
-  },
-}));
-
-const LoginIllustration = styled("img")(({ theme }) => ({
-  maxWidth: "48rem",
-  [theme.breakpoints.down("lg")]: {
-    maxWidth: "35rem",
-  },
-}));
-
-const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  width: "100%",
-  [theme.breakpoints.up("md")]: {
-    maxWidth: 450,
-  },
-}));
+const Checkbox = dynamic(() => import("@mui/material/Checkbox"));
+const TextField = dynamic(() => import("@mui/material/TextField"));
+const InputLabel = dynamic(() => import("@mui/material/InputLabel"));
+const IconButton = dynamic(() => import("@mui/material/IconButton"));
+const FormControl = dynamic(() => import("@mui/material/FormControl"));
+const OutlinedInput = dynamic(() => import("@mui/material/OutlinedInput"));
+const Typography = dynamic(() => import("@mui/material/Typography"));
+const MuiFormControlLabel = dynamic(() => import("@mui/material/FormControlLabel"));
+const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   [theme.breakpoints.down("xl")]: {
@@ -81,22 +61,61 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(
   })
 );
 
-const defaultValues = {
-  password: "admin",
-  email: "admin@materio.com",
-};
-
-interface FormData {
-  email: string;
-  password: string;
-}
-
-const LoginPage = () => {
+const LoginPage = (props: any) => {
+  const returnUrl = useSearchParams().get("returnUrl");
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>();
+  const [password, setPassword] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>();
+  const [generalError, setGeneralError] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit = (data: FormData) => {
-    const { email, password } = data;
+  const validataForm = () => {
+    setEmailError("");
+    setPasswordError("");
+
+    if (email === "") {
+      setEmailError("Email is required.");
+    } else {
+      const pattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+      if (!pattern.test(email)) {
+        setEmailError("Please enter a valid email address");
+      }
+    }
+    if (password === "") {
+      setPasswordError("Password is required.");
+    } else if (password.length < 8) {
+      setPasswordError("Password is too short.");
+    }
+    if (emailError !== "" || passwordError !== "") {
+      return false;
+    }
+    return true;
+  }
+  const onSubmit = async () => {
+    setGeneralError("");
+    if (validataForm()) {
+      setLoading(true);
+      const formData = {
+        email: email,
+        password: password,
+      };
+      const res = await post(routeConfig.account.login, formData);
+      if (res && res.status_code == 200) {
+        window.localStorage.setItem(routeConfig.storageTokenKeyName, `Bearer: ${res.data.token}`)
+        if (returnUrl && returnUrl !== "") {
+          router.replace(`/${returnUrl}`);
+        } else {
+          router.replace("/pofile");
+        }
+      } else {
+        setGeneralError("Wrong Email/Password");
+      }
+      setLoading(false);
+    }
   };
 
   return (
@@ -111,12 +130,11 @@ const LoginPage = () => {
         <Grid item lg={6} md={6} sm={10} xs={12}>
           <Box
             sx={{
-              px: 12,
+              px: { md: 12, xs: 5 },
               py: 5,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            //   backgroundColor: "#F7F7FA",
             }}
           >
             <BoxWrapper>
@@ -128,33 +146,48 @@ const LoginPage = () => {
                   Please sign-in to your account
                 </Typography>
               </Box>
-              <form noValidate autoComplete="off" onSubmit={() => onSubmit}>
+              <form noValidate autoComplete="off">
                 <FormControl fullWidth sx={{ mb: 4 }}>
+                  {
+                    generalError &&
+                    <Alert severity="error"
+                      sx={{ mb: 3 }}
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="inherit"
+                          size="small"
+                          onClick={() => setGeneralError("")}
+                        >
+                          <FaTimes />
+                        </IconButton>
+                      }>
+                      {generalError}
+                    </Alert>
+                  }
                   <TextField
                     autoFocus
                     label="Email"
-                    value={""}
-                    // onBlur={onBlur}
-                    // onChange={onChange}
-                    // error={Boolean(errors.email)}
+                    value={email}
+                    error={Boolean(emailError)}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                   />
-                  {/* {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>} */}
+                  {emailError && <FormHelperText sx={{ color: 'error.main' }}>{emailError}</FormHelperText>}
                 </FormControl>
                 <FormControl fullWidth>
                   <InputLabel
                     htmlFor="auth-login-v2-password"
-                    // error={Boolean(errors.password)}
+                    error={Boolean(passwordError)}
                   >
                     Password
                   </InputLabel>
                   <OutlinedInput
-                    value={""}
-                    // onBlur={onBlur}
+                    value={password}
                     label="Password"
-                    // onChange={onChange}
+                    onChange={(e) => setPassword(e.target.value)}
                     id="auth-login-v2-password"
-                    // error={Boolean(errors.password)}
+                    error={Boolean(passwordError)}
                     type={showPassword ? "text" : "password"}
                     endAdornment={
                       <InputAdornment position="end">
@@ -168,11 +201,11 @@ const LoginPage = () => {
                       </InputAdornment>
                     }
                   />
-                  {/* {errors.password && (
-                                    <FormHelperText sx={{ color: 'error.main' }} id=''>
-                                        {errors.password.message}
-                                    </FormHelperText>
-                                )} */}
+                  {passwordError && (
+                    <FormHelperText sx={{ color: 'error.main' }} id=''>
+                      {passwordError}
+                    </FormHelperText>
+                  )}
                 </FormControl>
                 <Box
                   sx={{
@@ -196,17 +229,17 @@ const LoginPage = () => {
                     Forgot Password?
                   </LinkStyled>
                 </Box>
-                <Button
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  sx={{ mb: 7 }}
-                >
-                  Login
-                </Button>
+                <CustomLink
+                  action={loading == true ? () => { } : onSubmit}
+                  size={"large"}
+                  padding={1.5}
+                  type="contained"
+                  color={"primary"}
+                  title="Sign In"
+                  endIcon={loading == true ? <ClipLoader size={20} loading={true} /> : <FaSignInAlt />} />
                 <Box
                   sx={{
+                    mt: 3,
                     display: "flex",
                     alignItems: "center",
                     flexWrap: "wrap",
