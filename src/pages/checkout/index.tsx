@@ -25,7 +25,7 @@ const Grid = dynamic(() => import("@mui/material/Grid"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
-function Cart(props: any) {
+function Checkout(props: any) {
   const [cart, setCart] = useState<CartType[]>(props.cart);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -63,7 +63,7 @@ function Cart(props: any) {
           display={"flex"}
           justifyContent={"center"}
         >
-          <Grid item lg={9} md={9} sm={12} xs={12}>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
             <Card
               sx={{ width: 1, p: 2, backgroundColor: "transparent" }}
               elevation={0}
@@ -71,11 +71,10 @@ function Cart(props: any) {
               <CardHeader
                 title={
                   <Typography variant={"h5"} fontWeight={500}>
-                    Cart (
+                    Order (
                     {calculateLength + (calculateLength > 0 ? " items" : "")})
                   </Typography>
                 }
-                action={<CustomLink title="Clear Cart" action={()=>{}} type="contained" color={'error'}/>}
               />
               <CardContent sx={{ p: { md: "inherit", xs: 0 } }}>
                 {cart.map((item: CartType, key) => {
@@ -138,62 +137,6 @@ function Cart(props: any) {
                               justifyContent: { xs: "space-between" },
                             }}
                           >
-                            <Box
-                              display={"flex"}
-                              gap={1}
-                              alignItems={"center"}
-                              justifyContent={"center"}
-                              border={1}
-                              borderRadius={3}
-                              px={1}
-                              py={0.5}
-                              borderColor={themeColor.borderColor}
-                            >
-                              <IconButton
-                                size="small"
-                                color={item.quantity == 1 ? "error" : "inherit"}
-                                onClick={() => {
-                                  if (item.quantity == 1) {
-                                    dispatch(
-                                      deleteFromCart({
-                                        product: item.product,
-                                      })
-                                    );
-                                  } else {
-                                    dispatch(
-                                      decrementQantity({
-                                        product: item.product,
-                                      })
-                                    );
-                                  }
-                                  // getCart();
-                                }}
-                              >
-                                {item.quantity == 1 ? <FaTrash /> : <FaMinus />}
-                              </IconButton>
-                              <Typography
-                                variant="h6"
-                                px={1}
-                                fontWeight={"bold"}
-                                color={themeColor.primary.dark}
-                              >
-                                {item.quantity}
-                              </Typography>
-
-                              <IconButton
-                                size="small"
-                                onClick={() => {
-                                  dispatch(
-                                    incrementQuantity({
-                                      product: item.product,
-                                    })
-                                  );
-                                  // getCart();
-                                }}
-                              >
-                                <FaPlus />
-                              </IconButton>
-                            </Box>
                             <Typography
                               sx={{ mt: { md: 2, xs: 0 } }}
                               fontWeight={"bold"}
@@ -210,14 +153,17 @@ function Cart(props: any) {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item lg={3} md={3} sm={12} xs={12} sx={{ p: { md: 1, xs: 3 } }}>
+          <Grid item lg={6} md={6} sm={12} xs={12} sx={{ p: { md: 1, xs: 3 } }}>
             <Card elevation={2} sx={{ width: 1, position: "relative" }}>
               <CardContent>
-                <Typography
-                  variant="h5"
-                  fontWeight={"bold"}
-                  fontStyle={"italic"}
-                >
+                <Typography variant="h5" fontWeight={"bold"}>
+                  Shipping Address
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card elevation={2} sx={{ width: 1, mt: 3 }}>
+              <CardContent>
+                <Typography variant="h5" fontWeight={"bold"}>
                   Order Summary
                 </Typography>
                 <Grid
@@ -255,7 +201,7 @@ function Cart(props: any) {
                     url="/checkout"
                     type="contained"
                     color={"primary"}
-                    title="Checkout"
+                    title="Place order"
                     width={300}
                     endIcon={<FaArrowRight />}
                   />
@@ -271,4 +217,4 @@ function Cart(props: any) {
 
 const mapStateToProps = (state: any) => ({ cart: state.cart.items });
 
-export default connect(mapStateToProps)(Cart);
+export default connect(mapStateToProps)(Checkout);

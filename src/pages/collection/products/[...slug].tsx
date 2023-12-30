@@ -20,7 +20,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [data, setData] = useState({} as CollectionType);
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
-  const { s } = router.query;
+  const { slug } = router.query;
 
   const loadData = async (page: number, action?: (status: boolean) => void) => {
     let data = {
@@ -46,7 +46,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       }
     }
     setLoading(true);
-    const res = await get(routeConfig.collection.list + "/" + s, data);
+    const res = await get(routeConfig.collection.list + "/" + slug, data);
     setLoading(false);
     action ? action(false) : null;
 
@@ -69,11 +69,11 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       return;
     }
 
-    if (document.readyState == "complete" && s) {
+    if (document.readyState == "complete" && slug) {
       loadData(page);
     }
     return () => {};
-  }, [page, s, filterParams]);
+  }, [page, slug, filterParams]);
 
   return (
     <Layout>
@@ -106,7 +106,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       item
                       key={key}
                       md={4}
-                      lg={4}
+                      lg={3}
                       sm={6}
                       xs={12}
                       p={2}
