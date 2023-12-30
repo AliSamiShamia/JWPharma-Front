@@ -24,7 +24,7 @@ const routeConfig = {
     list: "banner",
   },
   account: {
-    login: "login",
+    login: "loginByEmail",
     register: "register",
     profile: "profile",
     refresh: "register",

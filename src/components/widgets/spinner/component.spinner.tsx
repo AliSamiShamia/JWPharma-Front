@@ -11,9 +11,10 @@ const Grid = dynamic(() =>
 
 interface ItemSpinnerInterface {
   loading: boolean;
+  size?: number,
   children?: ReactNode;
 }
-function ComponentSpinner({ loading, children }: ItemSpinnerInterface) {
+function ComponentSpinner({ loading, size, children }: ItemSpinnerInterface) {
   return (
     <>
       <Grid
@@ -22,6 +23,7 @@ function ComponentSpinner({ loading, children }: ItemSpinnerInterface) {
         direction="column"
         justifyContent="center"
         alignItems="center"
+        width={size}
       >
         <Box sx={{ mb: 2 }}>{children}</Box>
         <FadeLoader
