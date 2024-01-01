@@ -3,7 +3,7 @@ import { useState } from "react";
 
 // ** Next Imports
 import Link from "next/link";
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Box, { BoxProps } from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -14,12 +14,21 @@ import { FaRegEye } from "@react-icons/all-files/fa/FaRegEye";
 import { FaRegEyeSlash } from "@react-icons/all-files/fa/FaRegEyeSlash";
 import { FaSignInAlt } from "@react-icons/all-files/fa/FaSignInAlt";
 import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
-import { Alert, Button, FormControlLabelProps, FormHelperText, Grid, TypographyProps } from "@mui/material";
+import {
+  Alert,
+  Button,
+  FormControlLabelProps,
+  FormHelperText,
+  Grid,
+  TypographyProps,
+} from "@mui/material";
 import Layout from "@/components/design/layout";
 import dynamic from "next/dynamic";
 import { post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { storeUser } from "@/store/apps/user";
 
 const Checkbox = dynamic(() => import("@mui/material/Checkbox"));
 const TextField = dynamic(() => import("@mui/material/TextField"));
@@ -28,7 +37,9 @@ const IconButton = dynamic(() => import("@mui/material/IconButton"));
 const FormControl = dynamic(() => import("@mui/material/FormControl"));
 const OutlinedInput = dynamic(() => import("@mui/material/OutlinedInput"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
-const MuiFormControlLabel = dynamic(() => import("@mui/material/FormControlLabel"));
+const MuiFormControlLabel = dynamic(
+  () => import("@mui/material/FormControlLabel")
+);
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -73,6 +84,8 @@ const LoginPage = (props: any) => {
   const [rememberMe, setRememberMe] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
   const validataForm = () => {
     setEmailError("");
     setPasswordError("");
@@ -94,7 +107,7 @@ const LoginPage = (props: any) => {
       return false;
     }
     return true;
-  }
+  };
   const onSubmit = async () => {
     setGeneralError("");
     if (validataForm()) {
@@ -105,11 +118,15 @@ const LoginPage = (props: any) => {
       };
       const res = await post(routeConfig.account.login, formData);
       if (res && res.status_code == 200) {
-        window.localStorage.setItem(routeConfig.storageTokenKeyName, `Bearer: ${res.data.token}`)
+        dispatch(storeUser(res.data));
+        window.localStorage.setItem(
+          routeConfig.storageTokenKeyName,
+          `${res.data.token}`
+        );
         if (returnUrl && returnUrl !== "") {
           router.replace(`/${returnUrl}`);
         } else {
-          router.replace("/pofile");
+          router.replace("/profile");
         }
       } else {
         setGeneralError("Wrong Email/Password");
@@ -148,9 +165,9 @@ const LoginPage = (props: any) => {
               </Box>
               <form noValidate autoComplete="off">
                 <FormControl fullWidth sx={{ mb: 4 }}>
-                  {
-                    generalError &&
-                    <Alert severity="error"
+                  {generalError && (
+                    <Alert
+                      severity="error"
                       sx={{ mb: 3 }}
                       action={
                         <IconButton
@@ -161,10 +178,11 @@ const LoginPage = (props: any) => {
                         >
                           <FaTimes />
                         </IconButton>
-                      }>
+                      }
+                    >
                       {generalError}
                     </Alert>
-                  }
+                  )}
                   <TextField
                     autoFocus
                     label="Email"
@@ -173,7 +191,11 @@ const LoginPage = (props: any) => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                   />
-                  {emailError && <FormHelperText sx={{ color: 'error.main' }}>{emailError}</FormHelperText>}
+                  {emailError && (
+                    <FormHelperText sx={{ color: "error.main" }}>
+                      {emailError}
+                    </FormHelperText>
+                  )}
                 </FormControl>
                 <FormControl fullWidth>
                   <InputLabel
@@ -202,7 +224,7 @@ const LoginPage = (props: any) => {
                     }
                   />
                   {passwordError && (
-                    <FormHelperText sx={{ color: 'error.main' }} id=''>
+                    <FormHelperText sx={{ color: "error.main" }} id="">
                       {passwordError}
                     </FormHelperText>
                   )}
@@ -230,13 +252,20 @@ const LoginPage = (props: any) => {
                   </LinkStyled>
                 </Box>
                 <CustomLink
-                  action={loading == true ? () => { } : onSubmit}
+                  action={loading == true ? () => {} : onSubmit}
                   size={"large"}
                   padding={1.5}
                   type="contained"
                   color={"primary"}
                   title="Sign In"
-                  endIcon={loading == true ? <ClipLoader size={20} loading={true} /> : <FaSignInAlt />} />
+                  endIcon={
+                    loading == true ? (
+                      <ClipLoader size={20} loading={true} />
+                    ) : (
+                      <FaSignInAlt />
+                    )
+                  }
+                />
                 <Box
                   sx={{
                     mt: 3,
