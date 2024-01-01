@@ -148,7 +148,7 @@ function FilterList(props: FilterProps) {
                       size="small"
                       type="number"
                       inputProps={{
-                        max: form_data.price.max ?? 0,
+                        max: form_data.price?.max ?? 0,
                         style: { textAlign: "center", fontSize: 14 },
                       }}
                       sx={{ width: 150, textAlign: "center" }}
@@ -156,14 +156,14 @@ function FilterList(props: FilterProps) {
                         let newValue = parseFloat(event.target.value);
                         handleChange(newValue, "min");
                       }}
-                      value={form_data.price.min ?? 0}
+                      value={form_data.price?.min ?? 0}
                     />
                     To
                     <TextField
                       size="small"
                       type="number"
                       inputProps={{
-                        min: form_data.price.min,
+                        min: form_data.price?.min,
                         style: { textAlign: "center", fontSize: 14 },
                       }}
                       sx={{ width: 150, textAlign: "center" }}
@@ -171,13 +171,13 @@ function FilterList(props: FilterProps) {
                         let newValue = parseFloat(event.target.value);
                         handleChange(newValue, "max");
                       }}
-                      value={form_data.price.max ?? 0}
+                      value={form_data.price?.max ?? 0}
                     />
                   </Grid>
                 </CardContent>
               </Card>
             </Grid>
-            {filters.map((item, key) => {
+            {filters && filters.map((item, key) => {
               return (
                 <Grid key={key} item md={12}>
                   <Card elevation={0}>

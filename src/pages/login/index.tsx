@@ -78,17 +78,15 @@ const LoginPage = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>();
-  const [password, setPassword] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>();
+  const [otpSent, setOtpSent] = useState<boolean>(false);
+  const [otp, setOtp] = useState<string>("");
+  const [otpError, setOtpError] = useState<string>();
   const [generalError, setGeneralError] = useState<string>("");
-  const [rememberMe, setRememberMe] = useState<boolean>(true);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
   const validataForm = () => {
     setEmailError("");
-    setPasswordError("");
 
     if (email === "") {
       setEmailError("Email is required.");
@@ -98,25 +96,55 @@ const LoginPage = (props: any) => {
         setEmailError("Please enter a valid email address");
       }
     }
-    if (password === "") {
-      setPasswordError("Password is required.");
-    } else if (password.length < 8) {
-      setPasswordError("Password is too short.");
-    }
-    if (emailError !== "" || passwordError !== "") {
+    if (emailError !== "") {
       return false;
     }
     return true;
   };
+
+  const handleOtpInput = (value: string) => {
+    const onlyNums = value.replace(/[^0-9]/g, '');
+    setOtp(onlyNums);
+  }
+
   const onSubmit = async () => {
     setGeneralError("");
+    if (otpSent) {
+      verifyOtp();
+    } else {
+      sendOtp();
+    }
+  };
+
+  const sendOtp = async () => {
     if (validataForm()) {
       setLoading(true);
       const formData = {
         email: email,
-        password: password,
       };
       const res = await post(routeConfig.account.login, formData);
+      if (res && res.status_code == 200) {
+        setOtpSent(true);
+      } else {
+        setGeneralError("Wrong Email");
+      }
+      setLoading(false);
+    }
+  }
+
+  const verifyOtp = async () => {
+    setOtpError("");
+    if (otp === "") {
+      setOtpError("Please Enter the OTP.");
+    } else if (otp.length < 6) {
+      setOtpError("OTP should be 6 digits");
+    } else {
+      setLoading(true);
+      const formData = {
+        email: email,
+        otp: otp,
+      };
+      const res = await post(routeConfig.account.otp.check, formData);
       if (res && res.status_code == 200) {
         dispatch(storeUser(res.data));
         window.localStorage.setItem(
@@ -129,11 +157,11 @@ const LoginPage = (props: any) => {
           router.replace("/profile");
         }
       } else {
-        setGeneralError("Wrong Email/Password");
+        setGeneralError("Wrong OTP");
       }
       setLoading(false);
     }
-  };
+  }
 
   return (
     <Layout>
@@ -155,13 +183,20 @@ const LoginPage = (props: any) => {
             }}
           >
             <BoxWrapper>
-              <Box sx={{ mb: 6 }}>
+              <Box sx={{ mb: 4 }}>
                 <TypographyStyled variant="h5">
                   Welcome to JWPharma City Middle East! 👋🏻
                 </TypographyStyled>
-                <Typography variant="body2">
-                  Please sign-in to your account
-                </Typography>
+                {
+                  otpSent ?
+                    <Typography variant="body2">
+                      We sent an OTP to your email address, Please enter the code you received
+                    </Typography>
+                    :
+                    <Typography variant="body2">
+                      Please sign-in to your account
+                    </Typography>
+                }
               </Box>
               <form noValidate autoComplete="off">
                 <FormControl fullWidth sx={{ mb: 4 }}>
@@ -183,81 +218,49 @@ const LoginPage = (props: any) => {
                       {generalError}
                     </Alert>
                   )}
-                  <TextField
-                    autoFocus
-                    label="Email"
-                    value={email}
-                    error={Boolean(emailError)}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                  />
-                  {emailError && (
-                    <FormHelperText sx={{ color: "error.main" }}>
-                      {emailError}
-                    </FormHelperText>
-                  )}
+                  {
+                    otpSent ?
+                      <>
+                        <TextField
+                          autoFocus
+                          label="OTP"
+                          value={otp}
+                          error={Boolean(otpError)}
+                          onChange={(e) => handleOtpInput(e.target.value)}
+                          placeholder="Enter OTP"
+                          inputProps={{ maxLength: 6 }}
+                        />
+                        {otpError && (
+                          <FormHelperText sx={{ color: "error.main" }}>
+                            {otpError}
+                          </FormHelperText>
+                        )}
+                      </> :
+                      <>
+                        <TextField
+                          autoFocus
+                          label="Email"
+                          value={email}
+                          error={Boolean(emailError)}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Enter your email"
+                        />
+                        {emailError && (
+                          <FormHelperText sx={{ color: "error.main" }}>
+                            {emailError}
+                          </FormHelperText>
+                        )}
+                      </>
+                  }
+
                 </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel
-                    htmlFor="auth-login-v2-password"
-                    error={Boolean(passwordError)}
-                  >
-                    Password
-                  </InputLabel>
-                  <OutlinedInput
-                    value={password}
-                    label="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="auth-login-v2-password"
-                    error={Boolean(passwordError)}
-                    type={showPassword ? "text" : "password"}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          edge="end"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                  {passwordError && (
-                    <FormHelperText sx={{ color: "error.main" }} id="">
-                      {passwordError}
-                    </FormHelperText>
-                  )}
-                </FormControl>
-                <Box
-                  sx={{
-                    mb: 4,
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <FormControlLabel
-                    label="Remember Me"
-                    control={
-                      <Checkbox
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                      />
-                    }
-                  />
-                  <LinkStyled href="/forgot-password">
-                    Forgot Password?
-                  </LinkStyled>
-                </Box>
                 <CustomLink
-                  action={loading == true ? () => {} : onSubmit}
+                  action={loading == true ? () => { } : onSubmit}
                   size={"large"}
                   padding={1.5}
                   type="contained"
                   color={"primary"}
-                  title="Sign In"
+                  title={otpSent ? "Verify" : "Sign In"}
                   endIcon={
                     loading == true ? (
                       <ClipLoader size={20} loading={true} />
