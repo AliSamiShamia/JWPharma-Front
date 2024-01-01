@@ -72,7 +72,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     if (document.readyState == "complete" && slug) {
       loadData(page);
     }
-    return () => {};
+    return () => { };
   }, [page, slug, filterParams]);
 
   return (
@@ -87,7 +87,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
             setFilterParam={setFilterParam}
             params={filterParams}
           />
-          {data.products.length > 0 ? (
+          {data.products && data.products.length > 0 ? (
             <Grid
               alignItems={"center"}
               display={"flex"}
@@ -114,7 +114,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       alignItems={"center"}
                       width={"100%"}
                     >
-                      <ProductItem {...item} />
+                      <ProductItem  {...item} />
                     </Grid>
                   );
                 })}
