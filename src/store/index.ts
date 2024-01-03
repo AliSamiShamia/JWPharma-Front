@@ -12,6 +12,7 @@ import {
 import { cartSlice } from "./apps/cart";
 import { wishlistSlice } from "./apps/wishlist";
 import { userSlice } from "./apps/user";
+import { userTempSlice } from "./apps/temp-user";
 
 const persistConfig = {
   key: "root",
@@ -26,11 +27,14 @@ const persistedWishlistReducer = persistReducer(
 );
 const persistedUserReducer = persistReducer(persistConfig, userSlice.reducer);
 
+const persistedTempUserReducer = persistReducer(persistConfig, userTempSlice.reducer);
+
 export const store = configureStore({
   reducer: {
     cart: persistedReducer,
     wishlist: persistedWishlistReducer,
     user: persistedUserReducer,
+    tempUser: persistedTempUserReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

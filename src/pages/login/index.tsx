@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // ** Next Imports
 import Link from "next/link";
@@ -17,6 +17,7 @@ import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
 import {
   Alert,
   Button,
+  Divider,
   FormControlLabelProps,
   FormHelperText,
   Grid,
@@ -27,8 +28,12 @@ import dynamic from "next/dynamic";
 import { post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import { ClipLoader } from "react-spinners";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { storeUser } from "@/store/apps/user";
+import PhoneComponent from "@/components/widgets/account/phone";
+import EmailComponent from "@/components/widgets/account/email";
+import Swal from "sweetalert2";
+import { storeTempUser } from "@/store/apps/temp-user";
 
 const Checkbox = dynamic(() => import("@mui/material/Checkbox"));
 const TextField = dynamic(() => import("@mui/material/TextField"));
@@ -72,65 +77,143 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(
   })
 );
 
-const LoginPage = (props: any) => {
-  const returnUrl = useSearchParams().get("returnUrl");
+const RegisterPage = (props: any) => {
   const router = useRouter();
+  const { user } = props;
   const [loading, setLoading] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>();
+  const [form_data, setFormData] = useState({
+    user_name: "",
+    country_code: "",
+  } as any);
+  const [registerByPhone, setRegisterByPhone] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [user_name, setUsername] = useState("");
   const [otpSent, setOtpSent] = useState<boolean>(false);
   const [otp, setOtp] = useState<string>("");
   const [otpError, setOtpError] = useState<string>();
   const [generalError, setGeneralError] = useState<string>("");
 
   const dispatch = useDispatch();
+  useEffect(()=>{
+    if(user.isAuth){
+      router.replace('/profile');
+    }
+  },[user])
 
   const validataForm = () => {
-    setEmailError("");
-
-    if (email === "") {
-      setEmailError("Email is required.");
-    } else {
-      const pattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-      if (!pattern.test(email)) {
-        setEmailError("Please enter a valid email address");
+    if (registerByPhone) {
+      if (form_data.country_code === "") {
+        Swal.fire({
+          text: "Country code is required.",
+          icon: "warning",
+        });
+        return false;
+      } else if (form_data.user_name === "") {
+        Swal.fire({
+          text: "Phone Number is required.",
+          icon: "warning",
+        });
+        return false;
+      } else {
+        const pattern = /^[0-9]+$/;
+        if (!pattern.test(form_data.user_name)) {
+          // setError("Please enter a valid phone number.");
+          Swal.fire({
+            text: "Please enter a valid phone number.",
+            icon: "warning",
+          });
+          return false;
+        }
       }
+      return true;
+    } else {
+      if (form_data.user_name === "") {
+        Swal.fire({
+          text: "Email is required!",
+          icon: "warning",
+        });
+
+        return false;
+      } else {
+        const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!pattern.test(form_data.user_name)) {
+          Swal.fire({
+            text: "Please enter a valid email address.",
+            icon: "warning",
+          });
+          return false;
+        }
+      }
+      return true;
     }
-    if (emailError !== "") {
-      return false;
-    }
-    return true;
   };
 
   const handleOtpInput = (value: string) => {
-    const onlyNums = value.replace(/[^0-9]/g, '');
+    const onlyNums = value.replace(/[^0-9]/g, "");
     setOtp(onlyNums);
-  }
+  };
 
   const onSubmit = async () => {
     setGeneralError("");
     if (otpSent) {
       verifyOtp();
     } else {
-      sendOtp();
+      register();
     }
   };
 
   const sendOtp = async () => {
+    setError(false);
     if (validataForm()) {
       setLoading(true);
-      const formData = {
-        email: email,
+
+      let data = {
+        ...form_data,
+        user_id: user?.id,
       };
-      const res = await post(routeConfig.account.login, formData);
+      const res = await post(routeConfig.account.otp.send, data);
       if (res && res.status_code == 200) {
         setOtpSent(true);
+        dispatch(
+          storeTempUser({
+            ...res.data,
+            user_name: form_data.user_name,
+          })
+        );
       } else {
-        setGeneralError("Wrong Email");
+        Swal.fire({
+          title: "Oops...",
+          text: "Something went wrong, Please check the details!",
+          icon: "error",
+        });
       }
       setLoading(false);
     }
-  }
+  };
+
+  const register = async () => {
+    setError(false);
+    if (validataForm()) {
+      setLoading(true);
+      const res = await post(routeConfig.account.register, form_data);
+      if (res && res.status_code == 200) {
+        setOtpSent(true);
+        dispatch(
+          storeTempUser({
+            ...res.data,
+            user_name: form_data.user_name,
+          })
+        );
+      } else {
+        Swal.fire({
+          title: "Oops...",
+          text: "Something went wrong, Please check the details!",
+          icon: "error",
+        });
+      }
+      setLoading(false);
+    }
+  };
 
   const verifyOtp = async () => {
     setOtpError("");
@@ -141,27 +224,33 @@ const LoginPage = (props: any) => {
     } else {
       setLoading(true);
       const formData = {
-        email: email,
+        user_name: user.user_name,
         otp: otp,
+        user_id: user?.user_id,
       };
       const res = await post(routeConfig.account.otp.check, formData);
       if (res && res.status_code == 200) {
-        dispatch(storeUser(res.data));
+        dispatch(
+          storeUser({
+            ...res.data,
+            isAuth: true,
+          })
+        );
         window.localStorage.setItem(
           routeConfig.storageTokenKeyName,
           `${res.data.token}`
         );
-        if (returnUrl && returnUrl !== "") {
-          router.replace(`/${returnUrl}`);
-        } else {
-          router.replace("/profile");
-        }
+        router.replace("/profile");
       } else {
-        setGeneralError("Wrong OTP");
+        Swal.fire({
+          title: "Oops...",
+          text: "The entered OTP is incorrect.",
+          icon: "error",
+        });
       }
       setLoading(false);
     }
-  }
+  };
 
   return (
     <Layout>
@@ -172,7 +261,7 @@ const LoginPage = (props: any) => {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Grid item lg={6} md={6} sm={10} xs={12}>
+        <Grid item lg={6} md={8} sm={10} xs={12}>
           <Box
             sx={{
               px: { md: 12, xs: 5 },
@@ -187,19 +276,22 @@ const LoginPage = (props: any) => {
                 <TypographyStyled variant="h5">
                   Welcome to JWPharma City Middle East! 👋🏻
                 </TypographyStyled>
-                {
-                  otpSent ?
-                    <Typography variant="body2">
-                      We sent an OTP to your email address, Please enter the code you received
+                {otpSent ? (
+                  <Typography variant="body2" display={"flex"} gap={0.6}>
+                    We sent an OTP to
+                    <Typography
+                      variant="body2"
+                      fontStyle={"italic"}
+                      fontWeight={"bold"}
+                    >
+                      {user_name}
                     </Typography>
-                    :
-                    <Typography variant="body2">
-                      Please sign-in to your account
-                    </Typography>
-                }
+                    , Please enter the code you received
+                  </Typography>
+                ) : null}
               </Box>
               <form noValidate autoComplete="off">
-                <FormControl fullWidth sx={{ mb: 4 }}>
+                <FormControl fullWidth>
                   {generalError && (
                     <Alert
                       severity="error"
@@ -218,73 +310,100 @@ const LoginPage = (props: any) => {
                       {generalError}
                     </Alert>
                   )}
-                  {
-                    otpSent ?
-                      <>
-                        <TextField
-                          autoFocus
-                          label="OTP"
-                          value={otp}
-                          error={Boolean(otpError)}
-                          onChange={(e) => handleOtpInput(e.target.value)}
-                          placeholder="Enter OTP"
-                          inputProps={{ maxLength: 6 }}
-                        />
-                        {otpError && (
-                          <FormHelperText sx={{ color: "error.main" }}>
-                            {otpError}
-                          </FormHelperText>
-                        )}
-                      </> :
-                      <>
-                        <TextField
-                          autoFocus
-                          label="Email"
-                          value={email}
-                          error={Boolean(emailError)}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Enter your email"
-                        />
-                        {emailError && (
-                          <FormHelperText sx={{ color: "error.main" }}>
-                            {emailError}
-                          </FormHelperText>
-                        )}
-                      </>
-                  }
+                  {otpSent ? (
+                    <>
+                      <TextField
+                        autoFocus
+                        label="OTP"
+                        value={otp}
+                        error={Boolean(otpError)}
+                        onChange={(e) => handleOtpInput(e.target.value)}
+                        placeholder="Enter OTP"
+                        inputProps={{ maxLength: 6 }}
+                      />
+                      {otpError && (
+                        <FormHelperText sx={{ color: "error.main" }}>
+                          {otpError}
+                        </FormHelperText>
+                      )}
+                      <Grid
+                        sx={{ mb: 4 }}
+                        display={"flex"}
+                        justifyContent={"flex-end"}
+                        alignItems={"center"}
+                      >
+                        <Typography variant="body2">
+                          Have you not received it?
+                        </Typography>
 
+                        <CustomLink
+                          action={loading == true ? () => {} : sendOtp}
+                          size={"small"}
+                          type="text"
+                          color={"primary"}
+                          title={"Resend"}
+                          width={"auto"}
+                          endIcon={
+                            loading == true ? (
+                              <ClipLoader size={20} loading={true} />
+                            ) : null
+                          }
+                        />
+                      </Grid>
+                    </>
+                  ) : registerByPhone ? (
+                    <PhoneComponent
+                      form_data={form_data}
+                      handleChange={setFormData}
+                    />
+                  ) : (
+                    <EmailComponent
+                      form_data={form_data}
+                      handleChange={setFormData}
+                    />
+                  )}
                 </FormControl>
-                <CustomLink
-                  action={loading == true ? () => { } : onSubmit}
-                  size={"large"}
-                  padding={1.5}
-                  type="contained"
-                  color={"primary"}
-                  title={otpSent ? "Verify" : "Sign In"}
-                  endIcon={
-                    loading == true ? (
-                      <ClipLoader size={20} loading={true} />
-                    ) : (
-                      <FaSignInAlt />
-                    )
-                  }
-                />
-                <Box
-                  sx={{
-                    mt: 3,
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                  }}
+                <Grid mt={1}>
+                  <CustomLink
+                    action={loading == true ? () => {} : onSubmit}
+                    size={"large"}
+                    padding={1.5}
+                    type="contained"
+                    color={"primary"}
+                    title={otpSent ? "Verify" : "Sign Up"}
+                    endIcon={
+                      loading == true ? (
+                        <ClipLoader size={20} loading={true} />
+                      ) : null
+                    }
+                  />
+                </Grid>
+
+                <Divider orientation="horizontal" flexItem sx={{ mt: 2 }} />
+                <Grid
+                  mt={2}
+                  display={"flex"}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
                 >
-                  <Typography variant="body2" sx={{ mr: 2 }}>
-                    Don't have an account?
-                  </Typography>
-                  <Typography variant="body2">
-                    <LinkStyled href="/register">Register Now</LinkStyled>
-                  </Typography>
-                </Box>
+                  <TypographyStyled variant="h6">OR</TypographyStyled>
+                  <CustomLink
+                    action={() => {
+                      setFormData({
+                        user_name: "",
+                        country_code: null,
+                      } as any);
+                      setRegisterByPhone(!registerByPhone);
+                    }}
+                    title={
+                      registerByPhone
+                        ? "Continue with email address"
+                        : "continue with phone number"
+                    }
+                    size={"small"}
+                  />
+                </Grid>
               </form>
             </BoxWrapper>
           </Box>
@@ -294,4 +413,6 @@ const LoginPage = (props: any) => {
   );
 };
 
-export default LoginPage;
+const mapStateToProps = (state: any) => ({ user: state.tempUser.info });
+
+export default connect(mapStateToProps)(RegisterPage);
