@@ -12,6 +12,7 @@ export const userSlice = createSlice({
     storeUser: (state, action) => {
       state.info = action.payload;
     },
+    
     updateUser: (state, action) => {
       state.info = action.payload;
     },

@@ -40,7 +40,7 @@ type ProductCollectionType = {
   id: number;
   slug: string;
   name: string;
-}
+};
 type CollectionType = {
   id: number;
   slug: string;
@@ -106,4 +106,20 @@ type FilterItem = {
 type FilterValueProps = {
   value: string;
   id: number;
+};
+
+type CountryCodePropType = {
+  handleChange: (option: any) => void;
+  code: string;
+};
+
+type UserAddressType = {
+  id: string;
+  country: string;
+  city: string;
+  building: string;
+  flat_number: string;
+  map_url: string;
+  type: string;
+  is_default: string;
 };

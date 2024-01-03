@@ -20,6 +20,8 @@ const themeColor = {
     dark: "#000000",
   },
   borderColor:'#e3e3e3',
+  greyColor:'#a3a3a3',
+  lightGreyColor:'#e3e3e3',
   backgroundColor:'#e3e3e3',
 };
 

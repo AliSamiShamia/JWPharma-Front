@@ -3,9 +3,12 @@ import CustomLink from "@/components/widgets/link";
 import { useAppSelector } from "@/store/hooks";
 import { Box, Button, Typography } from "@mui/material";
 import { MdPersonOutline } from "@react-icons/all-files/md/MdPersonOutline";
+import { MdPerson } from "@react-icons/all-files/md/MdPerson";
 import React, { useState } from "react";
+import { connect } from "react-redux";
 
-function UserNavItem() {
+function UserNavItem(props: any) {
+  const { auth } = props;
   //Cart & Wishlist redux state
   const userState = useAppSelector((state) => state.user.info);
 
@@ -19,7 +22,7 @@ function UserNavItem() {
   return (
     <>
       <Box>
-        <CustomLink url={"/login"} link>
+        <CustomLink url={auth.id ? "/account/profile" : "/login"} link>
           <Box
             sx={{
               display: "flex",
@@ -35,10 +38,10 @@ function UserNavItem() {
                 textTransform={"capitalize"}
                 sx={{ display: { xs: "none", md: "flex" } }}
               >
-                Account
+                {auth.id ? `Hi ${auth.first_name}` : "Account"}
               </Typography>
             </Box>
-            <MdPersonOutline size={22} />
+            {auth.id ? <MdPerson size={22} /> : <MdPersonOutline size={22} />}
           </Box>
         </CustomLink>
       </Box>
@@ -46,4 +49,6 @@ function UserNavItem() {
   );
 }
 
-export default UserNavItem;
+const mapStateToProps = (state: any) => ({ auth: state.tempUser.info });
+
+export default connect(mapStateToProps)(UserNavItem);

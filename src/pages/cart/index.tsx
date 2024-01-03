@@ -75,7 +75,14 @@ function Cart(props: any) {
                     {calculateLength + (calculateLength > 0 ? " items" : "")})
                   </Typography>
                 }
-                action={<CustomLink title="Clear Cart" action={()=>{}} type="contained" color={'error'}/>}
+                action={
+                  <CustomLink
+                    title="Clear Cart"
+                    action={() => {}}
+                    type="contained"
+                    color={"error"}
+                  />
+                }
               />
               <CardContent sx={{ p: { md: "inherit", xs: 0 } }}>
                 {cart.map((item: CartType, key) => {
@@ -127,6 +134,7 @@ function Cart(props: any) {
                             </Grid>
                           </Grid>
                           <Grid
+                            item
                             md={3}
                             xs={12}
                             display={"flex"}

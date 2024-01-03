@@ -1,20 +1,9 @@
-import themeColor from "@/components/constant/color";
 import { CartType } from "@/components/types/cart.types";
-import {
-  addToCart,
-  decrementQantity,
-  deleteFromCart,
-  incrementQuantity,
-} from "@/store/apps/cart";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Box, IconButton } from "@mui/material";
-import { FaMinus } from "@react-icons/all-files/fa/FaMinus";
-import { FaPlus } from "@react-icons/all-files/fa/FaPlus";
-import { FaTrash } from "@react-icons/all-files/fa/FaTrash";
+import UserAddresses from "@/components/widgets/address";
+import { Box } from "@mui/material";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 const Layout = dynamic(() => import("@/components/design/layout"));
@@ -27,8 +16,6 @@ const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 function Checkout(props: any) {
   const [cart, setCart] = useState<CartType[]>(props.cart);
-  const router = useRouter();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setCart(props.cart);
@@ -126,6 +113,7 @@ function Checkout(props: any) {
                             </Grid>
                           </Grid>
                           <Grid
+                            item
                             md={3}
                             xs={12}
                             display={"flex"}
@@ -159,6 +147,7 @@ function Checkout(props: any) {
                 <Typography variant="h5" fontWeight={"bold"}>
                   Shipping Address
                 </Typography>
+                <UserAddresses />
               </CardContent>
             </Card>
             <Card elevation={2} sx={{ width: 1, mt: 3 }}>
@@ -217,4 +206,5 @@ function Checkout(props: any) {
 
 const mapStateToProps = (state: any) => ({ cart: state.cart.items });
 
+Checkout.auth = true;
 export default connect(mapStateToProps)(Checkout);
