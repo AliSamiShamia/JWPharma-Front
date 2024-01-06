@@ -1,5 +1,6 @@
+import routeConfig from "@/components/constant/route";
 import { CartType } from "@/components/types/cart.types";
-import { post } from "@/handler/api.handler";
+import { destroy, post } from "@/handler/api.handler";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -7,33 +8,55 @@ const initialState = {
 };
 
 const updateCart = async (item: CartType) => {
-  // let res = await post();
-  console.log(item);
+  let res = await post(routeConfig.cart.store, {
+    product_id: item.product.id,
+    quantity: item.quantity,
+  });
+  if (res && res.status_code == 200) {
+    return true;
+  }
+  return false;
+};
+
+const removeItemFromCart = async (item: CartType) => {
+  let res = await destroy(routeConfig.cart.list + "/" + item.id);
+  if (res && res.status_code == 200) {
+    return true;
+  }
+  return false;
 };
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCart: (state, action) => {
+    initCart: (state, action) => {
       state.items = action.payload;
     },
+  
     addToCart: (state, action) => {
       const item = state.items.find(
         (item) => item.product.id == action.payload.product.id
       );
 
       if (item) {
+        // let init = async () => {
+        //   await updateCart(item);
+        // };
+        // init();
         item.quantity += action.payload.quantity;
-        updateCart(item);
       } else {
+        // let init = async () => {
+        //   await updateCart(action.payload);
+        // };
+        // init();
         state.items.push(action.payload);
         updateCart(action.payload);
       }
-
     },
 
     deleteFromCart: (state, action) => {
+      removeItemFromCart(action.payload.product.id);
       state.items = state.items.filter(
         (item) => item.product.id !== action.payload.product.id
       );
@@ -73,6 +96,7 @@ export const {
   addToCart,
   deleteFromCart,
   resetCart,
+  initCart,
   incrementQuantity,
   decrementQantity,
 } = cartSlice.actions;

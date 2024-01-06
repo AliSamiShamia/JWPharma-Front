@@ -1,7 +1,11 @@
 import routeConfig from "@/components/constant/route";
-import { get } from "@/handler/api.handler";
+import { get, post } from "@/handler/api.handler";
+import { useAuth } from "@/hooks/useAuth";
+import { addToCart } from "@/store/apps/cart";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { connect, useDispatch } from "react-redux";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Container = dynamic(() => import("@mui/material/Container"));
@@ -47,8 +51,9 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as ProductType[]);
-
+ 
   const loadData = async (page: number) => {
+    setData([]);
     const res = await get(routeConfig.product.listWihtoutFilter, {
       page: page,
       per_page: perPage,
@@ -119,7 +124,12 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                 {data.map((item, key) => {
                   return (
                     <Box key={key} m={1}>
-                      <ProductItem {...item} />
+                      <ProductItem
+                        product={item}
+                        action={() => {
+                          loadData(page);
+                        }}
+                      />
                     </Box>
                   );
                 })}
@@ -142,4 +152,6 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   );
 }
 
-export default Product;
+const mapStateToProps = (state: any) => ({ wishlist: state.wishlist.items });
+
+export default connect(mapStateToProps)(Product);

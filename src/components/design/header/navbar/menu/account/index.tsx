@@ -1,11 +1,14 @@
 import { UserType } from "@/components/types/user.types";
-import CustomLink from "@/components/widgets/link";
 import { useAppSelector } from "@/store/hooks";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, IconButton, MenuItem } from "@mui/material";
 import { MdPersonOutline } from "@react-icons/all-files/md/MdPersonOutline";
 import { MdPerson } from "@react-icons/all-files/md/MdPerson";
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import dynamic from "next/dynamic";
+const Typography = dynamic(() => import("@mui/material/Typography"));
+const Menu = dynamic(() => import("@mui/material/Menu"));
+const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 function UserNavItem(props: any) {
   const { auth } = props;
@@ -14,6 +17,15 @@ function UserNavItem(props: any) {
 
   //Cart & Wishlist items
   const [user, setUser] = useState<UserType>();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (event: any) => {
+    setAnchorEl(null);
+  };
 
   React.useEffect(() => {
     setUser(userState);
@@ -22,13 +34,20 @@ function UserNavItem(props: any) {
   return (
     <>
       <Box>
-        <CustomLink url={auth.id ? "/account/profile" : "/login"} link>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <IconButton
+            size="small"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleClick}
+            color="inherit"
           >
             <Box sx={{ display: { sm: "flex", xs: "none" } }}>
               <Typography
@@ -42,8 +61,39 @@ function UserNavItem(props: any) {
               </Typography>
             </Box>
             {auth.id ? <MdPerson size={22} /> : <MdPersonOutline size={22} />}
-          </Box>
-        </CustomLink>
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "center",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem>
+              <CustomLink url={auth.id ? "/account/profile" : "/login"} link>
+                Profile
+              </CustomLink>
+            </MenuItem>
+            <MenuItem>
+              <CustomLink url={auth.id ? "/account/addresses" : "/login"} link>
+                Addresses
+              </CustomLink>
+            </MenuItem>
+            <MenuItem>
+              <CustomLink url={auth.id ? "/account/orders" : "/login"} link>
+                Orders
+              </CustomLink>
+            </MenuItem>
+          </Menu>
+        </Box>
       </Box>
     </>
   );

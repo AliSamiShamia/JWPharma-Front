@@ -1,28 +1,56 @@
+import routeConfig from "@/components/constant/route";
 import { CartType } from "@/components/types/cart.types";
 import CustomLink from "@/components/widgets/link";
+import { get } from "@/handler/api.handler";
+import { useAuth } from "@/hooks/useAuth";
+import { initCart } from "@/store/apps/cart";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Typography } from "@mui/material";
 import { RiShoppingCart2Line } from "@react-icons/all-files/ri/RiShoppingCart2Line";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch } from "react-redux";
+import { ClipLoader } from "react-spinners";
 
-function CartNavItem() {
+function CartNavItem(props: any) {
+  const { cart } = props;
   //Cart  redux state
-  const cartState = useAppSelector((state) => state.cart.items);
-
+  const auth = useAuth();
   //Cart  items
-  const [cart, setCart] = useState<CartType[]>([]);
   const [cartLength, setCartLength] = useState(0);
-
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   // Function to calculate total
   const calculateTotal = () => {
-    let counts = cartState.reduce((total, item) => total + item.quantity, 0);
+    let counts = cart.reduce(
+      (total: any, item: any) => total + item.quantity,
+      0
+    );
     setCartLength(counts);
   };
 
-  React.useEffect(() => {
-    setCart(cartState);
+  const loadCart = async () => {
+    setLoading(true);
+    try {
+      const res = await get(routeConfig.cart.list);
+      if (res && res.status_code == 200) {
+        dispatch(initCart(res.data));
+      }
+      setLoading(false);
+    } catch (e) {
+      dispatch(initCart([]));
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (auth.user) {
+      loadCart();
+    }
+  }, [auth]);
+
+  useEffect(() => {
     calculateTotal();
-  }, [cartState]);
+  }, [cart]);
 
   return (
     <>
@@ -46,9 +74,13 @@ function CartNavItem() {
                 Cart
               </Typography>
             </Box>
-            <Badge badgeContent={cartLength} color="info" max={10}>
-              <RiShoppingCart2Line size={22} />
-            </Badge>
+            {loading ? (
+              <ClipLoader size={20} loading={true} />
+            ) : (
+              <Badge badgeContent={cartLength} color="info" max={10}>
+                <RiShoppingCart2Line size={22} />
+              </Badge>
+            )}
           </Box>
         </CustomLink>
       </Box>
@@ -57,4 +89,6 @@ function CartNavItem() {
   );
 }
 
-export default CartNavItem;
+const mapStateToProps = (state: any) => ({ cart: state.cart.items });
+
+export default connect(mapStateToProps)(CartNavItem);

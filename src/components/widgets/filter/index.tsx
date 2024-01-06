@@ -21,6 +21,7 @@ const drawerWidth = 240;
 
 function FilterList(props: FilterProps) {
   const { filters, params, handleAction, setFilterParam } = props;
+  
   const [form_data, setFormData] = useState(params as any);
   const [open, setOpen] = useState(false);
   const handleChange = (newValue: number, key: string) => {
@@ -238,7 +239,7 @@ function FilterList(props: FilterProps) {
               color={"primary"}
               action={() => {
                 setFilterParam(form_data);
-                handleAction(1, handleDrawer);
+                handleAction(1,form_data, handleDrawer);
                 handleDrawerClose();
               }}
             >

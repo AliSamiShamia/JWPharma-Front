@@ -1,21 +1,55 @@
+import routeConfig from "@/components/constant/route";
 import { WishListType } from "@/components/types/wishlist.types";
 import CustomLink from "@/components/widgets/link";
-import Wishlist from "@/components/widgets/wishlist";
+import { get } from "@/handler/api.handler";
+import { useAuth } from "@/hooks/useAuth";
+import { initWishlist } from "@/store/apps/wishlist";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Button, Link, Typography } from "@mui/material";
 import { FiHeart } from "@react-icons/all-files/fi/FiHeart";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch } from "react-redux";
+import { ClipLoader } from "react-spinners";
 
-function WishlistNavItem() {
+function WishlistNavItem(props: any) {
+  const { wishlists } = props;
+
   // Wishlist redux state
-  const wishlistState = useAppSelector((state) => state.wishlist.products);
+  const dispatch = useDispatch();
+  const auth = useAuth();
 
   //Wishlist items
-  const [wishlist, setWishList] = useState<WishListType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [wishlistLength, setWishlistLength] = useState(0);
 
-  React.useEffect(() => {
-    setWishList(wishlistState);
-  }, [wishlistState]);
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const res = await get(routeConfig.wishlist.list);
+      if (res && res.status_code == 200) {
+        dispatch(initWishlist(res.data));
+      }
+      setLoading(false);
+    } catch (e) {
+      dispatch(initWishlist([]));
+      setLoading(false);
+    }
+  };
+
+  const calculateTotal = () => {
+    let counts = wishlists.reduce((total: any) => total, 0);
+    setWishlistLength(counts);
+  };
+
+  useEffect(() => {
+    if (auth.user) {
+      loadData();
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    calculateTotal();
+  }, [wishlists]);
 
   return (
     <>
@@ -32,9 +66,13 @@ function WishlistNavItem() {
               Wishlist
             </Typography>
           </Box>
-          <Badge badgeContent={wishlist.length} color="info" max={10}>
-            <FiHeart size={22} />
-          </Badge>
+          {loading ? (
+            <ClipLoader size={20} loading={true} />
+          ) : (
+            <Badge badgeContent={wishlistLength} color="info" max={10}>
+              <FiHeart size={22} />
+            </Badge>
+          )}
         </CustomLink>
       </Box>
       {/* <Wishlist open={wishlistOpen} toggleDrawer={handleWishlistToggle} /> */}
@@ -42,4 +80,6 @@ function WishlistNavItem() {
   );
 }
 
-export default WishlistNavItem;
+const mapStateToProps = (state: any) => ({ wishlists: state.wishlist.products });
+
+export default connect(mapStateToProps)(WishlistNavItem);

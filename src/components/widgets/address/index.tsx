@@ -13,7 +13,6 @@ const CardHeader = dynamic(() => import("@mui/material/CardHeader"));
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
 );
-import { MdEdit } from "@react-icons/all-files/md/MdEdit";
 import CustomLink from "../link";
 
 function UserAddresses() {
@@ -49,7 +48,7 @@ function UserAddresses() {
               <CardHeader
                 title={<Chip color="primary" label={address.type} />}
                 action={[
-                  <Grid display={"flex"} alignItems={"center"}>
+                  <Grid key={"actions"} display={"flex"} alignItems={"center"}>
                     <CustomLink link url={"/account/addresses/" + address.id}>
                       <Typography
                         variant="caption"
@@ -87,9 +86,7 @@ function UserAddresses() {
                         {address.flat_number ? address.flat_number : ""}
                       </Typography>
                     </Grid>
-                    {/* <Grid>
-                      <Chip label={address.type} size="small" color="primary" />
-                    </Grid> */}
+                    
                   </Grid>
                 ) : null}
               </CardContent>
