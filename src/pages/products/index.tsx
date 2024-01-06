@@ -1,11 +1,14 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import FilterList from "@/components/widgets/filter";
-import { get } from "@/handler/api.handler";
+import { get, post } from "@/handler/api.handler";
+import { useAuth } from "@/hooks/useAuth";
+import { addToCart } from "@/store/apps/cart";
 import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
@@ -21,11 +24,17 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
 
-  const loadData = async (page: number, action?: (status: boolean) => void) => {
+
+  const loadData = async (
+    page: number,
+    filterData: any,
+    action?: (status: boolean) => void
+  ) => {
+    setFilterParam(filterData);
     let data = {
       page: page,
       per_page: perPage ? perPage : 12,
-      ...filterParams,
+      ...filterData,
     };
     if (filterParams.price) {
       const { min, max } = filterParams.price;
@@ -58,6 +67,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
         });
     }
   };
+
   const handleLoadMore = () => {
     let newPage = page + 1;
     setPage(newPage);
@@ -69,15 +79,15 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     }
 
     if (document.readyState == "complete") {
-      loadData(page);
+      loadData(page, filterParams);
     }
     return () => {};
-  }, [page, filterParams]);
+  }, [page]);
 
   return (
     <Layout>
       {loading ? (
-        <ComponentSpinner loading={loading} />
+        <ComponentSpinner loading={true} />
       ) : (
         <>
           <FilterList
@@ -113,7 +123,12 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       alignItems={"center"}
                       width={"100%"}
                     >
-                        <ProductItem {...item} />
+                      <ProductItem
+                        product={item}
+                        action={() => {
+                          loadData(page, filterParams);
+                        }}
+                      />
                     </Grid>
                   );
                 })}
@@ -145,5 +160,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     </Layout>
   );
 }
+
+const mapStateToProps = (state: any) => ({ wishlist: state.wishlist.items });
 
 export default Product;

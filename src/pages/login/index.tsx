@@ -94,11 +94,11 @@ const RegisterPage = (props: any) => {
   const [generalError, setGeneralError] = useState<string>("");
 
   const dispatch = useDispatch();
-  useEffect(()=>{
-    if(user.isAuth){
-      router.replace('/profile');
+  useEffect(() => {
+    if (user.isAuth) {
+      router.replace("/account/profile");
     }
-  },[user])
+  }, [user]);
 
   const validataForm = () => {
     if (registerByPhone) {
@@ -240,7 +240,7 @@ const RegisterPage = (props: any) => {
           routeConfig.storageTokenKeyName,
           `${res.data.token}`
         );
-        router.replace("/profile");
+        router.replace("/account/profile");
       } else {
         Swal.fire({
           title: "Oops...",
@@ -370,7 +370,7 @@ const RegisterPage = (props: any) => {
                     padding={1.5}
                     type="contained"
                     color={"primary"}
-                    title={otpSent ? "Verify" : "Sign Up"}
+                    title={otpSent ? "Verify" : "Next"}
                     endIcon={
                       loading == true ? (
                         <ClipLoader size={20} loading={true} />

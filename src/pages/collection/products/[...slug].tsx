@@ -1,11 +1,14 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import FilterList from "@/components/widgets/filter";
-import { get } from "@/handler/api.handler";
+import { get, post } from "@/handler/api.handler";
+import { useAuth } from "@/hooks/useAuth";
+import { addToCart } from "@/store/apps/cart";
 import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
@@ -21,6 +24,9 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
   const { slug } = router.query;
+  const auth = useAuth();
+  const dispatch = useDispatch();
+
 
   const loadData = async (page: number, action?: (status: boolean) => void) => {
     let data = {
@@ -72,7 +78,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     if (document.readyState == "complete" && slug) {
       loadData(page);
     }
-    return () => { };
+    return () => {};
   }, [page, slug, filterParams]);
 
   return (
@@ -114,7 +120,12 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       alignItems={"center"}
                       width={"100%"}
                     >
-                      <ProductItem  {...item} />
+                      <ProductItem
+                        product={item}
+                        action={() => {
+                          loadData(page);
+                        }}
+                      />
                     </Grid>
                   );
                 })}

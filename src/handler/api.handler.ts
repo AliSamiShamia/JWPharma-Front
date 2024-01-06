@@ -1,5 +1,6 @@
 import axios from "axios";
 import routeConfig from "@/components/constant/route";
+import { useAppSelector } from "@/store/hooks";
 
 const instance = axios.create({
   baseURL: process.env.baseURL,
@@ -20,7 +21,7 @@ const get = async (
   params?: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   let res;
   try {
     res = await instance.get(url, {
@@ -44,9 +45,33 @@ const post = async (
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.post(url, form_data, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Accept-Language": lang,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+
+  return res?.data;
+};
+
+const put = async (
+  url: string,
+  form_data: any,
+  lang = "en"
+): Promise<ResponseType | null> => {
+  let res;
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
+  try {
+    res = await instance.put(url, form_data, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -67,7 +92,7 @@ const multipart = async (
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.get(url, {
       headers: {
@@ -89,7 +114,7 @@ const destroy = async (
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!
+  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.delete(url, {
       headers: {
@@ -106,4 +131,4 @@ const destroy = async (
   return res?.data;
 };
 
-export { get, post, multipart, destroy };
+export { get, post,put, multipart, destroy };

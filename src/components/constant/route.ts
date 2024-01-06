@@ -14,11 +14,18 @@ const routeConfig = {
     store: "cart",
     clear: "clear-cart",
     total: "",
+    quantity: "cart/update-quantity",
+  },
+  wishlist: {
+    list: "wishlist",
+    store: "wishlist",
+    clear: "clear-wishlist",
+    total: "",
   },
   order: {
     list: "order",
     track: "order/track",
-    placeorder: "order/placeorder",
+    placeorder: "order",
   },
   banner: {
     list: "banner",
@@ -28,8 +35,7 @@ const routeConfig = {
     register: "register",
     profile: "profile",
     refresh: "register",
-    addresses: "user-addresses",
-    defaultAddress: "default-user-address",
+    addresses: "user-address",
     otp: {
       send: "otp/send",
       check: "otp/check",

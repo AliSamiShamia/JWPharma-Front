@@ -26,7 +26,7 @@ function Profile(props: any) {
           justifyContent={"center"}
         >
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            {user.id}
+            {user.email}
           </Grid>
         </Grid>
       </Grid>
@@ -34,6 +34,6 @@ function Profile(props: any) {
   );
 }
 
-const mapStateToProps = (state: any) => ({ user: state.tempUser.info });
+const mapStateToProps = (state: any) => ({ user: state.user.info });
 Profile.auth = true;
 export default connect(mapStateToProps)(Profile);

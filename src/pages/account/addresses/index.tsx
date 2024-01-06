@@ -1,3 +1,4 @@
+import AddressList from "@/components/widgets/address/list";
 import dynamic from "next/dynamic";
 import React from "react";
 import { connect } from "react-redux";
@@ -10,8 +11,6 @@ const Typography = dynamic(() => import("@mui/material/Typography"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 function Addresses(props: any) {
-  const { user } = props;
-
   return (
     <Layout>
       <Grid
@@ -26,8 +25,8 @@ function Addresses(props: any) {
           display={"flex"}
           justifyContent={"center"}
         >
-          <Grid item lg={6} md={6} sm={12} xs={12}>
-            {user.id}
+          <Grid item lg={8} md={8} sm={12} xs={12}>
+            <AddressList />
           </Grid>
         </Grid>
       </Grid>

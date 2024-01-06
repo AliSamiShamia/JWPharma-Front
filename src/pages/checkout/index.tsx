@@ -1,11 +1,16 @@
+import routeConfig from "@/components/constant/route";
 import { CartType } from "@/components/types/cart.types";
 import UserAddresses from "@/components/widgets/address";
+import ComponentSpinner from "@/components/widgets/spinner/component.spinner";
+import { post } from "@/handler/api.handler";
 import { Box } from "@mui/material";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import Swal from "sweetalert2";
 const Layout = dynamic(() => import("@/components/design/layout"));
 const Card = dynamic(() => import("@mui/material/Card"));
 const CardContent = dynamic(() => import("@mui/material/CardContent"));
@@ -16,6 +21,8 @@ const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 function Checkout(props: any) {
   const [cart, setCart] = useState<CartType[]>(props.cart);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setCart(props.cart);
@@ -35,6 +42,30 @@ function Checkout(props: any) {
     (total, item) => total + item?.product?.price * item.quantity,
     0
   );
+
+  const placeOrder = async () => {
+    setLoading(true);
+    try {
+      const res = await post(routeConfig.order.placeorder, null);
+      if (res && res.status_code == 200) {
+        router.push(res.data.url);
+      } else {
+        Swal.fire({
+          title: "Oops...",
+          text: "Something went wrong, Please try again!",
+          icon: "error",
+        });
+      }
+      setLoading(false);
+    } catch (e) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Something went wrong, Please try again!",
+        icon: "error",
+      });
+      setLoading(false);
+    }
+  };
 
   return (
     <Layout>
@@ -128,7 +159,20 @@ function Checkout(props: any) {
                             <Typography
                               sx={{ mt: { md: 2, xs: 0 } }}
                               fontWeight={"bold"}
+                              variant="caption"
+                            >
+                              ({item.quantity}
+                              {item.quantity > 0
+                                ? item.quantity > 1
+                                  ? " items"
+                                  : " item"
+                                : ""}
+                              )
+                            </Typography>
+                            <Typography
+                              fontWeight={"bold"}
                               variant="h6"
+                              fontStyle={"italic"}
                             >
                               ${(item.quantity * item.product.price).toFixed(2)}
                             </Typography>
@@ -156,7 +200,7 @@ function Checkout(props: any) {
                   Order Summary
                 </Typography>
                 <Grid
-                  mt={5}
+                  mt={2}
                   display={"flex"}
                   alignItems={"center"}
                   justifyContent={"space-between"}
@@ -166,12 +210,22 @@ function Checkout(props: any) {
                   <Typography
                     variant="h6"
                     fontWeight={"bold"}
-                    color={"darkgrey"}
+                    // color={"darkgrey"}
                   >
                     Total (
-                    {calculateLength + (calculateLength > 0 ? " items" : "")})
+                    {calculateLength +
+                      (calculateLength > 0
+                        ? calculateLength > 1
+                          ? " items"
+                          : " item"
+                        : "")}
+                    )
                   </Typography>
-                  <Typography variant="h6" fontWeight={"bold"}>
+                  <Typography
+                    variant="h5"
+                    fontWeight={"bold"}
+                    fontStyle={"italic"}
+                  >
                     ${calculateTotal}
                   </Typography>
                 </Grid>
@@ -183,17 +237,20 @@ function Checkout(props: any) {
                   justifyContent={"center"}
                   alignItems={"center"}
                 >
-                  <CustomLink
-                    link
-                    size={"large"}
-                    padding={1.5}
-                    url="/checkout"
-                    type="contained"
-                    color={"primary"}
-                    title="Place order"
-                    width={300}
-                    endIcon={<FaArrowRight />}
-                  />
+                  {loading ? (
+                    <ComponentSpinner loading={loading} />
+                  ) : (
+                    <CustomLink
+                      action={placeOrder}
+                      size={"large"}
+                      padding={1.5}
+                      type="contained"
+                      color={"primary"}
+                      title="Place order"
+                      width={300}
+                      endIcon={<FaArrowRight />}
+                    />
+                  )}
                 </Grid>
               </CardContent>
             </Card>
