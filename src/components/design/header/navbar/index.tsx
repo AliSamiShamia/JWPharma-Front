@@ -124,7 +124,7 @@ export default function DrawerAppBar(props: Props) {
                 alignItems: { xs: "center", sm: "flex-start", md: "center" },
               }}
             >
-              <Logo color="white" />
+              <Logo />
             </Box>
             <CustomMenu />
           </Toolbar>
@@ -159,7 +159,7 @@ export default function DrawerAppBar(props: Props) {
           </Toolbar>
         </Box>
       </AppBar>
-     
+
       <nav>
         <Drawer
           container={container}
@@ -180,7 +180,7 @@ export default function DrawerAppBar(props: Props) {
           {drawer}
         </Drawer>
       </nav>
-      <Box sx={{ display: { xs: "block", sm: "none", } }}>
+      <Box sx={{ display: { xs: "block", sm: "none" } }}>
         <CustomBottomNavigation />
       </Box>
     </Box>

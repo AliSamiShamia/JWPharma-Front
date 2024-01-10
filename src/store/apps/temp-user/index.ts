@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 type TempUserType = {
-  phone_number: string;
-  country_code: string;
-  blank_phone: string;
+  user_name: string;
+  user_id: string;
 };
 const initialState = {
-  info: {} as TempUserType,
+  temp_info: {} as TempUserType,
 };
 
 export const userTempSlice = createSlice({
@@ -14,11 +13,11 @@ export const userTempSlice = createSlice({
   initialState,
   reducers: {
     storeTempUser: (state, action) => {
-      state.info = action.payload;
+      state.temp_info = action.payload;
     },
 
     deleteTempUser: (state) => {
-      state.info = {} as TempUserType;
+      state.temp_info = {} as TempUserType;
     },
   },
 });

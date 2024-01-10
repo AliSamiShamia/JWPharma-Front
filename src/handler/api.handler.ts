@@ -1,6 +1,7 @@
 import axios from "axios";
 import routeConfig from "@/components/constant/route";
 import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
 
 const instance = axios.create({
   baseURL: process.env.baseURL,
@@ -42,6 +43,7 @@ const get = async (
 const post = async (
   url: string,
   form_data: any,
+  // token: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
@@ -131,4 +133,4 @@ const destroy = async (
   return res?.data;
 };
 
-export { get, post,put, multipart, destroy };
+export { get, post, put, multipart, destroy };

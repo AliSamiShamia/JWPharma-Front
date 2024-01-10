@@ -15,7 +15,7 @@ type PropsType = {
 };
 function AddToCartWidget({ product, quantity, setQuantity }: PropsType) {
   return (
-    <Grid display={"flex"} flexDirection={"column"} gap={2}>
+    <Grid display={"flex"} alignItems={"center"} gap={2}>
       <Typography
         variant="caption"
         px={1}

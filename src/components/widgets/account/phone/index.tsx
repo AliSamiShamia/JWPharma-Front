@@ -1,6 +1,6 @@
 import { Grid, TextField } from "@mui/material";
 import React, { ChangeEvent, useState } from "react";
-import CountryCode from "../country/code";
+import CountryCode from "../../country/code";
 
 type PhonePropType = {
   form_data: any;
@@ -8,7 +8,9 @@ type PhonePropType = {
 };
 
 function PhoneComponent({ form_data, handleChange }: PhonePropType) {
-  const [countryCode, setCountryCode] = useState<string>("");
+  const [countryCode, setCountryCode] = useState<string>(
+    form_data.country_code ?? ""
+  );
   const [valid, setValid] = useState(true);
 
   const handlePhoneChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -29,8 +31,8 @@ function PhoneComponent({ form_data, handleChange }: PhonePropType) {
     };
     handleChange(data);
   };
-  const handleCountryCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const countryCode = event.target.value;
+  const handleCountryCodeChange = (code: string) => {
+    const countryCode = code;
     setCountryCode(countryCode);
     let data = {
       ...form_data,
@@ -40,12 +42,13 @@ function PhoneComponent({ form_data, handleChange }: PhonePropType) {
   };
 
   return (
-    <Grid display={"flex"} width={1}>
+    <Grid display={"flex"} width={1} gap={0.1}>
       <CountryCode code={countryCode} handleChange={handleCountryCodeChange} />
       <TextField
         type="tel"
         fullWidth
-        value={form_data.user_name}
+        size="small"
+        value={form_data.user_name || ""}
         error={!valid}
         onChange={handlePhoneChange}
         placeholder="Enter your phone number"

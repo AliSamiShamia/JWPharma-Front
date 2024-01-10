@@ -1,29 +1,33 @@
 import themeColor from "@/components/constant/color";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
   Drawer,
-  FormControlLabel,
-  FormGroup,
   TextField,
 } from "@mui/material";
 import dynamic from "next/dynamic";
-import React, { ChangeEvent, SyntheticEvent, useState } from "react";
+import React, { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import CustomLink from "../link";
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
+const InputAdornment = dynamic(() => import("@mui/material/InputAdornment"));
 import { FaFilter } from "@react-icons/all-files/fa/FaFilter";
+import { useRouter } from "next/router";
 
 const drawerWidth = 240;
 
 function FilterList(props: FilterProps) {
   const { filters, params, handleAction, setFilterParam } = props;
-  
+  const router = useRouter();
+
   const [form_data, setFormData] = useState(params as any);
   const [open, setOpen] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState<FilterValueProps[]>(
+    params?.filter ?? []
+  );
   const handleChange = (newValue: number, key: string) => {
     setFormData({
       ...form_data,
@@ -34,35 +38,26 @@ function FilterList(props: FilterProps) {
     });
   };
 
-  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const name = event.target.name;
-    let checkedItems = form_data.filter?.[name];
-    if (checkedItems) {
-      const currentIndex = checkedItems.indexOf(value);
-      const newChecked = [...checkedItems];
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-      setFormData({
-        ...form_data,
-        filter: {
-          ...form_data.filter,
-          [name]: newChecked,
-        },
-      });
+  // Function to check if item exists in array using filter
+  const checkItem = (itemToCheck: FilterValueProps) => {
+    const foundItem = selectedFilters.filter(
+      (item) => JSON.stringify(item) === JSON.stringify(itemToCheck)
+    );
+    let check = foundItem.length > 0;
+
+    return check; // Returns true if item exists, false otherwise
+  };
+
+  const handleFilter = (param: FilterValueProps) => {
+    if (checkItem(param)) {
+      // Item exists, so delete it from the array
+      const filteredItems = selectedFilters.filter(
+        (existingItem) => JSON.stringify(existingItem) !== JSON.stringify(param)
+      );
+      setSelectedFilters(filteredItems);
     } else {
-      const newChecked = [];
-      newChecked.push(value);
-      setFormData({
-        ...form_data,
-        filter: {
-          ...form_data.filter,
-          [name]: newChecked,
-        },
-      });
+      // Item doesn't exist, so add it to the array
+      setSelectedFilters((prevItems) => [...prevItems, param]);
     }
   };
 
@@ -82,26 +77,46 @@ function FilterList(props: FilterProps) {
     setOpen(false);
   };
 
+  useEffect(() => {
+    setFormData({
+      ...form_data,
+      filter: selectedFilters,
+    });
+  }, [selectedFilters]);
+
+  const handleQueryParamUpdate = () => {
+    const queryParams = {
+      ...router.query,
+      keys: JSON.stringify(form_data),
+    };
+    router.push({
+      pathname: router.pathname,
+      query: queryParams,
+    });
+  };
+
   return (
-    <Grid display={"flex"} justifyContent={"flex-end"}>
-      <CustomLink
-        action={handleDrawerOpen}
-        type={"text"}
-        color={"primary"}
-        size={"small"}
-        width={200}
-        endIcon={<FaFilter size={14} />}
-      >
-        <Box sx={{ display: { sm: "flex", xs: "none" } }}>
+    <Grid display={"flex"} position={"relative"} justifyContent={"flex-end"}>
+      <Grid position={"absolute"} top={10} right={10} px={3}>
+        <CustomLink
+          action={handleDrawerOpen}
+          type={"text"}
+          color={"primary"}
+          size={"small"}
+          width={"auto"}
+          padding={0}
+          endIcon={<FaFilter size={14} />}
+        >
           <Typography
             variant="h6"
+            fontWeight={"bold"}
             textTransform={"capitalize"}
             sx={{ display: { xs: "none", md: "flex" } }}
           >
             Filter
           </Typography>
-        </Box>
-      </CustomLink>
+        </CustomLink>
+      </Grid>
 
       <Drawer
         variant="temporary"
@@ -117,130 +132,153 @@ function FilterList(props: FilterProps) {
         }}
         onClose={handleDrawerClose}
       >
-        <Grid p={3} position={"relative"}>
-          <Typography variant="h5" color={"primary"}>
-            Filter
-          </Typography>
-          <Grid container mt={5}>
+        <Grid position={"relative"} height={"100%"}>
+          <Grid
+            width={1}
+            p={2}
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            sx={{ backgroundColor: themeColor.backgroundColor }}
+          >
+            <Typography variant="h5" color={"primary"} fontWeight={"bold"}>
+              Filter
+            </Typography>
+            <CustomLink width={"auto"} padding={0} type="text" color={"error"}>
+              <Typography variant="caption" color={"error"} fontWeight={"bold"}>
+                Reset
+              </Typography>
+            </CustomLink>
+          </Grid>
+          <Grid px={2} py={4} container>
             <Grid item md={12}>
-              <Card elevation={0}>
-                <CardHeader
-                  sx={{
-                    p: 0,
+              <Typography variant="body1" color={"primary"} fontWeight={"bold"}>
+                Price
+              </Typography>
+              <Grid
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                gap={1}
+                py={2}
+              >
+                <TextField
+                  size="small"
+                  type="number"
+                  label="Min Price"
+                  fullWidth
+                  inputProps={{
+                    max: form_data.price?.max ?? 0,
+                    style: { textAlign: "center", fontSize: 14 },
                   }}
-                  title={
-                    <Typography color={themeColor.secondary.light}>
-                      Price
-                    </Typography>
-                  }
-                ></CardHeader>
-                <CardContent
-                  sx={{
-                    p: 0.5,
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
                   }}
-                >
-                  <Grid
-                    display={"flex"}
-                    justifyContent={"space-evenly"}
-                    alignItems={"center"}
-                    gap={1}
-                  >
-                    <TextField
-                      size="small"
-                      type="number"
-                      inputProps={{
-                        max: form_data.price?.max ?? 0,
-                        style: { textAlign: "center", fontSize: 14 },
-                      }}
-                      sx={{ width: 150, textAlign: "center" }}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        let newValue = parseFloat(event.target.value);
-                        handleChange(newValue, "min");
-                      }}
-                      value={form_data.price?.min ?? 0}
-                    />
-                    To
-                    <TextField
-                      size="small"
-                      type="number"
-                      inputProps={{
-                        min: form_data.price?.min,
-                        style: { textAlign: "center", fontSize: 14 },
-                      }}
-                      sx={{ width: 150, textAlign: "center" }}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        let newValue = parseFloat(event.target.value);
-                        handleChange(newValue, "max");
-                      }}
-                      value={form_data.price?.max ?? 0}
-                    />
-                  </Grid>
-                </CardContent>
-              </Card>
+                  sx={{ textAlign: "center" }}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                    let newValue = parseFloat(event.target.value);
+                    handleChange(newValue, "min");
+                  }}
+                  value={form_data.price?.min ?? 0}
+                />
+                To
+                <TextField
+                  size="small"
+                  type="number"
+                  label="Max Price"
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                  }}
+                  inputProps={{
+                    min: form_data.price?.min,
+                    style: { textAlign: "center", fontSize: 14 },
+                  }}
+                  sx={{ textAlign: "center" }}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                    let newValue = parseFloat(event.target.value);
+                    handleChange(newValue, "max");
+                  }}
+                  value={form_data.price?.max ?? 0}
+                />
+              </Grid>
             </Grid>
-            {filters && filters.map((item, key) => {
-              return (
-                <Grid key={key} item md={12}>
-                  <Card elevation={0}>
-                    <CardHeader
-                      sx={{
-                        p: 0,
-                      }}
-                      title={
-                        <Typography color={themeColor.secondary.light}>
-                          {item.title}
-                        </Typography>
-                      }
-                    ></CardHeader>
-                    <CardContent
-                      sx={{
-                        p: 0.5,
-                      }}
-                    >
-                      <Grid>
-                        <FormGroup>
+            {filters &&
+              filters.map((item, key) => {
+                return (
+                  <Grid key={key} item md={12}>
+                    <Card elevation={0}>
+                      <CardHeader
+                        sx={{
+                          p: 0,
+                        }}
+                        title={
+                          <Typography
+                            variant="body1"
+                            fontWeight={"bold"}
+                            color={themeColor.primary.dark}
+                          >
+                            {item.title}
+                          </Typography>
+                        }
+                      ></CardHeader>
+                      <CardContent
+                        sx={{
+                          p: 0.5,
+                        }}
+                      >
+                        <Grid display={"flex"} gap={2}>
                           {item.values.map((param, key1) => {
                             return (
-                              <FormControlLabel
-                                sx={{ mt: 1 }}
+                              <Button
                                 key={key1}
-                                name={`${item.id}`}
-                                value={param.value}
-                                checked={
-                                  JSON.stringify(
-                                    form_data.filter?.[item.id]
-                                  )?.includes(param.value + "")
-                                    ? true
-                                    : false
+                                size="small"
+                                variant="contained"
+                                color={
+                                  JSON.stringify(selectedFilters).includes(
+                                    JSON.stringify(param)
+                                  )
+                                    ? "primary"
+                                    : "inherit"
                                 }
-                                control={
-                                  <Checkbox
-                                    value={param.value}
-                                    onChange={(event) => {
-                                      handleFormChange(event);
-                                    }}
-                                  />
-                                }
-                                label={param.value}
-                              />
+                                onClick={() => {
+                                  handleFilter(param);
+                                }}
+                              >
+                                {param.value}
+                              </Button>
                             );
                           })}
-                        </FormGroup>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
+                        </Grid>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
           </Grid>
-          <Grid>
+          <Grid
+            position={"absolute"}
+            bottom={20}
+            left={0}
+            right={0}
+            p={2}
+            display={"flex"}
+            justifyContent={"center"}
+            sx={{ backgroundColor: themeColor.mainBackground }}
+          >
             <CustomLink
               type="contained"
               color={"primary"}
+              padding={"auto"}
+              width={300}
               action={() => {
-                setFilterParam(form_data);
-                handleAction(1,form_data, handleDrawer);
-                handleDrawerClose();
+                // handleAction(1, form_data, handleDrawer);
+                // handleDrawerClose();
+                handleQueryParamUpdate();
               }}
             >
               <Typography>Apply</Typography>

@@ -7,17 +7,18 @@ import { initWishlist } from "@/store/apps/wishlist";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Button, Link, Typography } from "@mui/material";
 import { FiHeart } from "@react-icons/all-files/fi/FiHeart";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
 function WishlistNavItem(props: any) {
-  const { wishlists } = props;
+  const { wishlists, user } = props;
 
   // Wishlist redux state
   const dispatch = useDispatch();
-  const auth = useAuth();
 
+  const router = useRouter();
   //Wishlist items
   const [loading, setLoading] = useState(false);
   const [wishlistLength, setWishlistLength] = useState(0);
@@ -37,15 +38,18 @@ function WishlistNavItem(props: any) {
   };
 
   const calculateTotal = () => {
-    let counts = wishlists.reduce((total: any) => total, 0);
+    let counts = wishlists.length;
     setWishlistLength(counts);
   };
 
   useEffect(() => {
-    if (auth.user) {
+    if (!router.isReady) {
+      return;
+    }
+    if (user.isAuth) {
       loadData();
     }
-  }, [auth]);
+  }, [user, router]);
 
   useEffect(() => {
     calculateTotal();
@@ -80,6 +84,9 @@ function WishlistNavItem(props: any) {
   );
 }
 
-const mapStateToProps = (state: any) => ({ wishlists: state.wishlist.products });
+const mapStateToProps = (state: any) => ({
+  wishlists: state.wishlist.products,
+  user: state.user.auth,
+});
 
 export default connect(mapStateToProps)(WishlistNavItem);

@@ -28,6 +28,8 @@ export default function CountrySelect({ handleChange, value }: PropsType) {
       key={selectedOption}
       defaultValue={selectedOption}
       options={countries}
+      size="small"
+      fullWidth
       value={selectedOption}
       isOptionEqualToValue={(option) => option.label === value}
       getOptionLabel={(option) => option.label}

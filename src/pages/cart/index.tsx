@@ -1,47 +1,39 @@
 import themeColor from "@/components/constant/color";
 import { CartType } from "@/components/types/cart.types";
-import {
-  addToCart,
-  decrementQantity,
-  deleteFromCart,
-  incrementQuantity,
-  initCart,
-} from "@/store/apps/cart";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Box, Chip, IconButton } from "@mui/material";
+import { initCart, resetCart } from "@/store/apps/cart";
+import { useAppDispatch } from "@/store/hooks";
+import { Box } from "@mui/material";
 import { FaMinus } from "@react-icons/all-files/fa/FaMinus";
 import { FaPlus } from "@react-icons/all-files/fa/FaPlus";
 import { FaTrash } from "@react-icons/all-files/fa/FaTrash";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { destroy, get, post } from "@/handler/api.handler";
+import { destroy, post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import { ClipLoader } from "react-spinners";
+import Swal from "sweetalert2";
+import ComponentSpinner from "@/components/widgets/spinner/component.spinner";
+import { UserType } from "@/components/types/user.types";
 const Layout = dynamic(() => import("@/components/design/layout"));
 const Card = dynamic(() => import("@mui/material/Card"));
 const CardContent = dynamic(() => import("@mui/material/CardContent"));
-const CardHeader = dynamic(() => import("@mui/material/CardHeader"));
+const Chip = dynamic(() => import("@mui/material/Chip"));
+const IconButton = dynamic(() => import("@mui/material/IconButton"));
+const Divider = dynamic(() => import("@mui/material/Divider"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
+const Product = dynamic(() => import("@/components/views/product"));
 
 function Cart(props: any) {
-  const [cart, setCart] = useState<CartType[]>(props.cart);
-  const router = useRouter();
+  const cart = props.cart as CartType[];
+  const user = props.user as UserType;
   const [loading, setLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    setCart(props.cart);
-  }, [props.cart]);
-
-  useEffect(() => {
-    setCart(props.cart);
-  }, []);
 
   // Function to calculate total
   const calculateLength = cart.reduce(
@@ -54,29 +46,81 @@ function Cart(props: any) {
     0
   );
 
+  const clearCart = async () => {
+    try {
+      setLoading(true);
+      const res = await destroy(routeConfig.cart.clear);
+      if (res && res.status_code == 200) {
+        dispatch(resetCart(res.data));
+        Swal.fire({
+          text: "Your cart have been successfully deleted.",
+          icon: "success",
+        });
+      } else {
+        Swal.fire({
+          text: "Error detected. Please try again.",
+          icon: "error",
+        });
+      }
+      setLoading(false);
+    } catch (e) {
+      Swal.fire({
+        text: "Error detected. Please try again.",
+        icon: "error",
+      });
+      setLoading(false);
+    }
+  };
+
+  const clearFromCart = async (id: number) => {
+    try {
+      setLoading(true);
+      const res = await destroy(routeConfig.cart.list + "/" + id);
+      if (res && res.status_code == 200) {
+        console.log(res.data);
+        dispatch(resetCart(res.data));
+        Swal.fire({
+          text: "Your cart have been successfully updated.",
+          icon: "success",
+        });
+      } else {
+        Swal.fire({
+          text: "Error detected. Please try again.",
+          icon: "error",
+        });
+      }
+      setLoading(false);
+    } catch (e) {
+      Swal.fire({
+        text: "Error detected. Please try again.",
+        icon: "error",
+      });
+      setLoading(false);
+    }
+  };
+
   const handleAction = async (
     id: number,
     quantity: number,
     type = true //1 is increase , 0 is decrease
   ) => {
     // quantity
-    setLoading(true);
+    setUpdateLoading(true);
     if (quantity == 1 && !type) {
       const res = await destroy(routeConfig.cart.list + "/" + id);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }
-      setLoading(false);
+      setUpdateLoading(false);
     } else {
       let newQuantity = type ? quantity + 1 : quantity - 1;
       const res = await post(routeConfig.cart.quantity + "/" + id, {
         quantity: newQuantity,
       });
-      console.log(res);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }
-      setLoading(false);
+      setUpdateLoading(false);
     }
   };
 
@@ -86,211 +130,235 @@ function Cart(props: any) {
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
+        flexDirection={"column"}
         mt={6}
       >
-        <Grid
-          container
-          maxWidth={"lg"}
-          display={"flex"}
-          justifyContent={"center"}
-        >
-          <Grid item lg={9} md={9} sm={12} xs={12}>
-            {calculateLength > 0 ? (
-              <Card
-                sx={{ width: 1, p: 2, backgroundColor: "transparent" }}
-                elevation={0}
-              >
-                <CardHeader
-                  title={
-                    <Typography variant={"h5"} fontWeight={500}>
-                      Cart (
-                      {calculateLength + (calculateLength > 0 ? " items" : "")})
-                    </Typography>
-                  }
-                  action={
-                    <CustomLink
-                      title="Clear Cart"
-                      action={() => {}}
-                      type="contained"
-                      color={"error"}
-                    />
-                  }
-                />
-                <CardContent sx={{ p: { md: "inherit", xs: 0 } }}>
-                  {cart.map((item: CartType, key) => {
-                    return (
-                      <Card key={key} sx={{ borderRadius: 3, mt: 3 }}>
-                        <CardContent>
-                          <Grid
-                            container
-                            display={"flex"}
-                            justifyContent={"space-between"}
-                            alignItems={"center"}
+        <Grid container maxWidth={"lg"} justifyContent={"center"} spacing={2}>
+          <Grid item lg={8} md={8} sm={12} xs={12}>
+            {loading ? (
+              <Grid display={"flex"} justifyContent={"center"}>
+                <ComponentSpinner size={14} loading={true} />
+              </Grid>
+            ) : calculateLength > 0 ? (
+              <Grid border={1} borderColor={themeColor.lightGreyColor}>
+                <Grid
+                  display={"flex"}
+                  p={2}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  sx={{ backgroundColor: themeColor.lightGreyColor }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    textTransform={"capitalize"}
+                    fontWeight={"bold"}
+                    color={themeColor.textGreyColor}
+                  >
+                    Shopping Cart (
+                    {calculateLength + (calculateLength > 0 ? " items" : "")})
+                  </Typography>
+                  <CustomLink
+                    width={"auto"}
+                    padding={"auto"}
+                    title="Clear Cart"
+                    action={clearCart}
+                    type="contained"
+                    color={"error"}
+                  />
+                </Grid>
+
+                {cart.map((item: CartType, key) => {
+                  return (
+                    <Grid
+                      key={key}
+                      px={1}
+                      m={1}
+                      py={2}
+                      border={1}
+                      borderColor={themeColor.lightGreyColor}
+                    >
+                      <Grid
+                        container
+                        display={"flex"}
+                        justifyContent={"space-between"}
+                      >
+                        <Grid
+                          item
+                          md={10}
+                          xs={9}
+                          key={key}
+                          display={"flex"}
+                          gap={2}
+                        >
+                          <CustomLink
+                            padding={0}
+                            width={{ md: 150, xs: 60 }}
+                            link
+                            url={`/products/${item.product.slug}`}
                           >
+                            <Box
+                              component={"img"}
+                              alt={"product-" + item.product.slug}
+                              sx={{
+                                width: { md: 150, xs: 60 },
+                                height: { md: 150, xs: 60 },
+                                objectFit: "cover",
+                              }}
+                              src={item.product.thumbnail.url}
+                            />
+                          </CustomLink>
+                          <Grid>
                             <Grid
-                              item
-                              md={9}
-                              xs={12}
-                              key={key}
-                              display={"flex"}
-                              alignItems={"center"}
-                              gap={2}
-                            >
-                              <CustomLink
-                                padding={0}
-                                width={{ md: 100, xs: 60 }}
-                                link
-                                url={`/products/${item.product.slug}`}
-                              >
-                                <Box
-                                  component={"img"}
-                                  alt={"product-" + item.product.slug}
-                                  sx={{
-                                    width: { md: 100, xs: 60 },
-                                    height: { md: 100, xs: 60 },
-                                    objectFit: "contain",
-                                  }}
-                                  src={item.product.thumbnail.url}
-                                />
-                              </CustomLink>
-                              <Grid>
-                                <Typography variant="caption">
-                                  {item?.product?.name}
-                                </Typography>
-                                <Typography variant="h6" fontWeight={"bold"}>
-                                  ${item?.product?.price}
-                                </Typography>
-                                <Grid display={"flex"}>
-                                  {item.options.map((option, key1) => {
-                                    return (
-                                      <Chip
-                                        key={key1}
-                                        color="primary"
-                                        size="small"
-                                        label={option.value}
-                                      />
-                                    );
-                                  })}
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                            <Grid
-                              item
-                              md={3}
-                              xs={12}
                               display={"flex"}
                               flexDirection={"column"}
-                              alignItems={"center"}
-                              sx={{
-                                mt: { md: "inherit", xs: 2 },
-                                flexDirection: { md: "column", xs: "row" },
-                                justifyContent: { xs: "space-between" },
-                              }}
+                              gap={2}
                             >
-                              <Box
+                              <Grid>
+                                <Typography variant="body2" fontWeight={"bold"}>
+                                  {item?.product?.name}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  fontWeight={"bold"}
+                                >
+                                  ${item?.product?.price}
+                                </Typography>
+                              </Grid>
+                              <Grid display={"flex"}>
+                                {item.options?.map((option, key1) => {
+                                  return (
+                                    <Chip
+                                      key={key1}
+                                      color="primary"
+                                      size="small"
+                                      label={option.value}
+                                    />
+                                  );
+                                })}
+                              </Grid>
+                              <Grid
                                 display={"flex"}
-                                gap={1}
+                                gap={2}
                                 alignItems={"center"}
-                                justifyContent={"center"}
-                                border={1}
-                                borderRadius={3}
-                                px={1}
-                                py={0.5}
-                                borderColor={themeColor.borderColor}
                               >
-                                {loading ? (
-                                  <ClipLoader size={20} loading={true} />
-                                ) : (
-                                  <>
-                                    <IconButton
-                                      size="small"
-                                      color={
-                                        item.quantity == 1 ? "error" : "inherit"
-                                      }
-                                      onClick={() => {
-                                        handleAction(
-                                          item.id,
-                                          item.quantity,
-                                          false
-                                        );
+                                <Grid
+                                  display={"flex"}
+                                  gap={1}
+                                  alignItems={"center"}
+                                  justifyContent={"center"}
+                                  border={1}
+                                  borderRadius={3}
+                                  px={1}
+                                  py={0.5}
+                                  borderColor={themeColor.borderColor}
+                                >
+                                  {updateLoading ? (
+                                    <ClipLoader size={20} loading={true} />
+                                  ) : (
+                                    <>
+                                      <IconButton
+                                        size="small"
+                                        color={
+                                          item.quantity == 1
+                                            ? "error"
+                                            : "inherit"
+                                        }
+                                        onClick={() => {
+                                          handleAction(
+                                            item.id,
+                                            item.quantity,
+                                            false
+                                          );
+                                        }}
+                                      >
+                                        {item.quantity == 1 ? (
+                                          <FaTrash size={14} />
+                                        ) : (
+                                          <FaMinus size={14} />
+                                        )}
+                                      </IconButton>
+                                      <Typography
+                                        variant="body2"
+                                        px={1}
+                                        fontWeight={"bold"}
+                                        color={themeColor.primary.dark}
+                                      >
+                                        {item.quantity}
+                                      </Typography>
 
-                                        // getCart();
-                                      }}
-                                    >
-                                      {item.quantity == 1 ? (
-                                        <FaTrash />
-                                      ) : (
-                                        <FaMinus />
-                                      )}
-                                    </IconButton>
-                                    <Typography
-                                      variant="h6"
-                                      px={1}
-                                      fontWeight={"bold"}
-                                      color={themeColor.primary.dark}
-                                    >
-                                      {item.quantity}
-                                    </Typography>
-
-                                    <IconButton
-                                      size="small"
-                                      onClick={() => {
-                                        handleAction(
-                                          item.id,
-                                          item.quantity,
-                                          true
-                                        );
-                                      }}
-                                    >
-                                      <FaPlus />
-                                    </IconButton>
-                                  </>
-                                )}
-                              </Box>
-                              <Typography
-                                sx={{ mt: { md: 2, xs: 0 } }}
-                                fontWeight={"bold"}
-                                variant="h6"
-                              >
-                                $
-                                {(item.quantity * item.product.price).toFixed(
-                                  2
-                                )}
-                              </Typography>
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          handleAction(
+                                            item.id,
+                                            item.quantity,
+                                            true
+                                          );
+                                        }}
+                                      >
+                                        <FaPlus size={14} />
+                                      </IconButton>
+                                    </>
+                                  )}
+                                </Grid>
+                                <Divider flexItem orientation="vertical" />
+                                <CustomLink
+                                  width={"auto"}
+                                  padding={"auto"}
+                                  title="Delete"
+                                  action={() => {
+                                    clearFromCart(item.id);
+                                  }}
+                                  type="text"
+                                  size={"small"}
+                                />
+                              </Grid>
                             </Grid>
                           </Grid>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </CardContent>
-              </Card>
+                        </Grid>
+                        <Grid
+                          item
+                          md={2}
+                          xs={3}
+                          display={"flex"}
+                          flexDirection={"column"}
+                          alignItems={"flex-end"}
+                        >
+                          <Typography fontWeight={"bold"} variant="body1">
+                            ${(item.quantity * item.product.price).toFixed(2)}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  );
+                })}
+              </Grid>
             ) : (
               <Grid
                 display={"flex"}
                 justifyContent={"center"}
                 alignItems={"center"}
                 flexDirection={"column"}
-                minHeight={500}
-                gap={10}
+                minHeight={400}
+                width={1}
+                gap={5}
+                border={1}
+                borderColor={themeColor.lightGreyColor}
               >
-                <Grid
-                  display={"flex"}
-                  flexDirection={"column"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
+                <Typography
+                  variant="h6"
+                  maxWidth={400}
+                  textAlign={"center"}
+                  textTransform={"capitalize"}
+                  color={themeColor.textOrange}
                 >
-                  <Typography variant="h4" color={"secondary"}>
-                    Oops...
-                  </Typography>
-                  <Typography variant="h5" color={"secondary"}>
-                    Your cart is empty
-                  </Typography>
-                </Grid>
+                  It seems your cart is currently empty. Feel free to browse
+                  through our range of products!
+                </Typography>
                 <Grid>
                   <CustomLink
                     type="contained"
-                    width={300}
+                    width={200}
                     link
                     url="/products"
                     size={"large"}
@@ -301,47 +369,78 @@ function Cart(props: any) {
             )}
           </Grid>
           {calculateLength > 0 ? (
-            <Grid
-              item
-              lg={3}
-              md={3}
-              sm={12}
-              xs={12}
-              sx={{ p: { md: 1, xs: 3 } }}
-            >
-              <Card elevation={2} sx={{ width: 1, position: "relative" }}>
-                <CardContent>
+            <Grid item lg={4} md={4} sm={12} xs={12}>
+              <Grid
+                sx={{
+                  width: 1,
+                  position: "relative",
+                  border: 1,
+                  borderColor: themeColor.lightGreyColor,
+                }}
+              >
+                <Grid
+                  width={1}
+                  p={2}
+                  sx={{ backgroundColor: themeColor.lightGreyColor }}
+                >
                   <Typography
-                    variant="h5"
+                    variant="subtitle1"
+                    textTransform={"capitalize"}
                     fontWeight={"bold"}
-                    fontStyle={"italic"}
+                    color={themeColor.textGreyColor}
                   >
                     Order Summary
                   </Typography>
-                  <Grid
-                    mt={5}
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    height={80}
-                    mb={4}
+                </Grid>
+
+                <Grid
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                  px={2}
+                  my={1}
+                >
+                  <Typography
+                    variant="body1"
+                    fontWeight={"bold"}
+                    color={themeColor.textGreyColor}
                   >
-                    <Typography
-                      variant="h6"
-                      fontWeight={"bold"}
-                      color={"darkgrey"}
-                    >
-                      Total (
-                      {calculateLength + (calculateLength > 0 ? " items" : "")})
-                    </Typography>
-                    <Typography variant="h6" fontWeight={"bold"}>
-                      ${calculateTotal.toFixed(2)}
-                    </Typography>
-                  </Grid>
+                    Number of items
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    fontWeight={"bold"}
+                    color={themeColor.textGreyColor}
+                  >
+                    {calculateLength + (calculateLength > 0 ? " items" : "")}
+                  </Typography>
+                </Grid>
+                <Grid
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                  px={2}
+                  my={1}
+                >
+                  <Typography
+                    variant="body1"
+                    fontWeight={"bold"}
+                    color={themeColor.textGreyColor}
+                  >
+                    Total
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    fontWeight={"bold"}
+                    color={themeColor.textGreyColor}
+                  >
+                    ${calculateTotal.toFixed(2)}
+                  </Typography>
+                </Grid>
+                {user.has_permission ? (
                   <Grid
-                    mt={3}
+                    my={3}
                     bottom={15}
-                    // maxWidth={300}
                     display={"flex"}
                     justifyContent={"center"}
                     alignItems={"center"}
@@ -349,20 +448,41 @@ function Cart(props: any) {
                     <CustomLink
                       link
                       size={"large"}
-                      padding={1.5}
-                      url="/checkout"
+                      url={user.complete_info ? "/checkout" : "/account"}
+                      params={
+                        user.complete_info
+                          ? {}
+                          : {
+                              complete: true,
+                            }
+                      }
                       type="contained"
                       color={"primary"}
-                      title="Checkout"
-                      width={300}
+                      title={
+                        user.complete_info ? "Checkout" : "Complete your info"
+                      }
+                      width={200}
                       endIcon={<FaArrowRight />}
                     />
                   </Grid>
-                </CardContent>
-              </Card>
+                ) : (
+                  <Grid
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    textAlign={"center"}
+                  >
+                    <Typography variant="caption" color={"error"}>
+                      Apologies, you're currently unable to proceed with the
+                      checkout.
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
             </Grid>
           ) : null}
         </Grid>
+        {/* <Product perPage={8} /> */}
       </Grid>
     </Layout>
   );
@@ -370,7 +490,7 @@ function Cart(props: any) {
 
 const mapStateToProps = (state: any) => ({
   cart: state.cart.items,
-  user: state.user.info,
+  user: state.user.auth,
 });
 
 export default connect(mapStateToProps)(Cart);

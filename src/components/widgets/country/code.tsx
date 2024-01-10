@@ -1,5 +1,5 @@
-import React from "react";
-import { MenuItem, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Autocomplete, Box, MenuItem, TextField } from "@mui/material";
 const countries = [
   {
     name: "Afghanistan",
@@ -1215,26 +1215,71 @@ const countries = [
 ];
 
 function CountryCode({ handleChange, code }: CountryCodePropType) {
+  const [selectedOption, setSelectedOption] = useState<any>(null);
+
+  const setOptionByLabel = (value: any) => {
+    const foundOption = countries.find((option) => option.dial_code == value);
+    if (foundOption) {
+      setSelectedOption(foundOption);
+    } else {
+      setSelectedOption(null); // Clear selection if label not found
+    }
+  };
+
+  useEffect(() => {
+    if (code) setOptionByLabel(code);
+  }, [code]);
+
   return (
-    <TextField
-      select
-      label="Country Code"
-      value={code}
-      onChange={handleChange}
-      variant="outlined"
-      style={{ marginRight: "8px", minWidth: 100 }}
-    >
-      <MenuItem value={""} disabled>
-        Choose Country
-      </MenuItem>
-      {countries.map((item, key) => {
-        return (
-          <MenuItem key={key} value={item.dial_code}>
-            {item.dial_code + " (" + item.name + ")"}
-          </MenuItem>
-        );
-      })}
-    </TextField>
+    <Autocomplete
+      freeSolo
+      disablePortal
+      disableClearable
+      
+      id="combo-box-demo"
+      options={countries}
+      defaultValue={selectedOption}
+      value={selectedOption}
+      size="small"
+      fullWidth
+      getOptionLabel={(option) => option.dial_code}
+      sx={{ width: 120 }}
+      isOptionEqualToValue={(option) => option.dial_code === code}
+      onChange={(e, newValue) => {
+        handleChange(newValue?.dial_code);
+      }}
+      renderOption={(props, option) => (
+        <Box
+          component="li"
+          sx={{ "& > img": { mr: 0.5, flexShrink: 0 } }}
+          {...props}
+          key={option.code + "-" + option.dial_code}
+        >
+          <img
+            key={option.code + "-" + option.dial_code}
+            loading="lazy"
+            width="15"
+            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+            alt=""
+          />
+          {option.dial_code}
+        </Box>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Code"
+          InputProps={{
+            ...params.InputProps,
+            type: "search",
+            style: {
+              // borderRadius: 0,
+            },
+          }}
+        />
+      )}
+    />
   );
 }
 

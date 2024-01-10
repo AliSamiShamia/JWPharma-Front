@@ -73,12 +73,12 @@ function ProductDetails() {
     } else {
       if (auth.user) {
         setLoading(true);
-
-        const res = await post(routeConfig.cart.store, {
+        let data = {
           product_id: product.id,
           quantity: quantity,
           options: options,
-        });
+        };
+        const res = await post(routeConfig.cart.store, data);
         setLoading(false);
         if (res && res.status_code == 200) {
           dispatch(
@@ -112,8 +112,8 @@ function ProductDetails() {
         <ComponentSpinner loading={loading} />
       ) : (
         <Grid p={3} display={"flex"} justifyContent={"center"}>
-          <Grid container maxWidth={"xl"}>
-            <Grid item lg={6} md={6} sm={12} xs={12} p={3}>
+          <Grid container maxWidth={"xl"} spacing={2} my={2}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Fade {...properties}>
                 {product.media.map((image, index) => (
                   <Box component={"div"} key={index}>
@@ -122,7 +122,7 @@ function ProductDetails() {
                       alt={"product-" + index}
                       sx={{
                         width: "100%",
-                        height: { xs: 250, sm: 500 },
+                        height: { sm: 500, xs: 250 },
                         objectFit: "cover",
                         borderRadius: "1rem",
                       }}
@@ -132,19 +132,19 @@ function ProductDetails() {
                 ))}
               </Fade>
             </Grid>
-            <Grid item lg={6} md={6} sm={12} xs={12} p={2}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Box display={"flex"}>
                 {product.categories.map((item, key) => {
                   return (
                     <Grid key={key}>
                       <CustomLink
                         link
+                        type="text"
+                        width={"auto"}
                         url={"/collection/products/" + item.slug}
                         padding={0}
                       >
-                        <Typography fontStyle={"italic"} variant="caption">
-                          {item.name}
-                        </Typography>
+                        <Typography variant="caption">{item.name}</Typography>
                       </CustomLink>
                       <Divider
                         orientation="vertical"
@@ -155,8 +155,10 @@ function ProductDetails() {
                   );
                 })}
               </Box>
-              <Typography variant="h4">{product.name}</Typography>
-              <Typography variant="caption" pl={1} color={themeColor.greyColor}>
+              <Typography variant="subtitle1" fontWeight={"bold"}>
+                {product.name}
+              </Typography>
+              <Typography variant="caption" color={themeColor.greyColor}>
                 SKU: {product.sku}
               </Typography>
               <Grid mt={2} p={1}>
@@ -171,8 +173,9 @@ function ProductDetails() {
                       Was:
                     </Typography>
                     <Typography
-                      variant="body1"
+                      variant="caption"
                       color={"#a3a3a3"}
+                      fontStyle={"italic"}
                       sx={{
                         textDecoration: "line-through",
                       }}
@@ -187,7 +190,7 @@ function ProductDetails() {
                   </Typography>
                   <Grid display={"flex"} alignItems={"center"} gap={1}>
                     <Typography
-                      variant="h6"
+                      variant="body1"
                       color={"primary"}
                       fontWeight={"bold"}
                     >
@@ -197,7 +200,7 @@ function ProductDetails() {
                 </Grid>
               </Grid>
               <Divider flexItem />
-              <Grid my={3}>
+              <Grid my={2}>
                 <ProductOptions
                   options={options}
                   handleParamChange={handleParamChange}
@@ -205,7 +208,7 @@ function ProductDetails() {
                 />
               </Grid>
               <Divider flexItem />
-              <Grid my={3}>
+              <Grid my={1}>
                 <AddToCartWidget
                   product={product}
                   quantity={quantity}
@@ -216,7 +219,8 @@ function ProductDetails() {
                 <CustomLink
                   action={handleAddToCart}
                   title="Add To Cart"
-                  width={300}
+                  width={200}
+                  padding={"auto"}
                   type="contained"
                   size={"large"}
                   color={"primary"}

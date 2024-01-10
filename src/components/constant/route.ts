@@ -24,8 +24,10 @@ const routeConfig = {
   },
   order: {
     list: "order",
+    view: "order/view",
     track: "order/track",
     placeorder: "order",
+    invoice: "order/invoice",
   },
   banner: {
     list: "banner",
@@ -36,9 +38,14 @@ const routeConfig = {
     profile: "profile",
     refresh: "register",
     addresses: "user-address",
+    defaultAddress: "default-address",
     otp: {
       send: "otp/send",
       check: "otp/check",
+    },
+    update: {
+      info: "update-info",
+      security: "update-info/security",
     },
   },
 };

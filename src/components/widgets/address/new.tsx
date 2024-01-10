@@ -40,6 +40,7 @@ function NewAddress({ open, setOpen, action, address }: PropsType) {
   const [form_data, setFormData] = useState<UserAddressType>({
     id: "-1",
     country: "",
+    country_code: "",
     city: "",
     building: "",
     flat_number: "",
@@ -108,10 +109,15 @@ function NewAddress({ open, setOpen, action, address }: PropsType) {
           >
             <Grid item md={12} xs={12}>
               <Country
-                value={form_data?.country}
+                value={form_data.country}
                 handleChange={(value: any) => {
-                  handleChange("country", value.country);
-                  handleChange("country_code", value.country_code);
+                  // handleChange("country", value);
+                  // handleChange("country_code", value.code);
+                  setFormData({
+                    ...form_data,
+                    country: value.label,
+                    country_code: value.code,
+                  });
                 }}
               />
             </Grid>

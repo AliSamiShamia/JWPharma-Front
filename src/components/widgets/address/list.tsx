@@ -47,29 +47,31 @@ function AddressList() {
   };
 
   return (
-    <Grid>
+    <Grid
+      width={1}
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
       {loading ? (
-        <ComponentSpinner loading={loading} />
+        <Grid>
+          <ComponentSpinner loading={true} />
+        </Grid>
       ) : (
         <>
-          <Grid mt={2}>
-            <Card
-              sx={{ width: 1, backgroundColor: "transparent" }}
-              elevation={0}
-            >
-              <CardHeader
-                action={
-                  <CustomLink
-                    title="New Address"
-                    action={() => {
-                      setOpen(true);
-                    }}
-                    type="outlined"
-                    color={"primary"}
-                  />
-                }
+          <Grid container maxWidth={"xl"} width={1}>
+            <Grid width={1} display={"flex"} justifyContent={"flex-end"}>
+              <CustomLink
+                width={150}
+                padding={"auto"}
+                title="New Address"
+                action={() => {
+                  setOpen(true);
+                }}
+                type="outlined"
+                color={"primary"}
               />
-            </Card>
+            </Grid>
             <Grid container>
               {data.map((address, key) => {
                 return (

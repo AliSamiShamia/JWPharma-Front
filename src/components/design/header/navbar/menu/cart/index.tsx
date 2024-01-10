@@ -7,18 +7,18 @@ import { initCart } from "@/store/apps/cart";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Typography } from "@mui/material";
 import { RiShoppingCart2Line } from "@react-icons/all-files/ri/RiShoppingCart2Line";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
 function CartNavItem(props: any) {
-  const { cart } = props;
-  //Cart  redux state
-  const auth = useAuth();
-  //Cart  items
+  const { cart, user } = props;
+
   const [cartLength, setCartLength] = useState(0);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const router = useRouter();
   // Function to calculate total
   const calculateTotal = () => {
     let counts = cart.reduce(
@@ -43,10 +43,13 @@ function CartNavItem(props: any) {
   };
 
   useEffect(() => {
-    if (auth.user) {
+    if (!router.isReady) {
+      return;
+    }
+    if (user.isAuth) {
       loadCart();
     }
-  }, [auth]);
+  }, [user, router]);
 
   useEffect(() => {
     calculateTotal();
@@ -89,6 +92,9 @@ function CartNavItem(props: any) {
   );
 }
 
-const mapStateToProps = (state: any) => ({ cart: state.cart.items });
+const mapStateToProps = (state: any) => ({
+  cart: state.cart.items,
+  user: state.user.auth,
+});
 
 export default connect(mapStateToProps)(CartNavItem);
