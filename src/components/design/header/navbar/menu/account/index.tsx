@@ -7,29 +7,11 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import dynamic from "next/dynamic";
 const Typography = dynamic(() => import("@mui/material/Typography"));
-const Menu = dynamic(() => import("@mui/material/Menu"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 function UserNavItem(props: any) {
   const { auth } = props;
-  //Cart & Wishlist redux state
-  const userState = useAppSelector((state) => state.user.info);
-
-  //Cart & Wishlist items
-  const [user, setUser] = useState<UserType>();
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = (event: any) => {
-    setAnchorEl(null);
-  };
-
-  React.useEffect(() => {
-    setUser(userState);
-  }, [userState]);
+ 
 
   return (
     <>
@@ -41,14 +23,15 @@ function UserNavItem(props: any) {
             alignItems: "center",
           }}
         >
-          <IconButton
+          {/* <IconButton
             size="small"
             aria-label="account of current user"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleClick}
             color="inherit"
-          >
+          > */}
+          <CustomLink link url={auth?.id ? "/account" : "/login"}>
             <Box sx={{ display: { sm: "flex", xs: "none" } }}>
               <Typography
                 ml={0.4}
@@ -61,8 +44,9 @@ function UserNavItem(props: any) {
               </Typography>
             </Box>
             {auth.id ? <MdPerson size={22} /> : <MdPersonOutline size={22} />}
-          </IconButton>
-          <Menu
+          </CustomLink>
+          {/* </IconButton> */}
+          {/* <Menu
             id="menu-appbar"
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -92,13 +76,13 @@ function UserNavItem(props: any) {
                 Orders
               </CustomLink>
             </MenuItem>
-          </Menu>
+          </Menu> */}
         </Box>
       </Box>
     </>
   );
 }
 
-const mapStateToProps = (state: any) => ({ auth: state.tempUser.info });
+const mapStateToProps = (state: any) => ({ auth: state.user.auth });
 
 export default connect(mapStateToProps)(UserNavItem);

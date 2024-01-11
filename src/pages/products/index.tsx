@@ -1,14 +1,11 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import FilterList from "@/components/widgets/filter";
-import { get, post } from "@/handler/api.handler";
-import { useAuth } from "@/hooks/useAuth";
-import { addToCart } from "@/store/apps/cart";
+import { get } from "@/handler/api.handler";
 import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { Fragment, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, {  useEffect, useState } from "react";
 import Swal from "sweetalert2";
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
@@ -23,19 +20,26 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [data, setData] = useState({} as ProductListType);
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
-
+  const { keys } = router.query;
 
   const loadData = async (
     page: number,
     filterData: any,
     action?: (status: boolean) => void
   ) => {
-    setFilterParam(filterData);
+    let filters = [];
+    if (typeof filterData == "string") {
+      filters = JSON.parse(filterData);
+    } else {
+      filters = JSON.parse(JSON.stringify(filterData));
+    }
+
     let data = {
       page: page,
       per_page: perPage ? perPage : 12,
-      ...filterData,
+      ...filters,
     };
+    setFilterParam(filters);
     if (filterParams.price) {
       const { min, max } = filterParams.price;
       if (min > max) {
@@ -79,10 +83,14 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     }
 
     if (document.readyState == "complete") {
-      loadData(page, filterParams);
+      if (keys) {
+        loadData(page, keys);
+      } else {
+        loadData(page, JSON.stringify(filterParams));
+      }
     }
     return () => {};
-  }, [page]);
+  }, [page, keys]);
 
   return (
     <Layout>
@@ -96,7 +104,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
             setFilterParam={setFilterParam}
             params={filterParams}
           />
-          {data.products.length > 0 ? (
+          {data.products?.length > 0 ? (
             <Grid
               alignItems={"center"}
               display={"flex"}
@@ -160,7 +168,5 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     </Layout>
   );
 }
-
-const mapStateToProps = (state: any) => ({ wishlist: state.wishlist.items });
 
 export default Product;

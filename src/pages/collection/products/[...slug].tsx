@@ -1,14 +1,12 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import FilterList from "@/components/widgets/filter";
-import { get, post } from "@/handler/api.handler";
-import { useAuth } from "@/hooks/useAuth";
-import { addToCart } from "@/store/apps/cart";
+import { get } from "@/handler/api.handler";
+
 import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { Fragment, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
@@ -23,17 +21,28 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [data, setData] = useState({} as CollectionType);
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
-  const { slug } = router.query;
-  const auth = useAuth();
-  const dispatch = useDispatch();
+  const { slug,keys } = router.query;
 
 
-  const loadData = async (page: number, action?: (status: boolean) => void) => {
+  const loadData = async (
+    page: number,
+    filterData: any,
+    action?: (status: boolean) => void
+  ) => {
+    let filters = [];
+    if (typeof filterData == "string") {
+      filters = JSON.parse(filterData);
+    } else {
+      filters = JSON.parse(JSON.stringify(filterData));
+    }
+
     let data = {
       page: page,
       per_page: perPage ? perPage : 12,
-      ...filterParams,
+      ...filters,
     };
+    setFilterParam(filters);
+
     if (filterParams.price) {
       const { min, max } = filterParams.price;
       if (min > max) {
@@ -76,10 +85,14 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
     }
 
     if (document.readyState == "complete" && slug) {
-      loadData(page);
+      if (keys) {
+        loadData(page, keys);
+      } else {
+        loadData(page, JSON.stringify(filterParams));
+      }
     }
     return () => {};
-  }, [page, slug, filterParams]);
+  }, [page, slug]);
 
   return (
     <Layout>
@@ -123,7 +136,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                       <ProductItem
                         product={item}
                         action={() => {
-                          loadData(page);
+                          loadData(page, filterParams);
                         }}
                       />
                     </Grid>

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 function AuthMiddleware({ children }: any) {
   const router = useRouter();
-  const user = useAppSelector((item) => item.user.info);
+  const user = useAppSelector((item) => item.user.auth);
 
   useEffect(() => {
     if (!router.isReady) {

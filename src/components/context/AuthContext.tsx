@@ -10,6 +10,10 @@ import axios from "axios";
 // ** Config
 import routeConfig from "@/components/constant/route";
 import { post } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
+import { UserType } from "../types/user.types";
+import { useDispatch } from "react-redux";
+import { storeUser } from "@/store/apps/user";
 
 // ** Types
 
@@ -32,18 +36,21 @@ type Props = {
 
 const AuthProvider = ({ children }: Props) => {
   // ** States
-  const [user, setUser] = useState<UserDataType | null>(defaultProvider.user);
+  const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading);
 
+  const auth = useAppSelector((state) => state.user.auth);
   // ** Hooks
   const router = useRouter();
-  
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      const storedToken = window.localStorage.getItem(
-        routeConfig.storageTokenKeyName
-      )!;
+      setUser(auth);
+      const storedToken = auth.token!;
       if (storedToken) {
+        localStorage.setItem("accessToken", storedToken);
+
         setLoading(true);
         try {
           const res = await post(
@@ -54,6 +61,7 @@ const AuthProvider = ({ children }: Props) => {
           if (res && res.status_code == 200) {
             setLoading(false);
             setUser({ ...res.data });
+            dispatch(storeUser({ ...res.data, isAuth: true }));
             localStorage.setItem("userData", { ...res.data });
             localStorage.setItem("refreshToken", res.data.token);
             localStorage.setItem("accessToken", res.data.token);

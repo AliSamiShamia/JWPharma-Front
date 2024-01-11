@@ -44,21 +44,13 @@ function UserAddresses() {
       ) : (
         <>
           <Grid mt={2}>
-            <Card sx={{ backgroundColor: themeColor.lightGreyColor }}>
+            <Card sx={{ border: 1, borderColor: themeColor.lightGreyColor }}>
               <CardHeader
-                title={<Chip color="primary" label={address.type} />}
+                title={
+                  <Chip color="primary" size="small" label={address.type} />
+                }
                 action={[
                   <Grid key={"actions"} display={"flex"} alignItems={"center"}>
-                    <CustomLink link url={"/account/addresses/" + address.id}>
-                      <Typography
-                        variant="caption"
-                        color={themeColor.secondary.dark}
-                        fontWeight={"bold"}
-                      >
-                        Edit
-                      </Typography>
-                    </CustomLink>
-
                     <CustomLink link url={"/account/addresses"}>
                       <Typography
                         variant="caption"
@@ -76,17 +68,25 @@ function UserAddresses() {
                   <Grid
                     display={"flex"}
                     justifyContent={"space-between"}
-                    alignItems={"center"}
+                    flexDirection={"column"}
                   >
-                    <Grid>
-                      <Typography variant="body1" fontWeight={"bold"}>
-                        {address.country ? address.country + ", " : ""}
-                        {address.city ? address.city + ", " : ""}
-                        {address.building ? address.building + ", " : ""}
-                        {address.flat_number ? address.flat_number : ""}
-                      </Typography>
-                    </Grid>
-                    
+                    <Typography
+                      variant="caption"
+                      fontWeight={"bold"}
+                      color={themeColor.textGreyColor}
+                    >
+                      {address.country ? address.country + ", " : ""}
+                      {address.city ? address.city + ", " : ""}
+                      {address.building ? address.building + ", " : ""}
+                      {address.flat_number ? address.flat_number : ""}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      fontWeight={"bold"}
+                      color={themeColor.textGreyColor}
+                    >
+                      {address.address ? address.address : ""}
+                    </Typography>
                   </Grid>
                 ) : null}
               </CardContent>

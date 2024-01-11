@@ -70,12 +70,14 @@ type RegisterParams = {
 
 type UserDataType = {
   id: number;
-  role: string;
-  email: string;
-  fullName: string;
-  username: string;
-  password: string;
-  avatar?: string | null;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  email?: string;
+  phone_number?: string;
+  country?: string;
+  token: string;
+  isAuth: boolean;
 };
 
 type AuthValuesType = {
@@ -114,6 +116,7 @@ type OptionItem = {
 };
 
 type FilterValueProps = {
+  type_id: number;
   value: string;
   id: number;
 };
@@ -126,6 +129,7 @@ type CountryCodePropType = {
 type UserAddressType = {
   id: string;
   country: string;
+  country_code: string;
   city: string;
   building: string;
   flat_number: string;
@@ -139,9 +143,12 @@ type OrderType = {
   id: number;
   tracking_number: string;
   status: string;
+  user: string;
   user_address: OrderAddress;
   items: OrderItemType[];
   total_amount: string;
+  quantity: number;
+  created_at: string;
 };
 type OrderAddress = {
   id: number;

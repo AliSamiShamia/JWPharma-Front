@@ -7,7 +7,7 @@ import { MdFavoriteBorder } from "@react-icons/all-files/md/MdFavoriteBorder";
 import { MdFavorite } from "@react-icons/all-files/md/MdFavorite";
 const Typography = dynamic(() => import("@mui/material/Typography"));
 import "react-slideshow-image/dist/styles.css";
-import { destroy, get, post } from "@/handler/api.handler";
+import { destroy, post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import CustomSpinner from "@/components/widgets/spinner";
 import { useDispatch } from "react-redux";
@@ -26,7 +26,7 @@ type PropType = {
 };
 
 function ProductItem({ product, action }: PropType) {
-  const user = useAppSelector((state) => state.user.info);
+  const user = useAppSelector((state) => state.user.auth);
   const properties = {
     arrows: false,
     duration: 700,
@@ -35,6 +35,7 @@ function ProductItem({ product, action }: PropType) {
   const theme = useTheme();
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
+  const [imageLoaded, setImageLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
 
@@ -130,7 +131,6 @@ function ProductItem({ product, action }: PropType) {
       borderRadius={"1rem"}
       height={"100%"}
     >
-      {loading && <CustomSpinner loading={true}></CustomSpinner>}
       <Box
         width={35}
         height={35}
@@ -176,11 +176,37 @@ function ProductItem({ product, action }: PropType) {
       </Box>
       <Fade {...properties}>
         {product.media.map((image, index) => (
-          <Box component={"div"} key={index}>
+          <Box component={"div"} key={index} display={"relative"}>
             <CustomLink padding={0} link url={`/products/${product.slug}`}>
+              {imageLoaded ? (
+                <Box
+                  zIndex={99999}
+                  position={"absolute"}
+                  top={0}
+                  bottom={0}
+                  left={0}
+                  right={0}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  sx={{
+                    backgroundColor: "#00000077",
+                    borderTopLeftRadius: "1rem",
+                    borderTopRightRadius: "1rem",
+                  }}
+                >
+                  <ClipLoader loading={true} />
+                </Box>
+              ) : null}
               <Box
                 component={"img"}
-                alt={"product-" + name}
+                onLoad={() => {
+                  setImageLoading(false);
+                }}
+                onLoadStartCapture={() => {
+                  setImageLoading(true);
+                }}
+                alt={"product-" + product.name}
                 sx={{
                   width: "100%",
                   height: { xs: 250, sm: 300 },

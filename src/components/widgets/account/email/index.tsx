@@ -22,6 +22,8 @@ function EmailComponent({ form_data, handleChange }: EmailPropType) {
     <Grid display={"flex"} width={1}>
       <TextField
         autoFocus
+        // size="small"
+        autoComplete="ssss"
         fullWidth
         label="Email Address"
         value={form_data.user_name}

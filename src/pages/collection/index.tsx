@@ -41,13 +41,13 @@ function Collection({ perPage }: PaginationPropType) {
     }
     setLoadingMore(false);
   };
-  
+
   const handleLoadMore = () => {
     setLoadingMore(true);
     let newPage = page + 1;
     setPage(newPage);
   };
- 
+
   useEffect(() => {
     if (!router.isReady) {
       return;
@@ -69,9 +69,16 @@ function Collection({ perPage }: PaginationPropType) {
           display={"flex"}
           justifyContent={"center"}
           flexDirection={"column"}
+          alignItems={"center"}
         >
           {data.length > 0 ? (
-            <Grid p={2} container>
+            <Grid
+              p={2}
+              container
+              maxWidth={"xl"}
+              display={"flex"}
+              justifyContent={"center"}
+            >
               {data.map((item, key) => {
                 return (
                   <Grid item key={key} lg={4} md={4} sm={6} xs={12}>
@@ -96,7 +103,12 @@ function Collection({ perPage }: PaginationPropType) {
               )}
             </Grid>
           ) : (
-            <Typography variant="h6" color={themeColor.secondary.dark} display={"flex"} justifyContent={"center"}>
+            <Typography
+              variant="h6"
+              color={themeColor.secondary.dark}
+              display={"flex"}
+              justifyContent={"center"}
+            >
               Oops, there are currently no collections available.
             </Typography>
           )}

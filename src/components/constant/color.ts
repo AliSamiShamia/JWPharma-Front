@@ -19,10 +19,13 @@ const themeColor = {
     light: "#000000",
     dark: "#000000",
   },
-  borderColor:'#e3e3e3',
-  greyColor:'#a3a3a3',
-  lightGreyColor:'#e3e3e3',
-  backgroundColor:'#e3e3e3',
+  borderColor: "#e3e3e3",
+  greyColor: "#a3a3a3",
+  textGreyColor: "#565959",
+  lightGreyColor: "#e3e3e3",
+  backgroundColor: "#e3e3e3",
+  mainBackground: "#f7f7fa", //"#fdfbf7",
+  textOrange: "#c7511f",
 };
 
 export default themeColor;

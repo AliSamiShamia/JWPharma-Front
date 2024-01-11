@@ -77,7 +77,7 @@ function CustomLink({
           sx={{
             borderRadius: 6,
             width: "100%",
-            p: padding ? padding : "auto",
+            p: padding ? padding : 0,
             fontWeight: "bold",
             "&:hover": {
               backgroundColor: "transparent",

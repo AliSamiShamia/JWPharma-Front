@@ -6,5 +6,9 @@ export type UserType = {
   email?: string;
   phone_number?: string;
   country?: string;
+  country_code?: string;
   token: string;
+  isAuth: boolean;
+  complete_info?: boolean;
+  has_permission?: boolean;
 };

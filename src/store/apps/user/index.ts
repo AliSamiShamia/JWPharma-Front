@@ -2,7 +2,7 @@ import { UserType } from "@/components/types/user.types";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  info: {} as UserType,
+  auth: {} as UserType,
 };
 
 export const userSlice = createSlice({
@@ -10,14 +10,14 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     storeUser: (state, action) => {
-      state.info = action.payload;
+      state.auth = action.payload;
     },
-    
+
     updateUser: (state, action) => {
-      state.info = action.payload;
+      state.auth = action.payload;
     },
     deleteUser: (state) => {
-      state.info = {} as UserType;
+      state.auth = {} as UserType;
     },
   },
 });
