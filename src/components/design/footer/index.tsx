@@ -152,7 +152,7 @@ const Footer = () => {
         >
           © {new Date().getFullYear()}, all rights reserved
         </Typography>
-        <CustomLink link url="/" padding={0} width={"auto"}>
+        <CustomLink link url="/refund-policy" padding={0} width={"auto"}>
           <Typography
             variant="caption"
             color={themeColor.textGreyColor}
@@ -161,7 +161,7 @@ const Footer = () => {
             Refund policy
           </Typography>
         </CustomLink>
-        <CustomLink link url="/" padding={0} width={"auto"}>
+        <CustomLink link url="/privacy-policy" padding={0} width={"auto"}>
           <Typography
             variant="caption"
             color={themeColor.textGreyColor}
@@ -170,7 +170,7 @@ const Footer = () => {
             Privacy policy
           </Typography>
         </CustomLink>
-        <CustomLink link url="/" padding={0} width={"auto"}>
+        <CustomLink link url="/terms-of-service" padding={0} width={"auto"}>
           <Typography
             variant="caption"
             color={themeColor.textGreyColor}

@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ComponentSpinner from "../../spinner/component.spinner";
+import { useAppSelector } from "@/store/hooks";
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
 
@@ -13,11 +14,13 @@ function MyOrder() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<OrderType[]>([]);
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.auth);
+  
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.order.list);
+      const res = await get(routeConfig.order.list,user?.token);
       if (res && res.status_code == 200) {
         setData(res.data);
       }
@@ -51,7 +54,6 @@ function MyOrder() {
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
-          // minHight={400}
         >
           {data.length > 0 ? (
             data.map((item, key) => {

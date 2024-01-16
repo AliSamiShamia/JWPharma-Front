@@ -2,10 +2,11 @@ import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import FilterList from "@/components/widgets/filter";
 import { get } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
@@ -14,13 +15,14 @@ const ComponentSpinner = dynamic(
 const Layout = dynamic(() => import("@/components/design/layout"));
 const ProductItem = dynamic(() => import("@/components/views/product/item"));
 
-function Product({ perPage, loadMore, showAll }: PaginationPropType) {
+function Product({ perPage, loadMore }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState({} as ProductListType);
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
   const { keys } = router.query;
+  const user = useAppSelector((state) => state.user.auth);
 
   const loadData = async (
     page: number,
@@ -58,7 +60,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       }
     }
     setLoading(true);
-    const res = await get(routeConfig.product.list, data);
+    const res = await get(routeConfig.product.list, user?.token, data);
     setLoading(false);
     action ? action(false) : null;
 
@@ -90,7 +92,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       }
     }
     return () => {};
-  }, [page, keys]);
+  }, [page]);
 
   return (
     <Layout>

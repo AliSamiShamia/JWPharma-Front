@@ -1,6 +1,7 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { post, get } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 import { Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
@@ -19,6 +20,7 @@ type PropsType = {
   setSelected: (address: UserAddressType) => void;
 };
 function AddressItem({ address, action, setSelected }: PropsType) {
+  const user = useAppSelector((state) => state.user.auth);
   const [loading, setLoading] = useState(false);
   //   const [data]
   const setDefault = async () => {
@@ -26,7 +28,8 @@ function AddressItem({ address, action, setSelected }: PropsType) {
       setLoading(true);
       const res = await post(
         routeConfig.account.addresses + "/default/" + address.id,
-        {}
+        null,
+        user.token
       );
       if (res && res.status_code == 200) {
         action();

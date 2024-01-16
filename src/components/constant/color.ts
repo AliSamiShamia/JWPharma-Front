@@ -26,6 +26,7 @@ const themeColor = {
   backgroundColor: "#e3e3e3",
   mainBackground: "#f7f7fa", //"#fdfbf7",
   textOrange: "#c7511f",
+  textOrangeLight: "#faf5f2",
 };
 
 export default themeColor;

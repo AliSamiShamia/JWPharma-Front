@@ -49,7 +49,7 @@ function Cart(props: any) {
   const clearCart = async () => {
     try {
       setLoading(true);
-      const res = await destroy(routeConfig.cart.clear);
+      const res = await destroy(routeConfig.cart.clear, user.token);
       if (res && res.status_code == 200) {
         dispatch(resetCart(res.data));
         Swal.fire({
@@ -75,7 +75,7 @@ function Cart(props: any) {
   const clearFromCart = async (id: number) => {
     try {
       setLoading(true);
-      const res = await destroy(routeConfig.cart.list + "/" + id);
+      const res = await destroy(routeConfig.cart.list + "/" + id, user.token);
       if (res && res.status_code == 200) {
         console.log(res.data);
         dispatch(resetCart(res.data));
@@ -107,16 +107,20 @@ function Cart(props: any) {
     // quantity
     setUpdateLoading(true);
     if (quantity == 1 && !type) {
-      const res = await destroy(routeConfig.cart.list + "/" + id);
+      const res = await destroy(routeConfig.cart.list + "/" + id, user.token);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }
       setUpdateLoading(false);
     } else {
       let newQuantity = type ? quantity + 1 : quantity - 1;
-      const res = await post(routeConfig.cart.quantity + "/" + id, {
-        quantity: newQuantity,
-      });
+      const res = await post(
+        routeConfig.cart.quantity + "/" + id,
+        {
+          quantity: newQuantity,
+        },
+        user.token
+      );
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }
@@ -228,6 +232,7 @@ function Cart(props: any) {
                                 {item.options?.map((option, key1) => {
                                   return (
                                     <Chip
+                                      sx={{ mx: 0.4 }}
                                       key={key1}
                                       color="primary"
                                       size="small"

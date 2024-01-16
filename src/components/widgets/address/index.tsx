@@ -14,6 +14,7 @@ const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
 );
 import CustomLink from "../link";
+import { useAppSelector } from "@/store/hooks";
 
 function UserAddresses() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,9 +22,11 @@ function UserAddresses() {
   const [address, setAddress] = useState<UserAddressType>(
     {} as UserAddressType
   );
+  const user = useAppSelector((state) => state.user.auth);
+
   const getAddress = async () => {
     setLoading(true);
-    const res = await get(routeConfig.account.defaultAddress);
+    const res = await get(routeConfig.account.defaultAddress,user?.token);
     if (res && res.status_code == 200) {
       setAddress(res.data);
     }

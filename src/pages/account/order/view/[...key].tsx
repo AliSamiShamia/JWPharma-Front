@@ -1,5 +1,6 @@
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -15,11 +16,12 @@ function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const { key } = router.query;
   const [order, setOrder] = useState({} as OrderItemType);
+  const user = useAppSelector((state) => state.user.auth);
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.order.view + "/" + key);
+      const res = await get(routeConfig.order.view + "/" + key,user?.token);
       if (res && res.status_code == 200) {
         setOrder(res.data);
       }

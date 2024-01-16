@@ -2,6 +2,7 @@ import routeConfig from "@/components/constant/route";
 import { get, post } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
 import { addToCart } from "@/store/apps/cart";
+import { useAppSelector } from "@/store/hooks";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -51,10 +52,12 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as ProductType[]);
- 
+  const user = useAppSelector((state) => state.user.auth);
+
+  const router = useRouter();
   const loadData = async (page: number) => {
     setData([]);
-    const res = await get(routeConfig.product.listWihtoutFilter, {
+    const res = await get(routeConfig.product.listWihtoutFilter, user?.token, {
       page: page,
       per_page: perPage,
     });
@@ -69,6 +72,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
     if (document.readyState == "complete") {
       loadData(page);
     }
@@ -104,16 +108,17 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
                 }}
               >
                 <Box component={"div"} flexGrow={1}>
-                  <Typography variant="h3">Featured products</Typography>
+                  <Typography variant="h3">Our Products</Typography>
                 </Box>
                 <Box component={"div"}>
                   <CustomLink
                     url={"/products"}
                     title={"Show All"}
                     color={"primary"}
-                    type="outlined"
+                    type="contained"
                     link={true}
-                    size={"large"}
+                    padding={"auto"}
+                    size={"medium"}
                   />
                 </Box>
               </Box>

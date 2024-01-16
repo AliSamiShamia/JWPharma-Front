@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import "react-slideshow-image/dist/styles.css";
 import Box from "@mui/material/Box";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
+import { Grid } from "@mui/material";
 const Fade = dynamic(() =>
   import("react-slideshow-image").then((module) => module.Fade)
 );
@@ -17,7 +18,7 @@ const properties = {
 
 function Banner({ data }: BannerType) {
   return (
-    <Box sx={{ mt: 1,  }}>
+    <Box sx={{ mt: 1 }}>
       <Box component={"div"} position={"relative"} className="slide-container">
         <Fade {...properties}>
           {data.map((image, index) => (
@@ -64,9 +65,7 @@ function Banner({ data }: BannerType) {
                   <Typography
                     color={"white"}
                     variant="h3"
-                    sx={{
-                      
-                    }}
+                    sx={{}}
                     mb={3}
                     textTransform={"uppercase"}
                   >
@@ -75,20 +74,23 @@ function Banner({ data }: BannerType) {
                   <Typography
                     color={"white"}
                     variant="subtitle1"
-
                     maxWidth={500}
                   >
                     {image.subtitle}
                   </Typography>
-                  <CustomLink
-                    url={"/collection"}
-                    link={true}
-                    title="SHOP ALL"
-                    endIcon={<FaArrowRight />}
-                    type="outlined"
-                    color={"light"}
-                    size={"large"}
-                  />
+                  <Grid my={2}>
+                    <CustomLink
+                      url={"/collection"}
+                      width={300}
+                      padding={"auto"}
+                      link={true}
+                      title="SHOP ALL"
+                      endIcon={<FaArrowRight />}
+                      type="outlined"
+                      color={"light"}
+                      size={"large"}
+                    />
+                  </Grid>
                 </Box>
               </Box>
             </Box>

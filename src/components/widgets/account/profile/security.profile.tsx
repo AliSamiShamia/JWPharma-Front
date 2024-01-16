@@ -23,7 +23,6 @@ import { ClipLoader } from "react-spinners";
 
 function Security(props: any) {
   const { user } = props;
-  const [is_updated, setIsUpdated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const dispatch = useAppDispatch();
@@ -35,7 +34,6 @@ function Security(props: any) {
   });
 
   const handleChange = (key: string, value: string) => {
-    setIsUpdated(true);
     let data = {
       ...form_data,
       [key]: value,
@@ -50,7 +48,7 @@ function Security(props: any) {
         phone_number: form_data.user_name,
         country_code: form_data.country_code,
       };
-      const res = await post(routeConfig.account.update.security, data);
+      const res = await post(routeConfig.account.update.security, data,user.token);
       if (res && res.status_code == 200) {
         Swal.fire({
           text: "Your details have been successfully refreshed.",
@@ -136,7 +134,6 @@ function Security(props: any) {
                     form_data={form_data}
                     handleChange={(data) => {
                       setFormData(data);
-                      setIsUpdated(true);
                     }}
                   />
                 </Grid>

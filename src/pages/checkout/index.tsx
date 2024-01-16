@@ -5,6 +5,7 @@ import { UserType } from "@/components/types/user.types";
 import UserAddresses from "@/components/widgets/address";
 import ComponentSpinner from "@/components/widgets/spinner/component.spinner";
 import { post } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 import { Box, Chip } from "@mui/material";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 
@@ -26,6 +27,7 @@ function Checkout(props: any) {
   const cart = props.cart as CartType[];
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.auth);
 
   // Function to calculate total
   const calculateLength = cart.reduce(
@@ -41,7 +43,7 @@ function Checkout(props: any) {
   const placeOrder = async () => {
     setLoading(true);
     try {
-      const res = await post(routeConfig.order.placeorder, null);
+      const res = await post(routeConfig.order.placeorder, null, user.token);
       if (res && res.status_code == 200) {
         router.push(res.data.url);
       } else {
@@ -158,6 +160,7 @@ function Checkout(props: any) {
                                 {item.options?.map((option, key1) => {
                                   return (
                                     <Chip
+                                      sx={{ mx: 0.4 }}
                                       key={key1}
                                       color="primary"
                                       size="small"

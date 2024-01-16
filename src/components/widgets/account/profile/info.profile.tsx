@@ -44,7 +44,7 @@ function GeneralInfo(props: any) {
   const updateUserInfo = async () => {
     try {
       setLoading(true);
-      const res = await post(routeConfig.account.update.info, form_data);
+      const res = await post(routeConfig.account.update.info, form_data,user.token);
       if (res && res.status_code == 200) {
         dispatch(
           storeUser({

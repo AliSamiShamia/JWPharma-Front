@@ -31,7 +31,7 @@ function CartNavItem(props: any) {
   const loadCart = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.cart.list);
+      const res = await get(routeConfig.cart.list, user.token);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }
@@ -46,10 +46,13 @@ function CartNavItem(props: any) {
     if (!router.isReady) {
       return;
     }
-    if (user.isAuth) {
-      loadCart();
+    if (document.readyState == "complete") {
+      if (user.isAuth) {
+        loadCart();
+      }
     }
-  }, [user, router]);
+    return () => {};
+  }, [router]);
 
   useEffect(() => {
     calculateTotal();
