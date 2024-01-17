@@ -13,7 +13,9 @@ import { post } from "@/handler/api.handler";
 import { useAppSelector } from "@/store/hooks";
 import { UserType } from "../types/user.types";
 import { useDispatch } from "react-redux";
-import { storeUser } from "@/store/apps/user";
+import { deleteUser, storeUser } from "@/store/apps/user";
+import { resetWishlist } from "@/store/apps/wishlist";
+import { resetCart } from "@/store/apps/cart";
 
 // ** Types
 
@@ -44,58 +46,36 @@ const AuthProvider = ({ children }: Props) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const initAuth = async (): Promise<void> => {
-      setUser(auth);
-      const storedToken = auth.token!;
-      if (storedToken) {
-        localStorage.setItem("accessToken", storedToken);
-
-        setLoading(true);
-        try {
-          const res = await post(
-            routeConfig.account.profile,
-            null,
-            storedToken
-          );
-          if (res && res.status_code == 200) {
-            setLoading(false);
-            setUser({ ...res.data });
-            dispatch(storeUser({ ...res.data, isAuth: true }));
-            localStorage.setItem("userData", { ...res.data });
-            localStorage.setItem("refreshToken", res.data.token);
-            localStorage.setItem("accessToken", res.data.token);
-          } else {
-            localStorage.removeItem("userData");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("accessToken");
-            setUser(null);
-            setLoading(false);
-            if (
-              routeConfig.onTokenExpiration === "logout" &&
-              !router.pathname.includes("login")
-            ) {
-              router.replace("/login");
-            }
-          }
-        } catch (e: any) {
-          localStorage.removeItem("userData");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("accessToken");
-          setUser(null);
+  const initAuth = async (): Promise<void> => {
+    const storedToken = auth.token!;
+    if (storedToken) {
+      setLoading(true);
+      try {
+        const res = await post(routeConfig.account.profile, null, storedToken);
+        if (res && res.status_code == 200) {
           setLoading(false);
-          if (
-            routeConfig.onTokenExpiration === "logout" &&
-            !router.pathname.includes("login")
-          ) {
-            router.replace("/login");
-          }
+          setUser({ ...res.data });
+          dispatch(storeUser({ ...res.data, isAuth: true }));
+          localStorage.setItem(routeConfig.storageTokenKeyName, res.data.token);
+          localStorage.setItem("refreshToken", res.data.token);
         }
-      } else {
+      } catch (e: any) {
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessToken");
+        setUser(null);
+        dispatch(deleteUser());
         setLoading(false);
+        if (
+          routeConfig.onTokenExpiration === "logout" &&
+          !router.pathname.includes("login")
+        ) {
+          router.replace("/login");
+        }
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     initAuth();
   }, []);
 
@@ -104,7 +84,7 @@ const AuthProvider = ({ children }: Props) => {
     errorCallback?: ErrCallbackType
   ) => {
     try {
-      const res = await post(routeConfig.account.login, params);
+      const res = await post(routeConfig.account.login, params, null);
       if (res && res.status_code == 200) {
         params.rememberMe
           ? window.localStorage.setItem(

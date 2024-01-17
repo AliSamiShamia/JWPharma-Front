@@ -19,10 +19,11 @@ type ResponseType = {
 
 const get = async (
   url: string,
+  token: any,
   params?: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
+  // const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   let res;
   try {
     res = await instance.get(url, {
@@ -43,11 +44,12 @@ const get = async (
 const post = async (
   url: string,
   form_data: any,
-  // token: any,
+  token: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
+
+  // const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.post(url, form_data, {
       headers: {
@@ -68,10 +70,11 @@ const post = async (
 const put = async (
   url: string,
   form_data: any,
+  token: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
+  // const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.put(url, form_data, {
       headers: {
@@ -91,10 +94,11 @@ const put = async (
 
 const multipart = async (
   url: string,
+  token: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
+  // const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.get(url, {
       headers: {
@@ -113,10 +117,11 @@ const multipart = async (
 
 const destroy = async (
   url: string,
+  token: any,
   lang = "en"
 ): Promise<ResponseType | null> => {
   let res;
-  const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
+  // const token = window.localStorage.getItem(routeConfig.storageTokenKeyName)!;
   try {
     res = await instance.delete(url, {
       headers: {

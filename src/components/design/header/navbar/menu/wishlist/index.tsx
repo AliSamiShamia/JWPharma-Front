@@ -26,7 +26,7 @@ function WishlistNavItem(props: any) {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.wishlist.list);
+      const res = await get(routeConfig.wishlist.list, user.token);
       if (res && res.status_code == 200) {
         dispatch(initWishlist(res.data));
       }
@@ -46,10 +46,13 @@ function WishlistNavItem(props: any) {
     if (!router.isReady) {
       return;
     }
-    if (user.isAuth) {
-      loadData();
+    if (document.readyState == "complete") {
+      if (user.isAuth) {
+        loadData();
+      }
     }
-  }, [user, router]);
+    return () => {};
+  }, [router]);
 
   useEffect(() => {
     calculateTotal();

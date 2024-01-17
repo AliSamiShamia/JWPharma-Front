@@ -1235,7 +1235,7 @@ function CountryCode({ handleChange, code }: CountryCodePropType) {
       freeSolo
       disablePortal
       disableClearable
-      
+      clearIcon={false}
       id="combo-box-demo"
       options={countries}
       defaultValue={selectedOption}
@@ -1243,7 +1243,7 @@ function CountryCode({ handleChange, code }: CountryCodePropType) {
       size="small"
       fullWidth
       getOptionLabel={(option) => option.dial_code}
-      sx={{ width: 120 }}
+      sx={{ width: 97 }}
       isOptionEqualToValue={(option) => option.dial_code === code}
       onChange={(e, newValue) => {
         handleChange(newValue?.dial_code);
@@ -1270,6 +1270,7 @@ function CountryCode({ handleChange, code }: CountryCodePropType) {
         <TextField
           {...params}
           label="Code"
+          required
           InputProps={{
             ...params.InputProps,
             type: "search",

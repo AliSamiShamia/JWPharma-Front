@@ -7,6 +7,8 @@ import styles from "@/styles/Home.module.css";
 import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
 import Footer from "../footer";
+import routeConfig from "@/components/constant/route";
+import { useAppSelector } from "@/store/hooks";
 const inter = Inter({ subsets: ["latin"] });
 
 const DrawerAppBar = dynamic(() => import("@/components/design/header/navbar"));
@@ -29,6 +31,7 @@ Router.events.on("routeChangeComplete", () => {
 });
 
 function Layout(props: LayoutType) {
+  const user = useAppSelector((state) => state.user.auth);
   const { children } = props;
   const [loading, setLoading] = useState(true);
 

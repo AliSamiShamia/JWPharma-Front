@@ -1,6 +1,7 @@
 const routeConfig = {
   onTokenExpiration: "refreshToken",
   storageTokenKeyName: "accessToken",
+  contact:"contact-us",
   collection: {
     list: "category",
   },

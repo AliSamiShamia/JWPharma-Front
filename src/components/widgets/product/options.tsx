@@ -12,21 +12,15 @@ type PropsType = {
 };
 function ProductOptions({ product, options, handleParamChange }: PropsType) {
   return (
-    <Grid display={"flex"} alignItems={"center"} my={3}>
+    <Grid display={"flex"} flexDirection={"column"} my={3}>
       {product.params.map((param, key) => {
         return (
-          <Grid
-            key={key}
-            mt={1}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            gap={3}
-          >
+          <Grid key={key} my={1} display={"flex"} alignItems={"center"}>
             <Typography
-              variant="caption"
-              color={themeColor.greyColor}
+              variant="subtitle2"
+              color={themeColor.secondary.dark}
               fontWeight={"bold"}
+              width={100}
             >
               {param.title}
             </Typography>

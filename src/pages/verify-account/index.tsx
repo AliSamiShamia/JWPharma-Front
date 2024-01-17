@@ -60,7 +60,7 @@ function VerifyAccount(props: any) {
         phone_number: user.blank_phone,
         otp: otp.join(""),
       };
-      const res = await post(routeConfig.account.otp.check, form_data);
+      const res = await post(routeConfig.account.otp.check, form_data,null);
       if (res && res.status_code == 200) {
         // dispatch(deleteTempUser());
         // return router.replace();
@@ -78,7 +78,7 @@ function VerifyAccount(props: any) {
         phone_number: user.phone_number,
         country_code: user.country_code,
       };
-      const res = await post(routeConfig.account.otp.send, form_data);
+      const res = await post(routeConfig.account.otp.send, form_data,null);
       console.log(res);
       if (res && res.status_code == 200) {
         dispatch(storeTempUser(res.data));

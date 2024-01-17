@@ -3,17 +3,17 @@ import routeConfig from "@/components/constant/route";
 import AddToCartWidget from "@/components/widgets/cart/add";
 import CustomLink from "@/components/widgets/link";
 import ProductOptions from "@/components/widgets/product/options";
-import { get, post } from "@/handler/api.handler";
-import { useAuth } from "@/hooks/useAuth";
+import { destroy, get, post } from "@/handler/api.handler";
 import { addToCart } from "@/store/apps/cart";
+import { addToWishlist, deleteFromWishlist } from "@/store/apps/wishlist";
+import { useAppSelector } from "@/store/hooks";
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 const Layout = dynamic(() => import("@/components/design/layout"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
-const Button = dynamic(() => import("@mui/material/Button"));
 const Divider = dynamic(() => import("@mui/material/Divider"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 import { Fade } from "react-slideshow-image";
@@ -32,17 +32,18 @@ const properties = {
 
 function ProductDetails() {
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.auth);
   const [loading, setLoading] = useState(true);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
   const { slug } = router.query;
   const [product, setProduct] = useState({} as ProductType);
   const dispatch = useDispatch();
   const [options, setOptions] = useState([] as OptionItem[]);
   const [quantity, setQuantity] = useState(1);
-  const auth = useAuth();
   const loadData = async () => {
     try {
       setLoading(true);
-      const res = await get(routeConfig.product.list + "/" + slug);
+      const res = await get(routeConfig.product.list + "/" + slug, user.token);
       setLoading(false);
       if (res && res.status_code == 200) {
         setProduct(res.data);
@@ -71,14 +72,14 @@ function ProductDetails() {
         confirmButtonColor: themeColor.primary.dark,
       });
     } else {
-      if (auth.user) {
+      if (user.isAuth) {
         setLoading(true);
         let data = {
           product_id: product.id,
           quantity: quantity,
           options: options,
         };
-        const res = await post(routeConfig.cart.store, data);
+        const res = await post(routeConfig.cart.store, data, user.token);
         setLoading(false);
         if (res && res.status_code == 200) {
           dispatch(
@@ -97,6 +98,59 @@ function ProductDetails() {
           },
         });
       }
+    }
+  };
+
+  const handleDeteleFromWishlist = async () => {
+    if (user.isAuth) {
+      setWishlistLoading(true);
+      const res = await destroy(
+        routeConfig.wishlist.list + "/" + product.id,
+        user.token
+      );
+      setWishlistLoading(false);
+      if (res && res.status_code == 200) {
+        dispatch(
+          deleteFromWishlist({
+            product: product,
+          })
+        );
+      }
+    } else {
+      router.push({
+        pathname: "/login",
+        query: {
+          redirectURL: "/products/" + product.slug,
+        },
+      });
+    }
+  };
+
+  const handleAddToWishlist = async () => {
+    if (user.isAuth) {
+      setWishlistLoading(true);
+      const res = await post(
+        routeConfig.wishlist.list,
+        {
+          product_id: product.id,
+        },
+        user.token
+      );
+      setWishlistLoading(false);
+      if (res && res.status_code == 200) {
+        dispatch(
+          addToWishlist({
+            product: product,
+          })
+        );
+      }
+    } else {
+      router.push({
+        pathname: "/login",
+        query: {
+          redirectURL: "/products/" + product.slug,
+        },
+      });
     }
   };
 
@@ -136,7 +190,13 @@ function ProductDetails() {
               <Box display={"flex"}>
                 {product.categories.map((item, key) => {
                   return (
-                    <Grid key={key}>
+                    <Grid
+                      key={key}
+                      py={0}
+                      display={"flex"}
+                      gap={1}
+                      alignItems={"center"}
+                    >
                       <CustomLink
                         link
                         type="text"
@@ -149,15 +209,37 @@ function ProductDetails() {
                       <Divider
                         orientation="vertical"
                         variant="middle"
+                        sx={{
+                          height: 20,
+                          borderColor: themeColor.greyColor,
+                        }}
                         flexItem
                       />
                     </Grid>
                   );
                 })}
               </Box>
-              <Typography variant="subtitle1" fontWeight={"bold"}>
-                {product.name}
-              </Typography>
+              <Grid display={"flex"} justifyContent={"space-between"}>
+                <Typography variant="subtitle1" fontWeight={"bold"}>
+                  {product.name}
+                </Typography>
+
+                <CustomLink
+                  action={
+                    product.is_fav
+                      ? handleDeteleFromWishlist
+                      : handleAddToWishlist
+                  }
+                  title={
+                    product.is_fav ? "Remove from Wishlist" : "Add To Wishlist"
+                  }
+                  width={250}
+                  padding={"auto"}
+                  type="contained"
+                  size={"small"}
+                  color={product.is_fav ? "error" : "primary"}
+                />
+              </Grid>
               <Typography variant="caption" color={themeColor.greyColor}>
                 SKU: {product.sku}
               </Typography>
@@ -199,14 +281,18 @@ function ProductDetails() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Divider flexItem />
-              <Grid my={2}>
-                <ProductOptions
-                  options={options}
-                  handleParamChange={handleParamChange}
-                  product={product}
-                />
-              </Grid>
+              {product.params.length > 0 ? (
+                <>
+                  <Divider flexItem />
+                  <Grid my={2}>
+                    <ProductOptions
+                      options={options}
+                      handleParamChange={handleParamChange}
+                      product={product}
+                    />
+                  </Grid>
+                </>
+              ) : null}
               <Divider flexItem />
               <Grid my={1}>
                 <AddToCartWidget
@@ -233,5 +319,8 @@ function ProductDetails() {
     </Layout>
   );
 }
-
-export default ProductDetails;
+const mapStateToProps = (state: any) => ({
+  wishlist: state.wishlist.products,
+  user: state.user.auth,
+});
+export default connect(mapStateToProps)(ProductDetails);

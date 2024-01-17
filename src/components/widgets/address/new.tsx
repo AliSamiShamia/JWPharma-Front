@@ -5,6 +5,7 @@ import Country from "../country";
 import CustomLink from "../link";
 import routeConfig from "@/components/constant/route";
 import { post, put } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 const Radio = dynamic(() => import("@mui/material/Radio"));
 const FormControl = dynamic(() => import("@mui/material/FormControl"));
 const FormControlLabel = dynamic(
@@ -36,6 +37,7 @@ const style = {
 
 function NewAddress({ open, setOpen, action, address }: PropsType) {
   const handleClose = () => setOpen(false);
+  const user = useAppSelector((state) => state.user.auth);
   const [loading, setLoading] = useState(false);
   const [form_data, setFormData] = useState<UserAddressType>({
     id: "-1",
@@ -71,14 +73,15 @@ function NewAddress({ open, setOpen, action, address }: PropsType) {
       if (address) {
         const res = await put(
           routeConfig.account.addresses + "/" + address.id,
-          data
+          data,
+          user.token
         );
         if (res && res.status_code == 200) {
           setOpen(false);
           action();
         }
       } else {
-        const res = await post(routeConfig.account.addresses, data);
+        const res = await post(routeConfig.account.addresses, data, user.token);
         if (res && res.status_code == 200) {
           setOpen(false);
           action();

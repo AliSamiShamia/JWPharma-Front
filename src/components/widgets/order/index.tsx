@@ -1,26 +1,29 @@
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import CustomLink from "../link";
-import { multipart, post } from "@/handler/api.handler";
+import { multipart } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import { ClipLoader } from "react-spinners";
 import { saveAs } from "file-saver";
 import themeColor from "@/components/constant/color";
 import { Box, Button } from "@mui/material";
-const Divider = dynamic(() => import("@mui/material/Divider"));
+import { useAppSelector } from "@/store/hooks";
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Tooltip = dynamic(() => import("@mui/material/Tooltip"));
-const Chip = dynamic(() => import("@mui/material/Chip"));
 const Card = dynamic(() => import("@mui/material/Card"));
 const CardContent = dynamic(() => import("@mui/material/CardContent"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 
 function OrderItem(order: OrderType) {
+  const user = useAppSelector((state) => state.user.auth);
   const [loading, setLoading] = useState(false);
   const invoice = async () => {
     setLoading(true);
     try {
-      const res = await multipart(routeConfig.order.invoice + "/" + order.id);
+      const res = await multipart(
+        routeConfig.order.invoice + "/" + order.id,
+        user.token
+      );
       if (res && res.status_code == 200) {
         saveAs(res.data.url, "invoice.pdf");
       }
@@ -45,6 +48,7 @@ function OrderItem(order: OrderType) {
           py={1}
           gap={1}
         >
+    
           <Grid
             display={"flex"}
             sx={{
@@ -213,6 +217,7 @@ function OrderItem(order: OrderType) {
           {order.items.map((item, key) => {
             return (
               <Grid
+                key={key}
                 display={"flex"}
                 my={2}
                 border={1}

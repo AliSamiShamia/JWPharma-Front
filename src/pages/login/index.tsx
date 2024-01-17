@@ -1,24 +1,13 @@
 // ** React Imports
 import { useEffect, useState } from "react";
 
-// ** Next Imports
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-
 import Box, { BoxProps } from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import InputAdornment from "@mui/material/InputAdornment";
 
-// ** Icon Imports
-import { FaRegEye } from "@react-icons/all-files/fa/FaRegEye";
-import { FaRegEyeSlash } from "@react-icons/all-files/fa/FaRegEyeSlash";
-import { FaSignInAlt } from "@react-icons/all-files/fa/FaSignInAlt";
 import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
 import {
   Alert,
-  Button,
   Divider,
-  FormControlLabelProps,
   FormHelperText,
   Grid,
   TypographyProps,
@@ -28,24 +17,20 @@ import dynamic from "next/dynamic";
 import { post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
 import { ClipLoader } from "react-spinners";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { storeUser } from "@/store/apps/user";
 import PhoneComponent from "@/components/widgets/account/phone";
 import EmailComponent from "@/components/widgets/account/email";
 import Swal from "sweetalert2";
 import { storeTempUser } from "@/store/apps/temp-user";
 import { useAppDispatch } from "@/store/hooks";
+import { useRouter } from "next/router";
 
-const Checkbox = dynamic(() => import("@mui/material/Checkbox"));
 const TextField = dynamic(() => import("@mui/material/TextField"));
-const InputLabel = dynamic(() => import("@mui/material/InputLabel"));
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
 const FormControl = dynamic(() => import("@mui/material/FormControl"));
-const OutlinedInput = dynamic(() => import("@mui/material/OutlinedInput"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
-const MuiFormControlLabel = dynamic(
-  () => import("@mui/material/FormControlLabel")
-);
+
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -65,6 +50,7 @@ const TypographyStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const RegisterPage = (props: any) => {
   const router = useRouter();
+  const query = router.query;
   const { user, tempUser } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [form_data, setFormData] = useState({
@@ -79,9 +65,24 @@ const RegisterPage = (props: any) => {
   const [generalError, setGeneralError] = useState<string>("");
 
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (user.isAuth) {
-      router.replace("/account");
+      if (query.redirectURL) {
+        const newQuery = { ...query };
+        // Remove the key from the copied object
+        delete newQuery["redirectURL"];
+        const returnUrl =
+          query.redirectURL && query.redirectURL !== "/account"
+            ? query.redirectURL
+            : "/account";
+        router.replace({
+          pathname: returnUrl as string,
+          query: newQuery,
+        });
+      } else {
+        router.replace("/account");
+      }
     }
   }, [user]);
 
@@ -89,13 +90,13 @@ const RegisterPage = (props: any) => {
     if (registerByPhone) {
       if (form_data.country_code === "") {
         Swal.fire({
-          text: "Country code is required.",
+          text: "Kindly note that a country code is a required field.",
           icon: "warning",
         });
         return false;
       } else if (form_data.user_name === "") {
         Swal.fire({
-          text: "Phone Number is required.",
+          text: "Kindly note that a phone number is a required field.",
           icon: "warning",
         });
         return false;
@@ -104,7 +105,7 @@ const RegisterPage = (props: any) => {
         if (!pattern.test(form_data.user_name)) {
           // setError("Please enter a valid phone number.");
           Swal.fire({
-            text: "Please enter a valid phone number.",
+            text: "Please provide a valid phone number.",
             icon: "warning",
           });
           return false;
@@ -114,7 +115,7 @@ const RegisterPage = (props: any) => {
     } else {
       if (form_data.user_name === "") {
         Swal.fire({
-          text: "Email is required!",
+          text: "Kindly note that providing an email address is a required field.",
           icon: "warning",
         });
 
@@ -123,7 +124,7 @@ const RegisterPage = (props: any) => {
         const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         if (!pattern.test(form_data.user_name)) {
           Swal.fire({
-            text: "Please enter a valid email address.",
+            text: "Kindly provide a valid email address.",
             icon: "warning",
           });
           return false;
@@ -157,7 +158,7 @@ const RegisterPage = (props: any) => {
         user_id: user?.id,
       };
 
-      const res = await post(routeConfig.account.otp.send, data);
+      const res = await post(routeConfig.account.otp.send, data,null);
       if (res && res.status_code == 200) {
         setOtpSent(true);
         dispatch(
@@ -180,7 +181,7 @@ const RegisterPage = (props: any) => {
     setError(false);
     if (validataForm()) {
       setLoading(true);
-      const res = await post(routeConfig.account.register, form_data);
+      const res = await post(routeConfig.account.register, form_data,null);
       if (res && res.status_code == 200) {
         setOtpSent(true);
         dispatch(
@@ -212,12 +213,8 @@ const RegisterPage = (props: any) => {
         otp: otp,
         user_id: tempUser?.user_id,
       };
-      const res = await post(routeConfig.account.otp.check, formData);
+      const res = await post(routeConfig.account.otp.check, formData,null);
       if (res && res.status_code == 200) {
-        // window.localStorage.setItem(
-        //   routeConfig.storageTokenKeyName,
-        //   `${res.data.token}`
-        // );
         dispatch(
           storeUser({
             ...res.data,
@@ -225,7 +222,21 @@ const RegisterPage = (props: any) => {
           })
         );
 
-        router.replace("/account");
+        if (query.redirectURL) {
+          const newQuery = { ...query };
+          // Remove the key from the copied object
+          delete newQuery["redirectURL"];
+          const returnUrl =
+            query.redirectURL && query.redirectURL !== "/account"
+              ? query.redirectURL
+              : "/account";
+          router.replace({
+            pathname: returnUrl as string,
+            query: newQuery,
+          });
+        } else {
+          router.replace("/account");
+        }
       } else {
         Swal.fire({
           title: "Oops...",

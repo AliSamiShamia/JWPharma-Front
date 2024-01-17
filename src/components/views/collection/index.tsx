@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
 import ResponsiveSlider from "@/components/design/slider";
+import { useAppSelector } from "@/store/hooks";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Container = dynamic(() => import("@mui/material/Container"));
 const ComponentSpinner = dynamic(
@@ -47,8 +48,10 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as CollectionType[]);
 
+  const user = useAppSelector((state) => state.user.auth);
+
   const loadData = async (page: number) => {
-    const res = await get(routeConfig.collection.list, {
+    const res = await get(routeConfig.collection.list, user?.token, {
       page: page,
       per_page: perPage,
     });
@@ -89,9 +92,9 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
                     url={"/collection"}
                     title={"Show All"}
                     color={"primary"}
-                    type="outlined"
+                    type="contained"
                     link={true}
-                    size={"large"}
+                    size={"medium"}
                   />
                 </Box>
               </Box>

@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, useTheme } from "@mui/material";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Fade } from "react-slideshow-image";
 import { MdAddShoppingCart } from "@react-icons/all-files/md/MdAddShoppingCart";
 import { MdFavoriteBorder } from "@react-icons/all-files/md/MdFavoriteBorder";
@@ -9,11 +9,9 @@ const Typography = dynamic(() => import("@mui/material/Typography"));
 import "react-slideshow-image/dist/styles.css";
 import { destroy, post } from "@/handler/api.handler";
 import routeConfig from "@/components/constant/route";
-import CustomSpinner from "@/components/widgets/spinner";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/apps/cart";
 import { addToWishlist, deleteFromWishlist } from "@/store/apps/wishlist";
-import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/router";
 import CustomLink from "@/components/widgets/link";
 import { useAppSelector } from "@/store/hooks";
@@ -33,14 +31,13 @@ function ProductItem({ product, action }: PropType) {
     autoplay: false,
   };
   const theme = useTheme();
-  const auth = useAuth();
-  const [loading, setLoading] = useState(false);
   const [imageLoaded, setImageLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const { s } = router.query;
 
   const handleAddToCart = async () => {
     const convertedArray = Object.entries(product.params).map(
@@ -53,12 +50,12 @@ function ProductItem({ product, action }: PropType) {
         pathname: "/products/" + product.slug,
       });
     } else {
-      if (auth.user) {
+      if (user.isAuth) {
         setAddToCartLoading(true);
         const res = await post(routeConfig.cart.store, {
           product_id: product.id,
           quantity: 1,
-        });
+        },user.token);
         setAddToCartLoading(false);
         if (res && res.status_code == 200) {
           dispatch(
@@ -71,15 +68,17 @@ function ProductItem({ product, action }: PropType) {
       } else {
         router.push({
           pathname: "/login",
+          query: {
+            redirectURL: "/products/" + product.slug,
+          },
         });
       }
     }
   };
-  const handleDeteleFromWishlist = async (event: any) => {
-    if (user.id) {
-      event.preventDefault();
+  const handleDeteleFromWishlist = async () => {
+    if (user.isAuth) {
       setWishlistLoading(true);
-      const res = await destroy(routeConfig.wishlist.list + "/" + product.id);
+      const res = await destroy(routeConfig.wishlist.list + "/" + product.id,user.token);
       setWishlistLoading(false);
       if (res && res.status_code == 200) {
         dispatch(
@@ -92,18 +91,19 @@ function ProductItem({ product, action }: PropType) {
     } else {
       router.push({
         pathname: "/login",
-        // redirectURL
+        query: {
+          redirectURL: "/products/" + product.slug,
+        },
       });
     }
   };
 
-  const handleAddToWishlist = async (event: any) => {
-    if (user.id) {
-      event.preventDefault();
+  const handleAddToWishlist = async () => {
+    if (user.isAuth) {
       setWishlistLoading(true);
       const res = await post(routeConfig.wishlist.list, {
         product_id: product.id,
-      });
+      },user.token);
       setWishlistLoading(false);
       if (res && res.status_code == 200) {
         dispatch(
@@ -116,10 +116,27 @@ function ProductItem({ product, action }: PropType) {
     } else {
       router.push({
         pathname: "/login",
-        // redirectURL
+        query: {
+          redirectURL: "/products/" + product.slug,
+        },
       });
     }
   };
+
+  const handleAction = () => {
+    if (s) {
+      if (product.slug == s.toString()) {
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+    handleAction();
+    return () => {};
+  }, [router.route]);
 
   return (
     <Box
@@ -157,8 +174,8 @@ function ProductItem({ product, action }: PropType) {
             color="primary"
             onClick={(e) =>
               product.is_fav
-                ? handleDeteleFromWishlist(e)
-                : handleAddToWishlist(e)
+                ? handleDeteleFromWishlist()
+                : handleAddToWishlist()
             }
             style={{
               display: "flex",

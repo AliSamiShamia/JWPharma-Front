@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import AddressItem from "./item";
 import NewAddress from "./new";
+import { useAppSelector } from "@/store/hooks";
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Card = dynamic(() => import("@mui/material/Card"));
 const CardHeader = dynamic(() => import("@mui/material/CardHeader"));
@@ -20,10 +21,12 @@ function AddressList() {
   const [selected, setSelected] = useState<UserAddressType>();
   const router = useRouter();
   const [data, setData] = useState([] as UserAddressType[]);
+  const user = useAppSelector((state) => state.user.auth);
+
   const loadData = async () => {
     try {
       setLoading(true);
-      const res = await get(routeConfig.account.addresses);
+      const res = await get(routeConfig.account.addresses,user?.token);
       setLoading(false);
       if (res && res.status_code == 200) {
         setData(res.data);

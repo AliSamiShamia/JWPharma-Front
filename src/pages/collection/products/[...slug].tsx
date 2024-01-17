@@ -2,6 +2,7 @@ import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import FilterList from "@/components/widgets/filter";
 import { get } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 
 import { Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
@@ -21,8 +22,8 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [data, setData] = useState({} as CollectionType);
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
-  const { slug,keys } = router.query;
-
+  const { slug, keys } = router.query;
+  const user = useAppSelector((state) => state.user.auth);
 
   const loadData = async (
     page: number,
@@ -61,7 +62,11 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
       }
     }
     setLoading(true);
-    const res = await get(routeConfig.collection.list + "/" + slug, data);
+    const res = await get(
+      routeConfig.collection.list + "/" + slug,
+      user.token,
+      data
+    );
     setLoading(false);
     action ? action(false) : null;
 

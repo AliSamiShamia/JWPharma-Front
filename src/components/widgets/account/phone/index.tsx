@@ -42,12 +42,14 @@ function PhoneComponent({ form_data, handleChange }: PhonePropType) {
   };
 
   return (
-    <Grid display={"flex"} width={1} gap={0.1}>
+    <Grid display={"flex"} width={1} gap={0}>
       <CountryCode code={countryCode} handleChange={handleCountryCodeChange} />
       <TextField
         type="tel"
         fullWidth
         size="small"
+        label="Phone Number"
+        required
         value={form_data.user_name || ""}
         error={!valid}
         onChange={handlePhoneChange}

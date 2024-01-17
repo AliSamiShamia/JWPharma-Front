@@ -1,6 +1,7 @@
 import routeConfig from "@/components/constant/route";
 import { CartType } from "@/components/types/cart.types";
 import { destroy, post } from "@/handler/api.handler";
+import { useAppSelector } from "@/store/hooks";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -8,10 +9,16 @@ const initialState = {
 };
 
 const updateCart = async (item: CartType) => {
-  let res = await post(routeConfig.cart.store, {
-    product_id: item.product.id,
-    quantity: item.quantity,
-  });
+  const user = useAppSelector((state) => state.user.auth);
+
+  let res = await post(
+    routeConfig.cart.store,
+    {
+      product_id: item.product.id,
+      quantity: item.quantity,
+    },
+    user.token
+  );
   if (res && res.status_code == 200) {
     return true;
   }
@@ -19,7 +26,8 @@ const updateCart = async (item: CartType) => {
 };
 
 const removeItemFromCart = async (item: CartType) => {
-  let res = await destroy(routeConfig.cart.list + "/" + item.id);
+  const user = useAppSelector((state) => state.user.auth);
+  let res = await destroy(routeConfig.cart.list + "/" + item.id, user.token);
   if (res && res.status_code == 200) {
     return true;
   }
@@ -33,7 +41,7 @@ export const cartSlice = createSlice({
     initCart: (state, action) => {
       state.items = action.payload;
     },
-  
+
     addToCart: (state, action) => {
       const item = state.items.find(
         (item) => item.product.id == action.payload.product.id
@@ -51,12 +59,12 @@ export const cartSlice = createSlice({
         // };
         // init();
         state.items.push(action.payload);
-        updateCart(action.payload);
+        // updateCart(action.payload);
       }
     },
 
     deleteFromCart: (state, action) => {
-      removeItemFromCart(action.payload.product.id);
+     // removeItemFromCart(action.payload.product.id);
       state.items = state.items.filter(
         (item) => item.product.id !== action.payload.product.id
       );
