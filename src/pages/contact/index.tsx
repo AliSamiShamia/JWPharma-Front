@@ -23,7 +23,8 @@ const MUITableCell = styled(TableCell)<TableCellBaseProps>(({ theme }) => ({
   paddingBottom: `${theme.spacing(1)} !important`,
 }));
 
-function index() {
+function ContactUs() {
+
   const [form_data, setFormData] = useState({
     name: "",
     email: "",
@@ -102,9 +103,9 @@ function index() {
                 Get In Touch
               </Typography>
               <Typography paragraph>
-                We'd love to hear from you! Whether you have a question about
+                We&apos;d love to hear from you! Whether you have a question about
                 our services, want to collaborate, or simply want to say hello,
-                feel free to reach out to us. Your feedback matters, and we're
+                feel free to reach out to us. Your feedback matters, and we&apos;re
                 here to assist you in any way we can.
               </Typography>
             </Grid>
@@ -168,7 +169,7 @@ function index() {
               </Table>
 
               <Typography mt={3} paragraph>
-                You can also fill out the form, and we'll get back to you as
+                You can also fill out the form, and we&apos;ll get back to you as
                 soon as possible.
               </Typography>
               <Typography paragraph>
@@ -258,4 +259,4 @@ function index() {
   );
 }
 
-export default index;
+export default ContactUs;

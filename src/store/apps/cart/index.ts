@@ -8,31 +8,7 @@ const initialState = {
   items: [] as CartType[],
 };
 
-const updateCart = async (item: CartType) => {
-  const user = useAppSelector((state) => state.user.auth);
 
-  let res = await post(
-    routeConfig.cart.store,
-    {
-      product_id: item.product.id,
-      quantity: item.quantity,
-    },
-    user.token
-  );
-  if (res && res.status_code == 200) {
-    return true;
-  }
-  return false;
-};
-
-const removeItemFromCart = async (item: CartType) => {
-  const user = useAppSelector((state) => state.user.auth);
-  let res = await destroy(routeConfig.cart.list + "/" + item.id, user.token);
-  if (res && res.status_code == 200) {
-    return true;
-  }
-  return false;
-};
 
 export const cartSlice = createSlice({
   name: "cart",

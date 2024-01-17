@@ -478,7 +478,7 @@ function Cart(props: any) {
                     textAlign={"center"}
                   >
                     <Typography variant="caption" color={"error"}>
-                      Apologies, you're currently unable to proceed with the
+                      Apologies, you&apos;re currently unable to proceed with the
                       checkout.
                     </Typography>
                   </Grid>

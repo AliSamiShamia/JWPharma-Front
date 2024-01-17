@@ -74,7 +74,7 @@ function MyOrder() {
               gap={3}
             >
               <Grid>
-                <Typography variant="h5">You don't have any orders.</Typography>
+                <Typography variant="h5">You don&apos;t have any orders.</Typography>
                 <Grid mt={4}>
                   <CustomLink link type="contained" url="/products">
                     Shop Now
