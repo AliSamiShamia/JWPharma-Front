@@ -22,7 +22,7 @@ function index() {
           <Grid item md={12}>
             <Typography variant="h6" paragraph>
               With offices in Baghdad, Erbil and Basra, JW pharma works with
-              many of the world's leading companies through various agreements,
+              many of the world&apos;s leading companies through various agreements,
               partnerships, and joint ventures. The group is a leading
               healthcare, medical equipment, and consumer care company in Iraq,
               committed to meeting the growing needs of healthcare and

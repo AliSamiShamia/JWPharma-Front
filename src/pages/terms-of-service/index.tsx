@@ -24,7 +24,7 @@ function index() {
               Introduction
             </Typography>
             <Typography paragraph>
-              These terms and conditions ("Terms") govern your use of the
+              These terms and conditions (&quot;Terms&quot;) govern your use of the
               JWPharma City Middle East website and services. By accessing or
               using our website, you agree to comply with these Terms.
             </Typography>
@@ -34,14 +34,14 @@ function index() {
               Definitions
             </Typography>
             <Typography paragraph>
-              <strong>"JWPharma City Middle East"</strong> refers to our
+              <strong>&quot;JWPharma City Middle East&quot;</strong> refers to our
               company, JWPharma City Middle East, Inc.
               <br />
-              <strong>"Website"</strong> refers to our ecommerce platform
+              <strong>&quot;Website&quot;</strong> refers to our ecommerce platform
               available at{" "}
               <Link href="https://www.jwpharma.me">www.jwpharma.me</Link>.
               <br />
-              <strong>"User"</strong> refers to any individual or entity using
+              <strong>&quot;User&quot;</strong> refers to any individual or entity using
               our website or services.
             </Typography>
           </Grid>
@@ -76,7 +76,7 @@ function index() {
               <ul>
                 <li>
                   Posting or transmitting any content that is illegal, harmful,
-                  or infringing upon others' rights.
+                  or infringing upon others&apos; rights.
                 </li>
                 <li>Engaging in fraudulent or deceptive activities.</li>
                 <li>
@@ -144,7 +144,7 @@ function index() {
               Disclaimer of Warranties
             </Typography>
             <Typography paragraph>
-              Our website and services are provided "as is" and "as available"
+              Our website and services are provided &quot;as is&quot; and &quot;as available&quot;
               without any warranties, express or implied. JWPharma City Middle
               East makes no representations or warranties of any kind, including
               but not limited to the accuracy, completeness, reliability, or

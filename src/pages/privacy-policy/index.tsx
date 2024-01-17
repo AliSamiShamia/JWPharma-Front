@@ -25,7 +25,7 @@ function index() {
             </Typography>
             <Typography paragraph>
               This Privacy Policy explains how JWPharma City Middle East, Inc.
-              ("JWPharma City Middle East", "we," "us," or "our") collects,
+              (&quot;JWPharma City Middle East&quot;, &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects,
               uses, and safeguards your personal information when you visit our
               website (
               <Link href="https://www.jwpharma.me">www.jwpharma.me</Link>) and

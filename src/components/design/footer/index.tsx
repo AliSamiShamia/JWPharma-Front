@@ -118,7 +118,7 @@ const Footer = () => {
             </Typography>
 
             <Typography variant="body1" color={themeColor.primary.dark}>
-              You're welcome to connect with us by dropping an email at
+              You&apos;re welcome to connect with us by dropping an email at
               <Link
                 ml={0.7}
                 type="text"
