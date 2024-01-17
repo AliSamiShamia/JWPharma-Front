@@ -90,13 +90,13 @@ const RegisterPage = (props: any) => {
     if (registerByPhone) {
       if (form_data.country_code === "") {
         Swal.fire({
-          text: "Country code is required.",
+          text: "Kindly note that a country code is a required field.",
           icon: "warning",
         });
         return false;
       } else if (form_data.user_name === "") {
         Swal.fire({
-          text: "Phone Number is required.",
+          text: "Kindly note that a phone number is a required field.",
           icon: "warning",
         });
         return false;
@@ -105,7 +105,7 @@ const RegisterPage = (props: any) => {
         if (!pattern.test(form_data.user_name)) {
           // setError("Please enter a valid phone number.");
           Swal.fire({
-            text: "Please enter a valid phone number.",
+            text: "Please provide a valid phone number.",
             icon: "warning",
           });
           return false;
@@ -115,7 +115,7 @@ const RegisterPage = (props: any) => {
     } else {
       if (form_data.user_name === "") {
         Swal.fire({
-          text: "Email is required!",
+          text: "Kindly note that providing an email address is a required field.",
           icon: "warning",
         });
 
@@ -124,7 +124,7 @@ const RegisterPage = (props: any) => {
         const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         if (!pattern.test(form_data.user_name)) {
           Swal.fire({
-            text: "Please enter a valid email address.",
+            text: "Kindly provide a valid email address.",
             icon: "warning",
           });
           return false;

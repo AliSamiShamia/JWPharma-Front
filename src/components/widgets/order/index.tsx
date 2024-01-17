@@ -20,7 +20,10 @@ function OrderItem(order: OrderType) {
   const invoice = async () => {
     setLoading(true);
     try {
-      const res = await multipart(routeConfig.order.invoice + "/" + order.id,user.token);
+      const res = await multipart(
+        routeConfig.order.invoice + "/" + order.id,
+        user.token
+      );
       if (res && res.status_code == 200) {
         saveAs(res.data.url, "invoice.pdf");
       }
@@ -45,6 +48,7 @@ function OrderItem(order: OrderType) {
           py={1}
           gap={1}
         >
+    
           <Grid
             display={"flex"}
             sx={{
