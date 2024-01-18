@@ -15,6 +15,8 @@ import { ClipLoader } from "react-spinners";
 function WishlistNavItem(props: any) {
   const { wishlists, user } = props;
 
+  const auth = useAuth();
+
   // Wishlist redux state
   const dispatch = useDispatch();
 
@@ -47,7 +49,7 @@ function WishlistNavItem(props: any) {
       return;
     }
     if (document.readyState == "complete") {
-      if (user.isAuth) {
+      if (auth?.user?.isAuth) {
         loadData();
       }
     }
