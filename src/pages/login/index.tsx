@@ -155,10 +155,10 @@ const RegisterPage = (props: any) => {
 
       let data = {
         ...form_data,
-        user_id: user?.id,
+        user_id: tempUser?.user_id,
       };
 
-      const res = await post(routeConfig.account.otp.send, data,null);
+      const res = await post(routeConfig.account.otp.send, data, null);
       if (res && res.status_code == 200) {
         setOtpSent(true);
         dispatch(
@@ -181,7 +181,7 @@ const RegisterPage = (props: any) => {
     setError(false);
     if (validataForm()) {
       setLoading(true);
-      const res = await post(routeConfig.account.register, form_data,null);
+      const res = await post(routeConfig.account.register, form_data, null);
       if (res && res.status_code == 200) {
         setOtpSent(true);
         dispatch(
@@ -213,7 +213,7 @@ const RegisterPage = (props: any) => {
         otp: otp,
         user_id: tempUser?.user_id,
       };
-      const res = await post(routeConfig.account.otp.check, formData,null);
+      const res = await post(routeConfig.account.otp.check, formData, null);
       if (res && res.status_code == 200) {
         dispatch(
           storeUser({
@@ -396,6 +396,7 @@ const RegisterPage = (props: any) => {
                       user_name: "",
                       country_code: null,
                     } as any);
+                    setOtpSent(false);
                     setRegisterByPhone(!registerByPhone);
                   }}
                   title={
