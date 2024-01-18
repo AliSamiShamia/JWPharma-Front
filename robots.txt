@@ -1,0 +1,6 @@
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+Disallow: /cgi-bin/
+Sitemap: https://jwpharma.me/sitemap.xml

@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["jwpharma.me", "images.pexels.com"],
+    domains: ["localhost", "jwpharma.me", "images.pexels.com"],
     minimumCacheTTL: 60,
   },
 
