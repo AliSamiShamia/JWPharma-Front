@@ -3,7 +3,7 @@ import { WishListType } from "@/components/types/wishlist.types";
 import CustomLink from "@/components/widgets/link";
 import { get } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
-import { initWishlist } from "@/store/apps/wishlist";
+import { initWishlist, resetWishlist } from "@/store/apps/wishlist";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Button, Link, Typography } from "@mui/material";
 import { FiHeart } from "@react-icons/all-files/fi/FiHeart";
@@ -32,7 +32,7 @@ function WishlistNavItem(props: any) {
       }
       setLoading(false);
     } catch (e) {
-      dispatch(initWishlist([]));
+      dispatch(resetWishlist());
       setLoading(false);
     }
   };
@@ -49,6 +49,8 @@ function WishlistNavItem(props: any) {
     if (document.readyState == "complete") {
       if (user.isAuth) {
         loadData();
+      }else{
+        dispatch(resetWishlist())
       }
     }
     return () => {};
