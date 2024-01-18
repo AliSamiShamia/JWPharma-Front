@@ -49,8 +49,6 @@ function WishlistNavItem(props: any) {
     if (document.readyState == "complete") {
       if (user.isAuth) {
         loadData();
-      }else{
-        dispatch(resetWishlist())
       }
     }
     return () => {};

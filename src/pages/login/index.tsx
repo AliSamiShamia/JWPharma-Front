@@ -66,25 +66,25 @@ const RegisterPage = (props: any) => {
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (user.isAuth) {
-      if (query.redirectURL) {
-        const newQuery = { ...query };
-        // Remove the key from the copied object
-        delete newQuery["redirectURL"];
-        const returnUrl =
-          query.redirectURL && query.redirectURL !== "/account"
-            ? query.redirectURL
-            : "/account";
-        router.replace({
-          pathname: returnUrl as string,
-          query: newQuery,
-        });
-      } else {
-        router.replace("/account");
-      }
-    }
-  }, [user]);
+  // useEffect(() => {
+    // if (user.isAuth) {
+    //   if (query.redirectURL) {
+    //     const newQuery = { ...query };
+    //     // Remove the key from the copied object
+    //     delete newQuery["redirectURL"];
+    //     const returnUrl =
+    //       query.redirectURL && query.redirectURL !== "/account"
+    //         ? query.redirectURL
+    //         : "/account";
+    //     router.replace({
+    //       pathname: returnUrl as string,
+    //       query: newQuery,
+    //     });
+    //   } else {
+    //     router.replace("/account");
+    //   }
+    // }
+  // }, [user]);
 
   const validataForm = () => {
     if (registerByPhone) {

@@ -13,7 +13,7 @@ import { post } from "@/handler/api.handler";
 import { useAppSelector } from "@/store/hooks";
 import { UserType } from "../types/user.types";
 import { useDispatch } from "react-redux";
-import { deleteUser, storeUser } from "@/store/apps/user";
+import { deleteUser, storeUser, updateUser } from "@/store/apps/user";
 import { resetWishlist } from "@/store/apps/wishlist";
 import { resetCart } from "@/store/apps/cart";
 
@@ -48,22 +48,23 @@ const AuthProvider = ({ children }: Props) => {
 
   const initAuth = async (): Promise<void> => {
     const storedToken = auth.token!;
+    console.log(storedToken);
     if (storedToken) {
       setLoading(true);
       try {
         const res = await post(routeConfig.account.profile, null, storedToken);
+        console.log(res && res.status_code == 200);
         if (res && res.status_code == 200) {
           setLoading(false);
           setUser({ ...res.data });
           dispatch(storeUser({ ...res.data, isAuth: true }));
-          localStorage.setItem(routeConfig.storageTokenKeyName, res.data.token);
-          localStorage.setItem("refreshToken", res.data.token);
         }
       } catch (e: any) {
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("accessToken");
-        setUser(null);
-        dispatch(deleteUser());
+      
+        // dispatch(deleteUser());
+        // dispatch(resetCart());
+        // dispatch(resetWishlist());
+        // setUser(null);
         setLoading(false);
         if (
           routeConfig.onTokenExpiration === "logout" &&
@@ -86,17 +87,9 @@ const AuthProvider = ({ children }: Props) => {
     try {
       const res = await post(routeConfig.account.login, params, null);
       if (res && res.status_code == 200) {
-        params.rememberMe
-          ? window.localStorage.setItem(
-              routeConfig.storageTokenKeyName,
-              res?.data?.token
-            )
-          : null;
         const returnUrl = router.query.returnUrl;
         setUser({ ...res.data });
-        params.rememberMe
-          ? window.localStorage.setItem("userData", JSON.stringify(res.data))
-          : null;
+
         const redirectURL = returnUrl && returnUrl !== "/" ? returnUrl : "/";
         router.replace(redirectURL as string);
       }
@@ -104,6 +97,9 @@ const AuthProvider = ({ children }: Props) => {
       if (errorCallback) errorCallback(err);
     }
   };
+
+
+  
 
   const handleLogout = () => {
     setUser(null);
