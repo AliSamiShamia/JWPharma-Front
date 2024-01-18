@@ -3,7 +3,7 @@ import { CartType } from "@/components/types/cart.types";
 import CustomLink from "@/components/widgets/link";
 import { get } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
-import { initCart } from "@/store/apps/cart";
+import { initCart, resetCart } from "@/store/apps/cart";
 import { useAppSelector } from "@/store/hooks";
 import { Badge, Box, Typography } from "@mui/material";
 import { RiShoppingCart2Line } from "@react-icons/all-files/ri/RiShoppingCart2Line";
@@ -49,6 +49,8 @@ function CartNavItem(props: any) {
     if (document.readyState == "complete") {
       if (user.isAuth) {
         loadCart();
+      } else {
+        dispatch(resetCart());
       }
     }
     return () => {};
