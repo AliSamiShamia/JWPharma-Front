@@ -14,7 +14,7 @@ import { ClipLoader } from "react-spinners";
 
 function CartNavItem(props: any) {
   const { cart, user } = props;
-
+  const auth = useAuth();
   const [cartLength, setCartLength] = useState(0);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ function CartNavItem(props: any) {
       return;
     }
     if (document.readyState == "complete") {
-      if (user.isAuth) {
+      if (auth?.user?.isAuth) {
         loadCart();
       }
     }

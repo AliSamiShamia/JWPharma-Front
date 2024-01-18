@@ -8,7 +8,9 @@ import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
 import Footer from "../footer";
 import routeConfig from "@/components/constant/route";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
+import { storeUser } from "@/store/apps/user";
 const inter = Inter({ subsets: ["latin"] });
 
 const DrawerAppBar = dynamic(() => import("@/components/design/header/navbar"));
@@ -31,13 +33,19 @@ Router.events.on("routeChangeComplete", () => {
 });
 
 function Layout(props: LayoutType) {
-  const user = useAppSelector((state) => state.user.auth);
+  const context = useAuth();
+  const auth = useAppSelector((state) => state.user.auth);
+  const dispatch = useAppDispatch();
+
   const { children } = props;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (document.readyState === "complete") {
       init();
+      if (context.user && !auth.id) {
+        dispatch(storeUser({ ...context.user, isAuth: true }));
+      }
     } else {
       window.addEventListener("load", init, false);
       // Remove the event listener when component unmounts
