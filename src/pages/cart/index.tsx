@@ -198,7 +198,10 @@ function Cart(props: any) {
                             padding={0}
                             width={{ md: 150, xs: 60 }}
                             link
-                            url={`/products/${item.product.slug}`}
+                            url={`/products/d`}
+                            params={{
+                              slug:item.product.slug
+                            }}
                           >
                             <Box
                               component={"img"}

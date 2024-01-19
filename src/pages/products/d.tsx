@@ -19,6 +19,8 @@ const Typography = dynamic(() => import("@mui/material/Typography"));
 import { Fade } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import Swal from "sweetalert2";
+import { MdFavoriteBorder } from "@react-icons/all-files/md/MdFavoriteBorder";
+import { MdFavorite } from "@react-icons/all-files/md/MdFavorite";
 
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
@@ -93,7 +95,7 @@ function ProductDetails() {
         router.push({
           pathname: "/login",
           query: {
-            redirectURL: "/products/" + product.slug,
+            redirectURL: "/products/d?slug=" + product.slug,
             options: JSON.stringify(options),
           },
         });
@@ -120,7 +122,7 @@ function ProductDetails() {
       router.push({
         pathname: "/login",
         query: {
-          redirectURL: "/products/" + product.slug,
+          redirectURL: "/products/d?slug" + product.slug,
         },
       });
     }
@@ -148,7 +150,7 @@ function ProductDetails() {
       router.push({
         pathname: "/login",
         query: {
-          redirectURL: "/products/" + product.slug,
+          redirectURL: "/products/d?slug" + product.slug,
         },
       });
     }
@@ -201,7 +203,10 @@ function ProductDetails() {
                         link
                         type="text"
                         width={"auto"}
-                        url={"/collection/products/" + item.slug}
+                        url={"/collection/products/d"}
+                        params={{
+                          slug: item.slug,
+                        }}
                         padding={0}
                       >
                         <Typography variant="caption">{item.name}</Typography>
@@ -220,25 +225,30 @@ function ProductDetails() {
                 })}
               </Box>
               <Grid display={"flex"} justifyContent={"space-between"}>
-                <Typography variant="subtitle1" fontWeight={"bold"}>
+                <Typography
+                  variant="subtitle1"
+                  maxWidth={600}
+                  fontWeight={"bold"}
+                >
                   {product.name}
                 </Typography>
-
                 <CustomLink
                   action={
                     product.is_fav
                       ? handleDeteleFromWishlist
                       : handleAddToWishlist
                   }
-                  title={
-                    product.is_fav ? "Remove from Wishlist" : "Add To Wishlist"
-                  }
-                  width={250}
+                  width={"auto"}
                   padding={"auto"}
-                  type="contained"
                   size={"small"}
                   color={product.is_fav ? "error" : "primary"}
-                />
+                >
+                  {product.is_fav ? (
+                    <MdFavorite size={30} color={themeColor.secondary.dark} />
+                  ) : (
+                    <MdFavoriteBorder size={30} />
+                  )}
+                </CustomLink>
               </Grid>
               <Typography variant="caption" color={themeColor.greyColor}>
                 SKU: {product.sku}

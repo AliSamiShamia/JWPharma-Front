@@ -47,15 +47,22 @@ function ProductItem({ product, action }: PropType) {
     );
     if (convertedArray.length > 0) {
       router.push({
-        pathname: "/products/" + product.slug,
+        pathname: "/products/d",
+        query: {
+          slug: product.slug,
+        },
       });
     } else {
       if (user.isAuth) {
         setAddToCartLoading(true);
-        const res = await post(routeConfig.cart.store, {
-          product_id: product.id,
-          quantity: 1,
-        },user.token);
+        const res = await post(
+          routeConfig.cart.store,
+          {
+            product_id: product.id,
+            quantity: 1,
+          },
+          user.token
+        );
         setAddToCartLoading(false);
         if (res && res.status_code == 200) {
           dispatch(
@@ -69,7 +76,7 @@ function ProductItem({ product, action }: PropType) {
         router.push({
           pathname: "/login",
           query: {
-            redirectURL: "/products/" + product.slug,
+            redirectURL: "/products/d?slug" + product.slug,
           },
         });
       }
@@ -78,7 +85,10 @@ function ProductItem({ product, action }: PropType) {
   const handleDeteleFromWishlist = async () => {
     if (user.isAuth) {
       setWishlistLoading(true);
-      const res = await destroy(routeConfig.wishlist.list + "/" + product.id,user.token);
+      const res = await destroy(
+        routeConfig.wishlist.list + "/" + product.id,
+        user.token
+      );
       setWishlistLoading(false);
       if (res && res.status_code == 200) {
         dispatch(
@@ -92,7 +102,7 @@ function ProductItem({ product, action }: PropType) {
       router.push({
         pathname: "/login",
         query: {
-          redirectURL: "/products/" + product.slug,
+          redirectURL: "/products/d?slug" + product.slug,
         },
       });
     }
@@ -101,9 +111,13 @@ function ProductItem({ product, action }: PropType) {
   const handleAddToWishlist = async () => {
     if (user.isAuth) {
       setWishlistLoading(true);
-      const res = await post(routeConfig.wishlist.list, {
-        product_id: product.id,
-      },user.token);
+      const res = await post(
+        routeConfig.wishlist.list,
+        {
+          product_id: product.id,
+        },
+        user.token
+      );
       setWishlistLoading(false);
       if (res && res.status_code == 200) {
         dispatch(
@@ -117,7 +131,7 @@ function ProductItem({ product, action }: PropType) {
       router.push({
         pathname: "/login",
         query: {
-          redirectURL: "/products/" + product.slug,
+          redirectURL: "/products/d?slug" + product.slug,
         },
       });
     }
@@ -192,29 +206,37 @@ function ProductItem({ product, action }: PropType) {
         )}
       </Box>
       <Fade {...properties}>
-        {product.media.map((image, index) => (
-          <Box component={"div"} key={index} display={"relative"}>
-            <CustomLink padding={0} link url={`/products/${product.slug}`}>
-              {imageLoaded ? (
-                <Box
-                  zIndex={99999}
-                  position={"absolute"}
-                  top={0}
-                  bottom={0}
-                  left={0}
-                  right={0}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  sx={{
-                    backgroundColor: "#00000077",
-                    borderTopLeftRadius: "1rem",
-                    borderTopRightRadius: "1rem",
-                  }}
-                >
-                  <ClipLoader loading={true} />
-                </Box>
-              ) : null}
+        {/* {product.media.map((image, index) => ( */}
+        <Box component={"div"} display={"relative"}>
+          <CustomLink
+            padding={0}
+            link
+            url={`/products/d`}
+            params={{
+              slug: product.slug,
+            }}
+          >
+            {imageLoaded && product.thumbnail.url ? (
+              <Box
+                zIndex={99999}
+                position={"absolute"}
+                top={0}
+                bottom={0}
+                left={0}
+                right={0}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                sx={{
+                  backgroundColor: "#00000077",
+                  borderTopLeftRadius: "1rem",
+                  borderTopRightRadius: "1rem",
+                }}
+              >
+                <ClipLoader loading={true} />
+              </Box>
+            ) : null}
+            {product.thumbnail.url ? (
               <Box
                 component={"img"}
                 onLoad={() => {
@@ -231,11 +253,23 @@ function ProductItem({ product, action }: PropType) {
                   borderTopLeftRadius: "1rem",
                   borderTopRightRadius: "1rem",
                 }}
-                src={image.url}
+                src={product.thumbnail.url}
               />
-            </CustomLink>
-          </Box>
-        ))}
+            ) : (
+              <Box
+                sx={{
+                  width: "100%",
+                  backgroundColor: themeColor.lightGreyColor,
+                  height: { xs: 250, sm: 300 },
+                  objectFit: "cover",
+                  borderTopLeftRadius: "1rem",
+                  borderTopRightRadius: "1rem",
+                }}
+              />
+            )}
+          </CustomLink>
+        </Box>
+        {/* ))} */}
       </Fade>
       <Box
         pb={1}

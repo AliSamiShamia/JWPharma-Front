@@ -59,9 +59,10 @@ function Layout(props: LayoutType) {
 
   return (
     <>
+     
       {loading ? (
         <Box component={"main"} className={`${styles.main} ${inter.className}`}>
-          <CustomSpinner loading={loading}>
+          <CustomSpinner loading={true}>
             <Logo />
           </CustomSpinner>
         </Box>
