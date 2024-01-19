@@ -60,7 +60,6 @@ const post = async (
       },
     });
   } catch (error) {
-    console.log(error);
     return null;
   }
 
@@ -85,7 +84,6 @@ const put = async (
       },
     });
   } catch (error) {
-    console.log(error);
     return null;
   }
 
@@ -109,7 +107,6 @@ const multipart = async (
       },
     });
   } catch (error) {
-    console.log(error);
     return null;
   }
   return res?.data;
@@ -132,7 +129,6 @@ const destroy = async (
       },
     });
   } catch (error) {
-    console.log(error);
     return null;
   }
   return res?.data;
