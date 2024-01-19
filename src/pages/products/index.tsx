@@ -92,7 +92,7 @@ function Product({ perPage, loadMore }: PaginationPropType) {
       }
     }
     return () => {};
-  }, [page]);
+  }, [page, router]);
 
   return (
     <Layout>

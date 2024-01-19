@@ -7,14 +7,16 @@ import { Box } from "@mui/material";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Swal from "sweetalert2";
 const Layout = dynamic(() => import("@/components/design/layout"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Chip = dynamic(() => import("@mui/material/Chip"));
 const UserAddresses = dynamic(() => import("@/components/widgets/address"));
-const ComponentSpinner = dynamic(() => import("@/components/widgets/spinner/component.spinner"));
+const ComponentSpinner = dynamic(
+  () => import("@/components/widgets/spinner/component.spinner")
+);
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const Product = dynamic(() => import("@/components/views/product"));
@@ -39,7 +41,11 @@ function Checkout(props: any) {
   const placeOrder = async () => {
     setLoading(true);
     try {
-      const res = await post(routeConfig.order.placeorder, null, auth.user?.token);
+      const res = await post(
+        routeConfig.order.placeorder,
+        null,
+        auth.user?.token
+      );
       if (res && res.status_code == 200) {
         router.push(res.data.url);
       } else {
@@ -48,8 +54,8 @@ function Checkout(props: any) {
           text: "Something went wrong, Please try again!",
           icon: "error",
         });
+        setLoading(false);
       }
-      setLoading(false);
     } catch (e) {
       Swal.fire({
         title: "Oops...",

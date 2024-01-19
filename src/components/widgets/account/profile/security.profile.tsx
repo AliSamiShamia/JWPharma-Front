@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PhoneComponent from "../phone";
 import { connect } from "react-redux";
 import { post } from "@/handler/api.handler";
@@ -29,11 +29,26 @@ function Security(props: any) {
   const dispatch = useAppDispatch();
 
   const [form_data, setFormData] = useState({
-    email: auth.user?.email,
+    email: auth.user?.email || "",
     user_name: auth.user?.phone_number || "",
     country_code: auth.user?.country_code || "",
   });
 
+  useEffect(() => {
+    if (auth.user) {
+      setFormData({
+        email: auth.user?.email || "",
+        user_name: auth.user?.phone_number || "",
+        country_code: auth.user?.country_code || "",
+      });
+    } else {
+      setFormData({
+        email: "",
+        user_name: "",
+        country_code: "",
+      });
+    }
+  }, [auth]);
   const handleChange = (key: string, value: string) => {
     let data = {
       ...form_data,
