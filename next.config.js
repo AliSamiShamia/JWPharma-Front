@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   reactStrictMode: true,
   images: {
-    domains: ["localhost", "jwpharma.me", "images.pexels.com"],
+    domains: [
+      "localhost",
+      "jwpharma.me",
+      "phplaravel-1199312-4234008.cloudwaysapps.com",
+      "images.pexels.com",
+    ],
     minimumCacheTTL: 60,
   },
 
