@@ -233,7 +233,7 @@ function ProductDetails() {
                   );
                 })}
               </Box>
-              <Grid display={"flex"} justifyContent={"space-between"}>
+              <Grid display={"flex"} position={"relative"} justifyContent={"space-between"}>
                 <Typography
                   variant="subtitle1"
                   maxWidth={600}

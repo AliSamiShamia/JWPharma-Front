@@ -314,20 +314,23 @@ function ProductItem({ product, action }: PropType) {
         paddingRight={1}
         paddingLeft={1}
         border={1}
+        position={"relative"}
         borderColor={themeColor.borderColor}
       >
         <Typography
           color={"black"}
-          width={280}
+          
           sx={{
             pt: 1.5,
+            width:"100%",
             display: "-webkit-box",
             overflow: "hidden",
             textOverflow: "ellipsis",
             WebkitLineClamp: "2",
             textTransform: "capitalize",
             WebkitBoxOrient: "vertical",
-            height: 70,
+            minHeight: 70,
+            
           }}
         >
           {product.name}
