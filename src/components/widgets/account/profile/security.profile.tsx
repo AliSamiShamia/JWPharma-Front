@@ -20,17 +20,18 @@ const CustomLink = dynamic(() => import("../../link"));
 import { MdEdit } from "@react-icons/all-files/md/MdEdit";
 import { MdClose } from "@react-icons/all-files/md/MdClose";
 import { ClipLoader } from "react-spinners";
+import { useAuth } from "@/hooks/useAuth";
 
 function Security(props: any) {
-  const { user } = props;
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const dispatch = useAppDispatch();
 
   const [form_data, setFormData] = useState({
-    email: user.email,
-    user_name: user.phone_number,
-    country_code: user.country_code,
+    email: auth.user?.email,
+    user_name: auth.user?.phone_number || "",
+    country_code: auth.user?.country_code || "",
   });
 
   const handleChange = (key: string, value: string) => {
@@ -48,7 +49,11 @@ function Security(props: any) {
         phone_number: form_data.user_name,
         country_code: form_data.country_code,
       };
-      const res = await post(routeConfig.account.update.security, data,user.token);
+      const res = await post(
+        routeConfig.account.update.security,
+        data,
+        auth.user?.token
+      );
       if (res && res.status_code == 200) {
         Swal.fire({
           text: "Your details have been successfully refreshed.",

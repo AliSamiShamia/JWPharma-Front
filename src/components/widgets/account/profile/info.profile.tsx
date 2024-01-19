@@ -19,18 +19,18 @@ import { MdClose } from "@react-icons/all-files/md/MdClose";
 import themeColor from "@/components/constant/color";
 import Country from "@/components/widgets/country";
 import { ClipLoader } from "react-spinners";
+import { useAuth } from "@/hooks/useAuth";
 
 function GeneralInfo(props: any) {
-  const { user } = props;
-
+  const auth = useAuth();
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const [form_data, setFormData] = useState({
-    first_name: user.first_name,
-    middle_name: user.middle_name,
-    last_name: user.last_name,
-    country: user.country,
+    first_name: auth.user?.first_name,
+    middle_name: auth.user?.middle_name,
+    last_name: auth.user?.last_name,
+    country: auth.user?.country,
   });
 
   const handleChange = (key: string, value: string) => {
@@ -44,7 +44,11 @@ function GeneralInfo(props: any) {
   const updateUserInfo = async () => {
     try {
       setLoading(true);
-      const res = await post(routeConfig.account.update.info, form_data,user.token);
+      const res = await post(
+        routeConfig.account.update.info,
+        form_data,
+        auth.user?.token
+      );
       if (res && res.status_code == 200) {
         dispatch(
           storeUser({

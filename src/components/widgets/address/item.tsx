@@ -1,12 +1,12 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
-import { post, get } from "@/handler/api.handler";
-import { useAppSelector } from "@/store/hooks";
-import { Typography } from "@mui/material";
+import { post, } from "@/handler/api.handler";
+import { useAuth } from "@/hooks/useAuth";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 const Chip = dynamic(() => import("@mui/material/Chip"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
+const Typography = dynamic(() => import("@mui/material/Typography"));
 const Card = dynamic(() => import("@mui/material/Card"));
 const CardContent = dynamic(() => import("@mui/material/CardContent"));
 const CustomLink = dynamic(() => import("../link"));
@@ -20,7 +20,7 @@ type PropsType = {
   setSelected: (address: UserAddressType) => void;
 };
 function AddressItem({ address, action, setSelected }: PropsType) {
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   //   const [data]
   const setDefault = async () => {
@@ -29,7 +29,7 @@ function AddressItem({ address, action, setSelected }: PropsType) {
       const res = await post(
         routeConfig.account.addresses + "/default/" + address.id,
         null,
-        user.token
+        auth.user?.token
       );
       if (res && res.status_code == 200) {
         action();

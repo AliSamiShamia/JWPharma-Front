@@ -17,6 +17,7 @@ import CustomLink from "@/components/widgets/link";
 import { useAppSelector } from "@/store/hooks";
 import { ClipLoader } from "react-spinners";
 import themeColor from "@/components/constant/color";
+import { useAuth } from "@/hooks/useAuth";
 
 type PropType = {
   product: ProductType;
@@ -34,7 +35,7 @@ function ProductItem({ product, action }: PropType) {
   const [imageLoaded, setImageLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
-
+  const auth = useAuth();
   const dispatch = useDispatch();
   const router = useRouter();
   const { s } = router.query;
@@ -53,7 +54,7 @@ function ProductItem({ product, action }: PropType) {
         },
       });
     } else {
-      if (user.isAuth) {
+      if (auth.user) {
         setAddToCartLoading(true);
         const res = await post(
           routeConfig.cart.store,
@@ -61,7 +62,7 @@ function ProductItem({ product, action }: PropType) {
             product_id: product.id,
             quantity: 1,
           },
-          user.token
+          auth.user.token
         );
         setAddToCartLoading(false);
         if (res && res.status_code == 200) {
@@ -83,11 +84,11 @@ function ProductItem({ product, action }: PropType) {
     }
   };
   const handleDeteleFromWishlist = async () => {
-    if (user.isAuth) {
+    if (auth.user) {
       setWishlistLoading(true);
       const res = await destroy(
         routeConfig.wishlist.list + "/" + product.id,
-        user.token
+        auth.user.token
       );
       setWishlistLoading(false);
       if (res && res.status_code == 200) {
@@ -109,14 +110,14 @@ function ProductItem({ product, action }: PropType) {
   };
 
   const handleAddToWishlist = async () => {
-    if (user.isAuth) {
+    if (auth.user) {
       setWishlistLoading(true);
       const res = await post(
         routeConfig.wishlist.list,
         {
           product_id: product.id,
         },
-        user.token
+        auth.user.token
       );
       setWishlistLoading(false);
       if (res && res.status_code == 200) {

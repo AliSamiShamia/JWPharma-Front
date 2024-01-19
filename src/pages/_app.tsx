@@ -119,7 +119,6 @@ const App = (props: ExtendedAppProps) => {
         <AuthProvider>
           <ThemeProvider theme={theme}>
             <GlobalStyles styles={() => GlobalStyling(theme)} />
-
             <CacheProvider value={emotionCache}>
               <Head>
                 <title>{`${themeConfig.websiteName} `}</title>

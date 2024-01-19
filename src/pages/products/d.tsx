@@ -1,18 +1,17 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
-import AddToCartWidget from "@/components/widgets/cart/add";
-import CustomLink from "@/components/widgets/link";
-import ProductOptions from "@/components/widgets/product/options";
 import { destroy, get, post } from "@/handler/api.handler";
 import { addToCart } from "@/store/apps/cart";
 import { addToWishlist, deleteFromWishlist } from "@/store/apps/wishlist";
-import { useAppSelector } from "@/store/hooks";
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 const Layout = dynamic(() => import("@/components/design/layout"));
+const AddToCartWidget = dynamic(() => import("@/components/widgets/cart/add"));
+const CustomLink = dynamic(() => import("@/components/widgets/link"));
+const ProductOptions = dynamic(() => import("@/components/widgets/product/options"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Divider = dynamic(() => import("@mui/material/Divider"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
@@ -21,6 +20,7 @@ import "react-slideshow-image/dist/styles.css";
 import Swal from "sweetalert2";
 import { MdFavoriteBorder } from "@react-icons/all-files/md/MdFavoriteBorder";
 import { MdFavorite } from "@react-icons/all-files/md/MdFavorite";
+import { useAuth } from "@/hooks/useAuth";
 
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
@@ -34,7 +34,7 @@ const properties = {
 
 function ProductDetails() {
   const router = useRouter();
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
   const [loading, setLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const { slug } = router.query;
@@ -45,7 +45,10 @@ function ProductDetails() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const res = await get(routeConfig.product.list + "/" + slug, user.token);
+      const res = await get(
+        routeConfig.product.list + "/" + slug,
+        auth.user?.token
+      );
       setLoading(false);
       if (res && res.status_code == 200) {
         setProduct(res.data);
@@ -74,14 +77,14 @@ function ProductDetails() {
         confirmButtonColor: themeColor.primary.dark,
       });
     } else {
-      if (user.isAuth) {
+      if (auth.user?.isAuth) {
         setLoading(true);
         let data = {
           product_id: product.id,
           quantity: quantity,
           options: options,
         };
-        const res = await post(routeConfig.cart.store, data, user.token);
+        const res = await post(routeConfig.cart.store, data, auth.user?.token);
         setLoading(false);
         if (res && res.status_code == 200) {
           dispatch(
@@ -104,11 +107,11 @@ function ProductDetails() {
   };
 
   const handleDeteleFromWishlist = async () => {
-    if (user.isAuth) {
+    if (auth.user?.isAuth) {
       setWishlistLoading(true);
       const res = await destroy(
         routeConfig.wishlist.list + "/" + product.id,
-        user.token
+        auth.user?.token
       );
       setWishlistLoading(false);
       if (res && res.status_code == 200) {
@@ -129,14 +132,14 @@ function ProductDetails() {
   };
 
   const handleAddToWishlist = async () => {
-    if (user.isAuth) {
+    if (auth.user?.isAuth) {
       setWishlistLoading(true);
       const res = await post(
         routeConfig.wishlist.list,
         {
           product_id: product.id,
         },
-        user.token
+        auth.user?.token
       );
       setWishlistLoading(false);
       if (res && res.status_code == 200) {

@@ -1,7 +1,7 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
-import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ function Product({ perPage, loadMore }: PaginationPropType) {
   const [filterParams, setFilterParam] = useState({} as any);
   const router = useRouter();
   const { keys } = router.query;
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
 
   const loadData = async (
     page: number,
@@ -61,7 +61,7 @@ function Product({ perPage, loadMore }: PaginationPropType) {
       }
     }
     setLoading(true);
-    const res = await get(routeConfig.product.list, user?.token, data);
+    const res = await get(routeConfig.product.list, auth.user?.token, data);
     setLoading(false);
     action ? action(false) : null;
 

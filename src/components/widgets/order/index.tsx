@@ -8,6 +8,7 @@ import { saveAs } from "file-saver";
 import themeColor from "@/components/constant/color";
 import { Box, Button } from "@mui/material";
 import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Tooltip = dynamic(() => import("@mui/material/Tooltip"));
 const Card = dynamic(() => import("@mui/material/Card"));
@@ -15,14 +16,14 @@ const CardContent = dynamic(() => import("@mui/material/CardContent"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 
 function OrderItem(order: OrderType) {
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const invoice = async () => {
     setLoading(true);
     try {
       const res = await multipart(
         routeConfig.order.invoice + "/" + order.id,
-        user.token
+        auth.user?.token
       );
       if (res && res.status_code == 200) {
         saveAs(res.data.url, "invoice.pdf");

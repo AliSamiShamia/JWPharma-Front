@@ -28,7 +28,7 @@ function WishlistNavItem(props: any) {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.wishlist.list, user.token);
+      const res = await get(routeConfig.wishlist.list, auth.user?.token);
       if (res && res.status_code == 200) {
         dispatch(initWishlist(res.data));
       }

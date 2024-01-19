@@ -1,7 +1,7 @@
 import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
-import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
 import { Box, Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -22,11 +22,11 @@ function Collection({ perPage }: PaginationPropType) {
   const [data, setData] = useState([] as CollectionType[]);
   const router = useRouter();
   const [loadMore, setLoadMore] = useState(false);
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
 
   const loadData = async (page: number) => {
     setLoadMore(false);
-    const res = await get(routeConfig.collection.list,user.token, {
+    const res = await get(routeConfig.collection.list,auth.user?.token, {
       page: page,
       per_page: perPage,
     });

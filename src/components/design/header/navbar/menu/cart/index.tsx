@@ -13,7 +13,7 @@ import { connect, useDispatch } from "react-redux";
 import { ClipLoader } from "react-spinners";
 
 function CartNavItem(props: any) {
-  const { cart, user } = props;
+  const { cart } = props;
   const auth = useAuth();
   const [cartLength, setCartLength] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ function CartNavItem(props: any) {
   const loadCart = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.cart.list, user.token);
+      const res = await get(routeConfig.cart.list, auth.user?.token);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }

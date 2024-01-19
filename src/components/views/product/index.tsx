@@ -1,12 +1,10 @@
 import routeConfig from "@/components/constant/route";
-import { get, post } from "@/handler/api.handler";
+import { get } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
-import { addToCart } from "@/store/apps/cart";
-import { useAppSelector } from "@/store/hooks";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect, } from "react-redux";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Container = dynamic(() => import("@mui/material/Container"));
@@ -52,12 +50,12 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as ProductType[]);
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
 
   const router = useRouter();
   const loadData = async (page: number) => {
     setData([]);
-    const res = await get(routeConfig.product.listWihtoutFilter, user?.token, {
+    const res = await get(routeConfig.product.listWihtoutFilter, auth.user?.token, {
       page: page,
       per_page: perPage,
     });

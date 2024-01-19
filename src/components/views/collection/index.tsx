@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import CollectionItem from "./item";
 import ResponsiveSlider from "@/components/design/slider";
 import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Container = dynamic(() => import("@mui/material/Container"));
 const ComponentSpinner = dynamic(
@@ -48,10 +49,10 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([] as CollectionType[]);
 
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
 
   const loadData = async (page: number) => {
-    const res = await get(routeConfig.collection.list, user?.token, {
+    const res = await get(routeConfig.collection.list, auth.user?.token, {
       page: page,
       per_page: perPage,
     });
