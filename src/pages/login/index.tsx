@@ -5,13 +5,7 @@ import Box, { BoxProps } from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 
 import { FaTimes } from "@react-icons/all-files/fa/FaTimes";
-import {
-  Alert,
-  Divider,
-  FormHelperText,
-  Grid,
-  TypographyProps,
-} from "@mui/material";
+
 import Layout from "@/components/design/layout";
 import dynamic from "next/dynamic";
 import { post } from "@/handler/api.handler";
@@ -19,13 +13,22 @@ import routeConfig from "@/components/constant/route";
 import { ClipLoader } from "react-spinners";
 import { connect } from "react-redux";
 import { storeUser } from "@/store/apps/user";
-import PhoneComponent from "@/components/widgets/account/phone";
-import EmailComponent from "@/components/widgets/account/email";
+
 import Swal from "sweetalert2";
 import { storeTempUser } from "@/store/apps/temp-user";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/router";
 
+const PhoneComponent = dynamic(
+  () => import("@/components/widgets/account/phone")
+);
+const EmailComponent = dynamic(
+  () => import("@/components/widgets/account/email")
+);
+const Alert = dynamic(() => import("@mui/material/Alert"));
+const Divider = dynamic(() => import("@mui/material/Divider"));
+const FormHelperText = dynamic(() => import("@mui/material/FormHelperText"));
+const Grid = dynamic(() => import("@mui/material/Grid"));
 const TextField = dynamic(() => import("@mui/material/TextField"));
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
 const FormControl = dynamic(() => import("@mui/material/FormControl"));
@@ -42,7 +45,7 @@ const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   },
 }));
 
-const TypographyStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
+const TypographyStyled = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   marginBottom: theme.spacing(1.5),
   [theme.breakpoints.down("md")]: { mt: theme.spacing(8) },
