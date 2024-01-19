@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 import { connect } from "react-redux";
 import { UserType } from "@/components/types/user.types";
+import { useAuth } from "@/hooks/useAuth";
 const Alert = dynamic(() => import("@mui/material/Alert"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
@@ -13,11 +14,11 @@ const Security = dynamic(
 );
 
 function Profile(props: any) {
-  const user = props.user as UserType;
+  const auth = useAuth();
 
   return (
     <Grid container display={"flex"} alignItems={"center"} gap={2} py={2}>
-      {user && !user.complete_info ? (
+      {auth.user && !auth.user.complete_info ? (
         <Grid
           mb={2}
           width={1}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Swal from "sweetalert2";
 import { post } from "@/handler/api.handler";
@@ -32,6 +32,24 @@ function GeneralInfo(props: any) {
     last_name: auth.user?.last_name,
     country: auth.user?.country,
   });
+
+  useEffect(() => {
+    if (auth.user) {
+      setFormData({
+        first_name: auth.user.first_name,
+        middle_name: auth.user.middle_name,
+        last_name: auth.user.last_name,
+        country: auth.user.country,
+      });
+    } else {
+      setFormData({
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        country: "",
+      });
+    }
+  }, [auth]);
 
   const handleChange = (key: string, value: string) => {
     let data = {
