@@ -72,7 +72,7 @@ const RegisterPage = (props: any) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user.isAuth) {
+    if (auth.user) {
       if (query.redirectURL) {
         const newQuery = { ...query };
         // Remove the key from the copied object

@@ -47,7 +47,7 @@ function CartNavItem(props: any) {
       return;
     }
     if (document.readyState == "complete") {
-      if (auth?.user?.isAuth) {
+      if (auth?.user) {
         loadCart();
       }
     }

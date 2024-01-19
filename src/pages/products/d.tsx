@@ -79,7 +79,7 @@ function ProductDetails() {
         confirmButtonColor: themeColor.primary.dark,
       });
     } else {
-      if (auth.user?.isAuth) {
+      if (auth.user) {
         setLoading(true);
         let data = {
           product_id: product.id,
@@ -88,6 +88,8 @@ function ProductDetails() {
         };
         const res = await post(routeConfig.cart.store, data, auth.user?.token);
         setLoading(false);
+        console.log(data);
+        console.log(res);
         if (res && res.status_code == 200) {
           dispatch(
             addToCart({
@@ -110,7 +112,7 @@ function ProductDetails() {
   };
 
   const handleDeteleFromWishlist = async () => {
-    if (auth.user?.isAuth) {
+    if (auth.user) {
       setWishlistLoading(true);
       const res = await destroy(
         routeConfig.wishlist.list + "/" + product.id,
@@ -136,7 +138,7 @@ function ProductDetails() {
   };
 
   const handleAddToWishlist = async () => {
-    if (auth.user?.isAuth) {
+    if (auth.user) {
       setWishlistLoading(true);
       const res = await post(
         routeConfig.wishlist.list,
