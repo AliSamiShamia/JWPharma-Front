@@ -64,7 +64,6 @@ function Product({ perPage, loadMore }: PaginationPropType) {
     const res = await get(routeConfig.product.list, auth.user?.token, data);
     setLoading(false);
     action ? action(false) : null;
-
     if (res && res.status_code == 200) {
       setData(res.data);
       if (!filterParams.price)

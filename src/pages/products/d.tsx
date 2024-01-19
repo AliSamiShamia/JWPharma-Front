@@ -88,8 +88,7 @@ function ProductDetails() {
         };
         const res = await post(routeConfig.cart.store, data, auth.user?.token);
         setLoading(false);
-        console.log(data);
-        console.log(res);
+    
         if (res && res.status_code == 200) {
           dispatch(
             addToCart({

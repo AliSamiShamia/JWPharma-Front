@@ -116,35 +116,37 @@ const App = (props: ExtendedAppProps) => {
   return (
     <Suspense fallback={<CustomSpinner loading={true} />}>
       <Provider store={store}>
-        <AuthProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyles styles={() => GlobalStyling(theme)} />
-            <CacheProvider value={emotionCache}>
-              <Head>
-                <title>{`${themeConfig.websiteName} `}</title>
-                <meta
-                  name="description"
-                  content={`${themeConfig.websiteName}  `}
-                />
-                <meta
-                  name="keywords"
-                  content="E-Commerce JWPharma JW Pharam Middle East City"
-                />
-                <meta
-                  name="viewport"
-                  content="initial-scale=1, width=device-width"
-                />
-              </Head>
-              {Component.auth ? (
-                <AuthMiddleware>
+        <CacheProvider value={emotionCache}>
+          <AuthProvider>
+            <ThemeProvider theme={theme}>
+              <GlobalStyles styles={() => GlobalStyling(theme)} />
+              <CacheProvider value={emotionCache}>
+                <Head>
+                  <title>{`${themeConfig.websiteName} `}</title>
+                  <meta
+                    name="description"
+                    content={`${themeConfig.websiteName}  `}
+                  />
+                  <meta
+                    name="keywords"
+                    content="E-Commerce JWPharma JW Pharam Middle East City"
+                  />
+                  <meta
+                    name="viewport"
+                    content="initial-scale=1, width=device-width"
+                  />
+                </Head>
+                {Component.auth ? (
+                  <AuthMiddleware>
+                    <Component {...pageProps} />
+                  </AuthMiddleware>
+                ) : (
                   <Component {...pageProps} />
-                </AuthMiddleware>
-              ) : (
-                <Component {...pageProps} />
-              )}
-            </CacheProvider>
-          </ThemeProvider>
-        </AuthProvider>
+                )}
+              </CacheProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </CacheProvider>
       </Provider>
     </Suspense>
   );
