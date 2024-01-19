@@ -15,30 +15,22 @@ interface ItemSpinnerInterface {
 }
 function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
   return (
-    <>
-      <Grid
-        container
-        display={"flex"}
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        border={1}
-        position={"fixed"}
-        top={0}
-        left={0}
-        bottom={0}
-        right={0}
-        zIndex={10000}
-      >
-        <Box sx={{ mb: 2 }}>{children}</Box>
-        <FadeLoader
-          color={themeColor.secondary.main}
-          loading={loading}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      </Grid>
-    </>
+    <Grid
+      container
+      display={"flex"}
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      border={1}
+    >
+      <Box sx={{ mb: 2 }}>{children}</Box>
+      <FadeLoader
+        color={themeColor.secondary.main}
+        loading={loading}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+    </Grid>
   );
 }
 

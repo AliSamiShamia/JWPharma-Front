@@ -6,7 +6,11 @@ const Typography = dynamic(() => import("@mui/material/Typography"));
 
 function CollectionItem(collection: CollectionType) {
   return (
-    <CustomLink url={`/collection/products/${collection.slug}`} link={true}>
+    <CustomLink
+      url={`/collection/products/d`}
+      params={{ slug: collection.slug }}
+      link={true}
+    >
       <Box
         position={"relative"}
         borderRadius={2}
