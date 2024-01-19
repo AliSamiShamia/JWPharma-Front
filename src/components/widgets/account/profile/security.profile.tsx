@@ -36,12 +36,17 @@ function Security(props: any) {
 
   useEffect(() => {
     if (auth.user) {
+      const { email, phone_number, country_code } = auth.user;
+      if (email == "" || !phone_number || !country_code) {
+        setEdit(true);
+      }
       setFormData({
         email: auth.user?.email || "",
         user_name: auth.user?.phone_number || "",
         country_code: auth.user?.country_code || "",
       });
     } else {
+      setEdit(true);
       setFormData({
         email: "",
         user_name: "",

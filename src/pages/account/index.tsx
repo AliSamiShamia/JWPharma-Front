@@ -1,9 +1,10 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material";
 import themeColor from "@/components/constant/color";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 const Profile = dynamic(() => import("@/components/widgets/account/profile"));
 const Address = dynamic(() => import("@/components/widgets/account/address"));
@@ -25,6 +26,9 @@ function a11yProps(index: number) {
 }
 
 function VerticalTabs(props: any) {
+  const router = useRouter();
+  const { t } = router.query;
+
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -75,10 +79,26 @@ function VerticalTabs(props: any) {
     value: PropTypes.number.isRequired,
   };
 
+  useEffect(() => {
+    if (t) {
+      switch (t) {
+        case "orders":
+          setValue(2);
+          break;
+        case "address":
+          setValue(1);
+          break;
+        default:
+          setValue(0);
+          break;
+      }
+    }
+  }, [t]);
+
   return (
     <Layout>
       <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
-        <Grid container maxWidth={"lg"} mt={3} width={1} >
+        <Grid container maxWidth={"lg"} mt={3} width={1}>
           <Grid item xs={12} sx={{ borderBottom: 1, borderColor: "divider" }}>
             <AntTabs
               value={value}

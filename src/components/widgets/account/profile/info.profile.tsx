@@ -35,6 +35,16 @@ function GeneralInfo(props: any) {
 
   useEffect(() => {
     if (auth.user) {
+      const { first_name, last_name, country, country_code } = auth.user;
+      if (
+        first_name?.trim() == "" ||
+        first_name?.trim() == "user" ||
+        last_name?.trim() == "" ||
+        country == "" ||
+        country_code == ""
+      ) {
+        setEdit(true);
+      }
       setFormData({
         first_name: auth.user.first_name,
         middle_name: auth.user.middle_name,
@@ -42,6 +52,7 @@ function GeneralInfo(props: any) {
         country: auth.user.country,
       });
     } else {
+      setEdit(true);
       setFormData({
         first_name: "",
         middle_name: "",
