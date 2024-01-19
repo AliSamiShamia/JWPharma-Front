@@ -9,7 +9,12 @@ const Link = dynamic(() => import("@mui/material/Link"));
 function index() {
   return (
     <Layout>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Grid
+        display={"flex"}
+        sx={{ p: 3 }}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <Grid container maxWidth={"md"} mt={5} spacing={2}>
           <Typography
             variant="h4"

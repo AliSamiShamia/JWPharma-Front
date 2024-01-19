@@ -100,12 +100,14 @@ function Product({ perPage, loadMore }: PaginationPropType) {
         <ComponentSpinner loading={true} />
       ) : (
         <>
-          <FilterList
-            filters={data.filter}
-            handleAction={loadData}
-            setFilterParam={setFilterParam}
-            params={filterParams}
-          />
+          <Grid py={1}>
+            <FilterList
+              filters={data.filter}
+              handleAction={loadData}
+              setFilterParam={setFilterParam}
+              params={filterParams}
+            />
+          </Grid>
           {data.products?.length > 0 ? (
             <Grid
               alignItems={"center"}

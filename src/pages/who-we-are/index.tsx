@@ -8,7 +8,12 @@ const Typography = dynamic(() => import("@mui/material/Typography"));
 function index() {
   return (
     <Layout>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Grid
+        display={"flex"}
+        sx={{ p: 3 }}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <Grid container maxWidth={"md"} mt={5} spacing={2}>
           <Typography
             variant="h4"
@@ -22,10 +27,10 @@ function index() {
           <Grid item md={12}>
             <Typography variant="h6" paragraph>
               With offices in Baghdad, Erbil and Basra, JW pharma works with
-              many of the world&apos;s leading companies through various agreements,
-              partnerships, and joint ventures. The group is a leading
-              healthcare, medical equipment, and consumer care company in Iraq,
-              committed to meeting the growing needs of healthcare and
+              many of the world&apos;s leading companies through various
+              agreements, partnerships, and joint ventures. The group is a
+              leading healthcare, medical equipment, and consumer care company
+              in Iraq, committed to meeting the growing needs of healthcare and
               pharmaceutical distribution in the country.
             </Typography>
           </Grid>

@@ -9,7 +9,12 @@ const Link = dynamic(() => import("@mui/material/Link"));
 function index() {
   return (
     <Layout>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Grid
+        display={"flex"}
+        sx={{ p: 3 }}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <Grid container maxWidth={"md"} mt={5} spacing={2}>
           <Typography
             variant="h4"
@@ -25,9 +30,9 @@ function index() {
             </Typography>
             <Typography paragraph>
               This Privacy Policy explains how JWPharma City Middle East, Inc.
-              (&quot;JWPharma City Middle East&quot;, &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects,
-              uses, and safeguards your personal information when you visit our
-              website (
+              (&quot;JWPharma City Middle East&quot;, &quot;we,&quot;
+              &quot;us,&quot; or &quot;our&quot;) collects, uses, and safeguards
+              your personal information when you visit our website (
               <Link href="https://www.jwpharma.me">www.jwpharma.me</Link>) and
               use our services.
             </Typography>
