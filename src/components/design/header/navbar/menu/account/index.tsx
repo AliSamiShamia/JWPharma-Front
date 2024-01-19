@@ -6,12 +6,12 @@ import { MdPerson } from "@react-icons/all-files/md/MdPerson";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import dynamic from "next/dynamic";
+import { useAuth } from "@/hooks/useAuth";
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
 function UserNavItem(props: any) {
-  const { auth } = props;
- 
+  const auth = useAuth();
 
   return (
     <>
@@ -31,7 +31,7 @@ function UserNavItem(props: any) {
             onClick={handleClick}
             color="inherit"
           > */}
-          <CustomLink link url={auth?.id ? "/account" : "/login"}>
+          <CustomLink link url={auth.user ? "/account" : "/login"}>
             <Box sx={{ display: { sm: "flex", xs: "none" } }}>
               <Typography
                 ml={0.4}
@@ -40,10 +40,10 @@ function UserNavItem(props: any) {
                 textTransform={"capitalize"}
                 sx={{ display: { xs: "none", md: "flex" } }}
               >
-                {auth.id ? `Hi ${auth.first_name}` : "Account"}
+                {auth.user ? `Hi ${auth.user?.first_name}` : "Account"}
               </Typography>
             </Box>
-            {auth.id ? <MdPerson size={22} /> : <MdPersonOutline size={22} />}
+            {auth.user ? <MdPerson size={22} /> : <MdPersonOutline size={22} />}
           </CustomLink>
           {/* </IconButton> */}
           {/* <Menu

@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { connect, } from "react-redux";
+import { connect } from "react-redux";
 const Box = dynamic(() => import("@mui/material/Box"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Container = dynamic(() => import("@mui/material/Container"));
@@ -19,22 +19,22 @@ const responsiveSettings = [
   {
     breakpoint: 1200,
     settings: {
-      slidesToShow: 4,
-      slidesToScroll: 4,
+      slidesToShow: 5,
+      slidesToScroll: 5,
     },
   },
   {
     breakpoint: 800,
     settings: {
-      slidesToShow: 3,
-      slidesToScroll: 3,
+      slidesToShow: 4,
+      slidesToScroll: 4,
     },
   },
   {
     breakpoint: 500,
     settings: {
-      slidesToShow: 2,
-      slidesToScroll: 2,
+      slidesToShow: 3,
+      slidesToScroll: 3,
     },
   },
   {
@@ -55,10 +55,14 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const router = useRouter();
   const loadData = async (page: number) => {
     setData([]);
-    const res = await get(routeConfig.product.listWihtoutFilter, auth.user?.token, {
-      page: page,
-      per_page: perPage,
-    });
+    const res = await get(
+      routeConfig.product.listWihtoutFilter,
+      auth.user?.token,
+      {
+        page: page,
+        per_page: perPage,
+      }
+    );
     setLoading(false);
     if (res && res.status_code == 200) {
       setData(res.data);
@@ -123,6 +127,7 @@ function Product({ perPage, loadMore, showAll }: PaginationPropType) {
               <ResponsiveSlider
                 responsiveSettings={responsiveSettings}
                 autoplay={false}
+                arrows={false}
               >
                 {data.map((item, key) => {
                   return (

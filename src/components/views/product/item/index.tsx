@@ -206,74 +206,69 @@ function ProductItem({ product, action }: PropType) {
           </IconButton>
         )}
       </Box>
-      <Fade {...properties}>
-        {/* {product.media.map((image, index) => ( */}
-        <Box component={"div"} display={"relative"}>
-          <CustomLink
-            padding={0}
-            link
-            url={`/products/d`}
-            params={{
-              slug: product.slug,
-            }}
-          >
-            {imageLoaded && product.thumbnail.url ? (
-              <Box
-                zIndex={99999}
-                position={"absolute"}
-                top={0}
-                bottom={0}
-                left={0}
-                right={0}
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                sx={{
-                  backgroundColor: "#00000077",
-                  borderTopLeftRadius: "1rem",
-                  borderTopRightRadius: "1rem",
-                }}
-              >
-                <ClipLoader loading={true} />
-              </Box>
-            ) : null}
-            {product.thumbnail.url ? (
-              <Box
-                component={"img"}
-                onLoad={() => {
-                  setImageLoading(false);
-                }}
-                onLoadStartCapture={() => {
-                  setImageLoading(true);
-                }}
-                alt={"product-" + product.name}
-                sx={{
-                  width: "100%",
-                  height: { xs: 250, sm: 300 },
-                  objectFit: "cover",
-                  borderTopLeftRadius: "1rem",
-                  borderTopRightRadius: "1rem",
-                }}
-                src={product.thumbnail.url}
-              />
-            ) : (
-              <Box
-                sx={{
-                  width: "100%",
-                  backgroundColor: themeColor.lightGreyColor,
-                  height: { xs: 250, sm: 300 },
-                  objectFit: "cover",
-                  borderTopLeftRadius: "1rem",
-                  borderTopRightRadius: "1rem",
-                }}
-              />
-            )}
-          </CustomLink>
-        </Box>
-        {/* ))} */}
-      </Fade>
+      <Box component={"div"} display={"relative"}>
+        <CustomLink
+          padding={0}
+          link
+          url={`/products/d`}
+          params={{
+            slug: product.slug,
+          }}
+        >
+          {imageLoaded && product.thumbnail.url ? (
+            <Box
+              zIndex={99999}
+              position={"absolute"}
+              top={0}
+              bottom={0}
+              left={0}
+              right={0}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              sx={{
+                backgroundColor: "#00000077",
+                borderTopLeftRadius: "1rem",
+                borderTopRightRadius: "1rem",
+              }}
+            >
+              <ClipLoader loading={true} />
+            </Box>
+          ) : null}
+          {product.thumbnail.url ? (
+            <Box
+              component={"img"}
+              onLoad={() => {
+                setImageLoading(false);
+              }}
+              onLoadStartCapture={() => {
+                setImageLoading(true);
+              }}
+              alt={"product-" + product.name}
+              sx={{
+                width: "100%",
+                height: { xs: 250, sm: 300 },
+                objectFit: "cover",
+                borderTopLeftRadius: "1rem",
+                borderTopRightRadius: "1rem",
+              }}
+              src={product.thumbnail.url}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                backgroundColor: themeColor.lightGreyColor,
+                height: { xs: 250, sm: 300 },
+                objectFit: "cover",
+                borderTopLeftRadius: "1rem",
+                borderTopRightRadius: "1rem",
+              }}
+            />
+          )}
+        </CustomLink>
+      </Box>
       <Box
-        pb={1}
         width={"100%"}
         // height={"100%"}
         zIndex={50}
@@ -318,8 +313,23 @@ function ProductItem({ product, action }: PropType) {
         alignItems={"start"}
         paddingRight={1}
         paddingLeft={1}
+        border={1}
+        borderColor={themeColor.borderColor}
       >
-        <Typography color={"black"} width={280}>
+        <Typography
+          color={"black"}
+          width={280}
+          sx={{
+            pt: 1.5,
+            display: "-webkit-box",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            WebkitLineClamp: "2",
+            textTransform: "capitalize",
+            WebkitBoxOrient: "vertical",
+            height: 70,
+          }}
+        >
           {product.name}
         </Typography>
         <Stack

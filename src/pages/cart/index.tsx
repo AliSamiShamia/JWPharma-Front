@@ -78,7 +78,6 @@ function Cart(props: any) {
       setLoading(true);
       const res = await destroy(routeConfig.cart.list + "/" + id, auth.user?.token);
       if (res && res.status_code == 200) {
-        console.log(res.data);
         dispatch(resetCart(res.data));
         Swal.fire({
           text: "Your cart have been successfully updated.",
