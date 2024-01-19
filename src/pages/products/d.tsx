@@ -11,7 +11,9 @@ import { connect, useDispatch } from "react-redux";
 const Layout = dynamic(() => import("@/components/design/layout"));
 const AddToCartWidget = dynamic(() => import("@/components/widgets/cart/add"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
-const ProductOptions = dynamic(() => import("@/components/widgets/product/options"));
+const ProductOptions = dynamic(
+  () => import("@/components/widgets/product/options")
+);
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Divider = dynamic(() => import("@mui/material/Divider"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
@@ -98,8 +100,9 @@ function ProductDetails() {
         router.push({
           pathname: "/login",
           query: {
-            redirectURL: "/products/d?slug=" + product.slug,
+            redirectURL: "/products/d",
             options: JSON.stringify(options),
+            slug: product.slug,
           },
         });
       }
@@ -125,7 +128,8 @@ function ProductDetails() {
       router.push({
         pathname: "/login",
         query: {
-          redirectURL: "/products/d?slug" + product.slug,
+          redirectURL: "/products/d",
+          slug: product.slug,
         },
       });
     }
@@ -153,7 +157,8 @@ function ProductDetails() {
       router.push({
         pathname: "/login",
         query: {
-          redirectURL: "/products/d?slug" + product.slug,
+          redirectURL: "/products/d",
+          slug: product.slug,
         },
       });
     }

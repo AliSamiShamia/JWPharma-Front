@@ -61,14 +61,6 @@ function FilterList(props: FilterProps) {
     }
   };
 
-  const handleDrawer = (status: boolean) => {
-    if (status) {
-      handleDrawerOpen();
-    } else {
-      handleDrawerClose();
-    }
-  };
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -89,10 +81,12 @@ function FilterList(props: FilterProps) {
       ...router.query,
       keys: JSON.stringify(form_data),
     };
-    router.push({
-      pathname: router.pathname,
-      query: queryParams,
-    });
+    router
+      .push({
+        pathname: router.pathname,
+        query: queryParams,
+      })
+      .then(() => router.reload());
   };
 
   return (
