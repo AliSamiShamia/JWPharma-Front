@@ -34,6 +34,8 @@ function CartNavItem(props: any) {
       const res = await get(routeConfig.cart.list, auth.user?.token);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
+      } else {
+        dispatch(resetCart());
       }
       setLoading(false);
     } catch (e) {
@@ -46,11 +48,8 @@ function CartNavItem(props: any) {
     if (!router.isReady) {
       return;
     }
-    if (document.readyState == "complete") {
-      if (auth?.user) {
-        loadCart();
-      }
-    }
+    loadCart();
+
     return () => {};
   }, [router]);
 
