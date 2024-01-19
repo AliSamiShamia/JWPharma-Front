@@ -105,7 +105,7 @@ function FilterList(props: FilterProps) {
             variant="h6"
             fontWeight={"bold"}
             textTransform={"capitalize"}
-            sx={{ display: { xs: "none", md: "flex" } }}
+            sx={{ display: {  md: "flex" } }}
           >
             Filter
           </Typography>

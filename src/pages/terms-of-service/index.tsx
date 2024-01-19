@@ -9,7 +9,12 @@ const Link = dynamic(() => import("@mui/material/Link"));
 function index() {
   return (
     <Layout>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Grid
+        display={"flex"}
+        sx={{ p: 3 }}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <Grid container maxWidth={"md"} mt={5} spacing={2}>
           <Typography
             variant="h4"
@@ -24,9 +29,9 @@ function index() {
               Introduction
             </Typography>
             <Typography paragraph>
-              These terms and conditions (&quot;Terms&quot;) govern your use of the
-              JWPharma City Middle East website and services. By accessing or
-              using our website, you agree to comply with these Terms.
+              These terms and conditions (&quot;Terms&quot;) govern your use of
+              the JWPharma City Middle East website and services. By accessing
+              or using our website, you agree to comply with these Terms.
             </Typography>
           </Grid>
           <Grid item md={12}>
@@ -34,15 +39,15 @@ function index() {
               Definitions
             </Typography>
             <Typography paragraph>
-              <strong>&quot;JWPharma City Middle East&quot;</strong> refers to our
-              company, JWPharma City Middle East, Inc.
+              <strong>&quot;JWPharma City Middle East&quot;</strong> refers to
+              our company, JWPharma City Middle East, Inc.
               <br />
-              <strong>&quot;Website&quot;</strong> refers to our ecommerce platform
-              available at{" "}
+              <strong>&quot;Website&quot;</strong> refers to our ecommerce
+              platform available at{" "}
               <Link href="https://www.jwpharma.me">www.jwpharma.me</Link>.
               <br />
-              <strong>&quot;User&quot;</strong> refers to any individual or entity using
-              our website or services.
+              <strong>&quot;User&quot;</strong> refers to any individual or
+              entity using our website or services.
             </Typography>
           </Grid>
           <Grid item md={12}>
@@ -144,12 +149,13 @@ function index() {
               Disclaimer of Warranties
             </Typography>
             <Typography paragraph>
-              Our website and services are provided &quot;as is&quot; and &quot;as available&quot;
-              without any warranties, express or implied. JWPharma City Middle
-              East makes no representations or warranties of any kind, including
-              but not limited to the accuracy, completeness, reliability, or
-              suitability of our website or services for any particular purpose.
-              You use our website and services at your own risk.
+              Our website and services are provided &quot;as is&quot; and
+              &quot;as available&quot; without any warranties, express or
+              implied. JWPharma City Middle East makes no representations or
+              warranties of any kind, including but not limited to the accuracy,
+              completeness, reliability, or suitability of our website or
+              services for any particular purpose. You use our website and
+              services at your own risk.
               <br />
               JWPharma City Middle East disclaims all warranties, including but
               not limited to warranties of merchantability, fitness for a

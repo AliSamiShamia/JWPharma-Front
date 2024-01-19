@@ -6,6 +6,7 @@ import themeColor from "@/components/constant/color";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { AppBar } from "@mui/material";
+import { useRouter } from "next/router";
 
 const Logo = dynamic(() => import("@/components/widgets/logo"));
 const CustomMenu = dynamic(
@@ -58,6 +59,7 @@ const menuNavItems = [
 ];
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
+  const router = useRouter();
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -74,7 +76,14 @@ export default function DrawerAppBar(props: Props) {
       <List>
         {menuNavItems.map((item, key) => (
           <ListItem key={key} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
+            <ListItemButton
+              onClick={() => {
+                router.push({
+                  pathname: item.action,
+                });
+              }}
+              sx={{ textAlign: "center" }}
+            >
               <ListItemText primary={item.title} />
             </ListItemButton>
           </ListItem>
