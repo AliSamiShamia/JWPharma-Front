@@ -1,16 +1,17 @@
+import { useAuth } from "@/hooks/useAuth";
 import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function AuthMiddleware({ children }: any) {
   const router = useRouter();
-  const user = useAppSelector((item) => item.user.auth);
+  const auth = useAuth();
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
-    if (!user.id) {
+    if (!auth.user) {
         if (router.asPath !== "/") {
         router.replace({
           pathname: "/login",
@@ -20,7 +21,7 @@ function AuthMiddleware({ children }: any) {
         router.replace("/login");
       }
     }
-  }, [router.route]);
+  }, [router.route, auth]);
 
   return children;
 }

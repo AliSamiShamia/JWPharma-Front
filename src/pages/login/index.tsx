@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import { storeTempUser } from "@/store/apps/temp-user";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/router";
+import { useAuth } from "@/hooks/useAuth";
 
 const PhoneComponent = dynamic(
   () => import("@/components/widgets/account/phone")
@@ -55,6 +56,7 @@ const RegisterPage = (props: any) => {
   const router = useRouter();
   const query = router.query;
   const { user, tempUser } = props;
+  const auth = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const [form_data, setFormData] = useState({
     user_name: "",
@@ -223,6 +225,15 @@ const RegisterPage = (props: any) => {
             ...res.data,
             isAuth: true,
           })
+        );
+        auth.setUser({
+          ...res.data,
+          isAuth: true,
+        });
+
+        window.localStorage.setItem(
+          routeConfig.storageTokenKeyName,
+          `${res.data.token}`
         );
 
         if (query.redirectURL) {

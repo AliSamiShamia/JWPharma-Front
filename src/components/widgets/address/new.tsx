@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Box } from "@mui/material";
 import Country from "../country";
-import CustomLink from "../link";
 import routeConfig from "@/components/constant/route";
 import { post, put } from "@/handler/api.handler";
-import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
+import ComponentSpinner from "../spinner/component.spinner";
+const CustomLink = dynamic(() => import("../link"));
 const Radio = dynamic(() => import("@mui/material/Radio"));
 const FormControl = dynamic(() => import("@mui/material/FormControl"));
 const FormControlLabel = dynamic(
@@ -37,7 +38,7 @@ const style = {
 
 function NewAddress({ open, setOpen, action, address }: PropsType) {
   const handleClose = () => setOpen(false);
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [form_data, setFormData] = useState<UserAddressType>({
     id: "-1",
@@ -74,14 +75,18 @@ function NewAddress({ open, setOpen, action, address }: PropsType) {
         const res = await put(
           routeConfig.account.addresses + "/" + address.id,
           data,
-          user.token
+          auth.user?.token
         );
         if (res && res.status_code == 200) {
           setOpen(false);
           action();
         }
       } else {
-        const res = await post(routeConfig.account.addresses, data, user.token);
+        const res = await post(
+          routeConfig.account.addresses,
+          data,
+          auth.user?.token
+        );
         if (res && res.status_code == 200) {
           setOpen(false);
           action();
@@ -202,12 +207,16 @@ function NewAddress({ open, setOpen, action, address }: PropsType) {
             </Grid>
           </Grid>
           <Grid mt={4} display={"flex"} justifyContent={"center"}>
-            <CustomLink
-              action={submit}
-              title="Save"
-              type="contained"
-              width={300}
-            />
+            {loading ? (
+              <ComponentSpinner loading={true} />
+            ) : (
+              <CustomLink
+                action={submit}
+                title="Save"
+                type="contained"
+                width={300}
+              />
+            )}
           </Grid>
         </Box>
       </Modal>

@@ -2,7 +2,7 @@ import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { CartType } from "@/components/types/cart.types";
 import { post } from "@/handler/api.handler";
-import { useAppSelector } from "@/store/hooks";
+import { useAuth } from "@/hooks/useAuth";
 import { Box } from "@mui/material";
 import { FaArrowRight } from "@react-icons/all-files/fa/FaArrowRight";
 import dynamic from "next/dynamic";
@@ -23,7 +23,7 @@ function Checkout(props: any) {
   const cart = props.cart as CartType[];
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const user = useAppSelector((state) => state.user.auth);
+  const auth = useAuth();
 
   // Function to calculate total
   const calculateLength = cart.reduce(
@@ -39,7 +39,7 @@ function Checkout(props: any) {
   const placeOrder = async () => {
     setLoading(true);
     try {
-      const res = await post(routeConfig.order.placeorder, null, user.token);
+      const res = await post(routeConfig.order.placeorder, null, auth.user?.token);
       if (res && res.status_code == 200) {
         router.push(res.data.url);
       } else {

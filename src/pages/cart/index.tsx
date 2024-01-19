@@ -17,6 +17,7 @@ import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import ComponentSpinner from "@/components/widgets/spinner/component.spinner";
 import { UserType } from "@/components/types/user.types";
+import { useAuth } from "@/hooks/useAuth";
 const Layout = dynamic(() => import("@/components/design/layout"));
 const Card = dynamic(() => import("@mui/material/Card"));
 const CardContent = dynamic(() => import("@mui/material/CardContent"));
@@ -30,7 +31,7 @@ const Product = dynamic(() => import("@/components/views/product"));
 
 function Cart(props: any) {
   const cart = props.cart as CartType[];
-  const user = props.user as UserType;
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -49,7 +50,7 @@ function Cart(props: any) {
   const clearCart = async () => {
     try {
       setLoading(true);
-      const res = await destroy(routeConfig.cart.clear, user.token);
+      const res = await destroy(routeConfig.cart.clear, auth.user?.token);
       if (res && res.status_code == 200) {
         dispatch(resetCart(res.data));
         Swal.fire({
@@ -75,7 +76,7 @@ function Cart(props: any) {
   const clearFromCart = async (id: number) => {
     try {
       setLoading(true);
-      const res = await destroy(routeConfig.cart.list + "/" + id, user.token);
+      const res = await destroy(routeConfig.cart.list + "/" + id, auth.user?.token);
       if (res && res.status_code == 200) {
         console.log(res.data);
         dispatch(resetCart(res.data));
@@ -107,7 +108,7 @@ function Cart(props: any) {
     // quantity
     setUpdateLoading(true);
     if (quantity == 1 && !type) {
-      const res = await destroy(routeConfig.cart.list + "/" + id, user.token);
+      const res = await destroy(routeConfig.cart.list + "/" + id, auth.user?.token);
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
       }
@@ -119,7 +120,7 @@ function Cart(props: any) {
         {
           quantity: newQuantity,
         },
-        user.token
+        auth.user?.token
       );
       if (res && res.status_code == 200) {
         dispatch(initCart(res.data));
@@ -445,7 +446,7 @@ function Cart(props: any) {
                     ${calculateTotal.toFixed(2)}
                   </Typography>
                 </Grid>
-                {user.has_permission ? (
+                {auth.user?.has_permission ? (
                   <Grid
                     my={3}
                     bottom={15}
@@ -456,9 +457,9 @@ function Cart(props: any) {
                     <CustomLink
                       link
                       size={"large"}
-                      url={user.complete_info ? "/checkout" : "/account"}
+                      url={auth.user?.complete_info ? "/checkout" : "/account"}
                       params={
-                        user.complete_info
+                        auth.user?.complete_info
                           ? {}
                           : {
                               complete: true,
@@ -467,7 +468,7 @@ function Cart(props: any) {
                       type="contained"
                       color={"primary"}
                       title={
-                        user.complete_info ? "Checkout" : "Complete your info"
+                        auth.user?.complete_info ? "Checkout" : "Complete your info"
                       }
                       width={200}
                       endIcon={<FaArrowRight />}

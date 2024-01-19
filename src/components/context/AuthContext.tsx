@@ -10,7 +10,6 @@ import axios from "axios";
 // ** Config
 import routeConfig from "@/components/constant/route";
 import { post } from "@/handler/api.handler";
-import { useAppSelector } from "@/store/hooks";
 import { UserType } from "../types/user.types";
 import { useDispatch } from "react-redux";
 import { deleteUser, storeUser, updateUser } from "@/store/apps/user";
@@ -41,25 +40,42 @@ const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading);
 
-  const auth = useAppSelector((state) => state.user.auth);
   // ** Hooks
   const router = useRouter();
   const dispatch = useDispatch();
 
   const initAuth = async (): Promise<void> => {
-    const storedToken = auth.token!;
+    const storedToken = window.localStorage.getItem(
+      routeConfig.storageTokenKeyName
+    )!;
     if (storedToken) {
       setLoading(true);
       try {
         const res = await post(routeConfig.account.profile, null, storedToken);
-        console.log(res && res.status_code == 200);
         if (res && res.status_code == 200) {
           setLoading(false);
           setUser({ ...res.data });
           dispatch(storeUser({ ...res.data, isAuth: true }));
+          localStorage.setItem("userData", { ...res.data });
+          localStorage.setItem("refreshToken", res.data.token);
+          localStorage.setItem("accessToken", res.data.token);
+        } else {
+          localStorage.removeItem("userData");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("accessToken");
+          dispatch(deleteUser());
+          dispatch(resetCart());
+          dispatch(resetWishlist());
+          setUser(null);
+          setLoading(false);
+          if (
+            routeConfig.onTokenExpiration === "logout" &&
+            !router.pathname.includes("login")
+          ) {
+            router.replace("/login");
+          }
         }
       } catch (e: any) {
-      
         dispatch(deleteUser());
         dispatch(resetCart());
         dispatch(resetWishlist());
@@ -96,9 +112,6 @@ const AuthProvider = ({ children }: Props) => {
       if (errorCallback) errorCallback(err);
     }
   };
-
-
-  
 
   const handleLogout = () => {
     setUser(null);
@@ -137,5 +150,4 @@ const AuthProvider = ({ children }: Props) => {
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };
-
 export { AuthContext, AuthProvider };
