@@ -48,7 +48,6 @@ const AuthProvider = ({ children }: Props) => {
 
   const initAuth = async (): Promise<void> => {
     const storedToken = auth.token!;
-    console.log(storedToken);
     if (storedToken) {
       setLoading(true);
       try {
@@ -61,10 +60,10 @@ const AuthProvider = ({ children }: Props) => {
         }
       } catch (e: any) {
       
-        // dispatch(deleteUser());
-        // dispatch(resetCart());
-        // dispatch(resetWishlist());
-        // setUser(null);
+        dispatch(deleteUser());
+        dispatch(resetCart());
+        dispatch(resetWishlist());
+        setUser(null);
         setLoading(false);
         if (
           routeConfig.onTokenExpiration === "logout" &&

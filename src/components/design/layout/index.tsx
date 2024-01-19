@@ -60,9 +60,11 @@ function Layout(props: LayoutType) {
   return (
     <>
       {loading ? (
-        <CustomSpinner loading={loading}>
-          <Logo />
-        </CustomSpinner>
+        <Box component={"main"} className={`${styles.main} ${inter.className}`}>
+          <CustomSpinner loading={loading}>
+            <Logo />
+          </CustomSpinner>
+        </Box>
       ) : (
         <Fragment>
           <DrawerAppBar />

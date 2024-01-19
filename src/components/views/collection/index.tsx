@@ -75,7 +75,9 @@ function Collection({ perPage, loadMore, showAll }: PaginationPropType) {
   return (
     <Box>
       {loading ? (
-        <ComponentSpinner loading={loading} />
+        <Container maxWidth={"xl"}>
+          <ComponentSpinner loading={loading} />
+        </Container>
       ) : (
         <>
           {data.length > 0 ? (
