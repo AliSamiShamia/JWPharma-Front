@@ -22,11 +22,12 @@ function CustomSpinner({ loading, children }: ItemSpinnerInterface) {
         direction="column"
         justifyContent="center"
         alignItems="center"
+        border={1}
         position={"fixed"}
         top={0}
         left={0}
-        width={"100%"}
-        height={"100%"}
+        bottom={0}
+        right={0}
         zIndex={10000}
       >
         <Box sx={{ mb: 2 }}>{children}</Box>
