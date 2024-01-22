@@ -49,12 +49,12 @@ function WishlistNavItem(props: any) {
       return;
     }
     if (document.readyState == "complete") {
-      if (auth?.user) {
+      if (auth.user) {
         loadData();
       }
     }
     return () => {};
-  }, [router, auth.user]);
+  }, [router,auth.user]);
 
   useEffect(() => {
     calculateTotal();

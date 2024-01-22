@@ -2,7 +2,6 @@ import React from "react";
 import themeColor from "@/components/constant/color";
 import dynamic from "next/dynamic";
 import CustomLink from "@/components/widgets/link";
-import { Box } from "@mui/system";
 import { Link } from "@mui/material";
 const Logo = dynamic(() => import("@/components/widgets/logo"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
@@ -49,7 +48,7 @@ const Footer = () => {
             display={"flex"}
             justifyContent={"center"}
           >
-            <Logo size={{ md: 120, xs: 100 }} />
+            <Logo size={{ md: 120, xs: 100 }} width={{ md: 228, xs: 190 }} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Typography

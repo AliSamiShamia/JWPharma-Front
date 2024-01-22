@@ -2,6 +2,7 @@ import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
+import { CircularProgress } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -13,8 +14,12 @@ const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
 );
-const Layout = dynamic(() => import("@/components/design/layout"));
-const ProductItem = dynamic(() => import("@/components/views/product/item"));
+const Layout = dynamic(() => import("@/components/design/layout"), {
+  loading: () => <CircularProgress />,
+});
+const ProductItem = dynamic(() => import("@/components/views/product/item"), {
+  loading: () => <CircularProgress />,
+});
 
 function Product({ perPage, loadMore }: PaginationPropType) {
   const [loading, setLoading] = useState(true);

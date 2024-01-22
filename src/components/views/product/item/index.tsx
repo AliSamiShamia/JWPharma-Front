@@ -246,8 +246,8 @@ function ProductItem({ product, action }: PropType) {
               }}
               alt={"product-" + product.name}
               sx={{
-                width: "100%",
                 height: { xs: 250, sm: 300 },
+                width: { xs: "100%", sm: 282 },
                 objectFit: "cover",
                 borderTopLeftRadius: "1rem",
                 borderTopRightRadius: "1rem",
@@ -319,10 +319,9 @@ function ProductItem({ product, action }: PropType) {
       >
         <Typography
           color={"black"}
-          
           sx={{
             pt: 1.5,
-            width:"100%",
+            width: "100%",
             display: "-webkit-box",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -330,7 +329,6 @@ function ProductItem({ product, action }: PropType) {
             textTransform: "capitalize",
             WebkitBoxOrient: "vertical",
             minHeight: 70,
-            
           }}
         >
           {product.name}

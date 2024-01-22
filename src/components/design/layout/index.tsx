@@ -7,16 +7,18 @@ import styles from "@/styles/Home.module.css";
 import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
 import Footer from "../footer";
-import routeConfig from "@/components/constant/route";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useAuth } from "@/hooks/useAuth";
 import { storeUser } from "@/store/apps/user";
+import { CircularProgress } from "@mui/material";
 const inter = Inter({ subsets: ["latin"] });
 
 const DrawerAppBar = dynamic(() => import("@/components/design/header/navbar"));
 const Container = dynamic(() => import("@mui/material/Container"));
 const CustomSpinner = dynamic(() => import("@/components/widgets/spinner"));
-const Logo = dynamic(() => import("@/components/widgets/logo"));
+const Logo = dynamic(() => import("@/components/widgets/logo"), {
+  loading: () => <CircularProgress />,
+});
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Fragment = dynamic(() =>
   import("react").then((module) => module.Fragment)

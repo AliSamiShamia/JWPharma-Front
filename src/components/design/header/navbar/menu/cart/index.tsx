@@ -49,7 +49,7 @@ function CartNavItem(props: any) {
       return;
     }
     if (document.readyState == "complete") {
-      if (auth?.user) {
+      if (auth.user) {
         loadCart();
       }
     }

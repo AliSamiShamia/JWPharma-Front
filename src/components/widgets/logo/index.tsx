@@ -3,12 +3,16 @@ import { Link } from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
 
-function Logo({ color, size }: LogoType) {
+function Logo({ color, size, width }: LogoType) {
   return (
     <Link href={"/"} variant="button">
       <Box
         component="img"
-        sx={{ height: size ? size : { sm: 65, xs: 50 } }}
+        sx={{
+          height: size ? size : { sm: 65, xs: 50 },
+
+          width: width ? width : { sm: 123, xs: 95 },
+        }}
         alt="Logo"
         src={
           color == "white"

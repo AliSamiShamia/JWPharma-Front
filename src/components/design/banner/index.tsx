@@ -46,6 +46,7 @@ function Banner({ data }: BannerType) {
                   maxHeight: { xs: 500, sm: 600 },
                   objectFit: "cover",
                 }}
+                loading="lazy"
                 src={image.url}
               />
               <Box
