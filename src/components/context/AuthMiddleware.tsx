@@ -25,7 +25,7 @@ function AuthMiddleware({ children }: any) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router.route]
+    [router.route, auth.user]
   );
 
   return children;

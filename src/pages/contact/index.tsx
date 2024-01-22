@@ -24,7 +24,6 @@ const MUITableCell = styled(TableCell)<TableCellBaseProps>(({ theme }) => ({
 }));
 
 function ContactUs() {
-
   const [form_data, setFormData] = useState({
     name: "",
     email: "",
@@ -89,7 +88,12 @@ function ContactUs() {
 
   return (
     <Layout>
-      <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
+      <Grid
+        display={"flex"}
+        sx={{ p: 3 }}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <Grid container maxWidth={"xl"} mt={5} spacing={3}>
           <Grid item md={6} xs={12} px={4}>
             <Grid>
@@ -103,10 +107,10 @@ function ContactUs() {
                 Get In Touch
               </Typography>
               <Typography paragraph>
-                We&apos;d love to hear from you! Whether you have a question about
-                our services, want to collaborate, or simply want to say hello,
-                feel free to reach out to us. Your feedback matters, and we&apos;re
-                here to assist you in any way we can.
+                We&apos;d love to hear from you! Whether you have a question
+                about our services, want to collaborate, or simply want to say
+                hello, feel free to reach out to us. Your feedback matters, and
+                we&apos;re here to assist you in any way we can.
               </Typography>
             </Grid>
             <Grid>
@@ -114,7 +118,7 @@ function ContactUs() {
                 <TableBody>
                   <TableRow>
                     <MUITableCell>
-                      <Typography variant="h6" fontWeight={"bold"}>
+                      <Typography mr={2} variant="h6" fontWeight={"bold"}>
                         Email:
                       </Typography>
                     </MUITableCell>
@@ -132,7 +136,7 @@ function ContactUs() {
                   </TableRow>
                   <TableRow>
                     <MUITableCell>
-                      <Typography variant="h6" fontWeight={"bold"}>
+                      <Typography mr={2} variant="h6" fontWeight={"bold"}>
                         Phone:
                       </Typography>
                     </MUITableCell>
@@ -149,7 +153,7 @@ function ContactUs() {
                   </TableRow>
                   <TableRow>
                     <MUITableCell>
-                      <Typography variant="h6" fontWeight={"bold"}>
+                      <Typography mr={2} variant="h6" fontWeight={"bold"}>
                         Address:
                       </Typography>
                     </MUITableCell>
@@ -169,8 +173,8 @@ function ContactUs() {
               </Table>
 
               <Typography mt={3} paragraph>
-                You can also fill out the form, and we&apos;ll get back to you as
-                soon as possible.
+                You can also fill out the form, and we&apos;ll get back to you
+                as soon as possible.
               </Typography>
               <Typography paragraph>
                 Your inquiries are important to us, and we strive to provide

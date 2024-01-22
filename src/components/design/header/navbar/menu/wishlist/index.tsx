@@ -54,7 +54,7 @@ function WishlistNavItem(props: any) {
       }
     }
     return () => {};
-  }, [router]);
+  }, [router, auth.user]);
 
   useEffect(() => {
     calculateTotal();

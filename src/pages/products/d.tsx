@@ -88,7 +88,7 @@ function ProductDetails() {
         };
         const res = await post(routeConfig.cart.store, data, auth.user?.token);
         setLoading(false);
-    
+
         if (res && res.status_code == 200) {
           dispatch(
             addToCart({
@@ -233,7 +233,11 @@ function ProductDetails() {
                   );
                 })}
               </Box>
-              <Grid display={"flex"} position={"relative"} justifyContent={"space-between"}>
+              <Grid
+                display={"flex"}
+                position={"relative"}
+                justifyContent={"space-between"}
+              >
                 <Typography
                   variant="subtitle1"
                   maxWidth={600}
@@ -259,9 +263,20 @@ function ProductDetails() {
                   )}
                 </CustomLink>
               </Grid>
-              <Typography variant="caption" color={themeColor.greyColor}>
-                SKU: {product.sku}
-              </Typography>
+              <Grid px={1}>
+                <Typography variant="caption" color={themeColor.greyColor}>
+                  SKU: {product.sku}
+                </Typography>
+              </Grid>
+              <Grid p={1}>
+                <Typography
+                  variant="caption"
+                  maxWidth={600}
+                  fontWeight={"bold"}
+                >
+                  {product.brief}
+                </Typography>
+              </Grid>
               <Grid mt={2} p={1}>
                 {product.price != product.pre_price && (
                   <Grid

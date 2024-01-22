@@ -287,9 +287,15 @@ const RegisterPage = (props: any) => {
                   Welcome to JWPharma City Middle East! 👋🏻
                 </TypographyStyled>
                 {otpSent ? (
-                  <Typography variant="body2" display={"flex"} gap={0.6}>
+                  <Typography
+                    variant="body2"
+                    sx={{ display: { md: "flex", xs: "block" } }}
+                    display={"flex"}
+                    gap={0.6}
+                  >
                     We sent an OTP to
                     <Box
+                      sx={{ pl: 1 }}
                       component={"span"}
                       fontStyle={"italic"}
                       fontWeight={"bold"}

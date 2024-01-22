@@ -48,10 +48,12 @@ function CartNavItem(props: any) {
     if (!router.isReady) {
       return;
     }
-    loadCart();
+    if (auth.user) {
+      loadCart();
+    }
 
     return () => {};
-  }, [router]);
+  }, [router, auth.user]);
 
   useEffect(() => {
     calculateTotal();
