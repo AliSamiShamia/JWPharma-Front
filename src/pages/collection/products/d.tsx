@@ -2,6 +2,7 @@ import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
+import { CircularProgress } from "@mui/material";
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -14,8 +15,12 @@ const ComponentSpinner = dynamic(
 const FilterList = dynamic(() => import("@/components/widgets/filter"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
 const Typography = dynamic(() => import("@mui/material/Typography"));
-const Layout = dynamic(() => import("@/components/design/layout"));
-const ProductItem = dynamic(() => import("@/components/views/product/item"));
+const Layout = dynamic(() => import("@/components/design/layout"), {
+  loading: () => <CircularProgress />,
+});
+const ProductItem = dynamic(() => import("@/components/views/product/item"), {
+  loading: () => <CircularProgress />,
+});
 
 function Product({ perPage, loadMore, showAll }: PaginationPropType) {
   const [loading, setLoading] = useState(true);

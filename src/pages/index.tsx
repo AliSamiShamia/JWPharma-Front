@@ -1,8 +1,17 @@
+import { CircularProgress } from "@mui/material";
 import dynamic from "next/dynamic";
-const Banner = dynamic(() => import("@/components/design/banner"));
-const Layout = dynamic(() => import("@/components/design/layout"));
-const Collection = dynamic(() => import("@/components/views/collection"));
-const Product = dynamic(() => import("@/components/views/product"));
+const Banner = dynamic(() => import("@/components/design/banner"), {
+  loading: () => <CircularProgress />,
+});
+const Layout = dynamic(() => import("@/components/design/layout"), {
+  loading: () => <CircularProgress />,
+});
+const Collection = dynamic(() => import("@/components/views/collection"), {
+  loading: () => <CircularProgress />,
+});
+const Product = dynamic(() => import("@/components/views/product"), {
+  loading: () => <CircularProgress />,
+});
 const Grid = dynamic(() => import("@mui/material/Grid"));
 export default function Home() {
   return (
@@ -15,7 +24,7 @@ export default function Home() {
             subtitle: "Discover a dazzling array of cosmetic wonders in Our Collections, curated to elevate your beauty routine and unveil your unique radiance.",
           },
           {
-            url: "https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=600",
+            url: "https://jwpharma.me/cdn/shop/files/pexels-photo-8131580.webp?v=1702016761&width=2000",
             title: "Our Products",
             // subtitle: "Discover a dazzling array of cosmetic wonders in Our Collections, curated to elevate your beauty routine and unveil your unique radiance.",
        

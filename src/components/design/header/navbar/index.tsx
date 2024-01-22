@@ -5,7 +5,7 @@ import { RiMenu2Line } from "@react-icons/all-files/ri/RiMenu2Line";
 import themeColor from "@/components/constant/color";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { AppBar } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
 
 const Logo = dynamic(() => import("@/components/widgets/logo"));
@@ -15,6 +15,7 @@ const CustomMenu = dynamic(
 const CustomBottomNavigation = dynamic(
   () => import("@/components/design/header/navbar/menu/bottom-navigation")
 );
+const AppBar = dynamic(() => import("@mui/material/AppBar"));
 const Link = dynamic(() => import("@mui/material/Link"));
 const Toolbar = dynamic(() => import("@mui/material/Toolbar"));
 const ListItemText = dynamic(() => import("@mui/material/ListItemText"));
@@ -60,6 +61,7 @@ const menuNavItems = [
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
   const router = useRouter();
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -98,12 +100,7 @@ export default function DrawerAppBar(props: Props) {
   return (
     <Box component={"header"} sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar
-        component={"nav"}
-        position="sticky"
-        color="transparent"
-        elevation={0}
-      >
+      <AppBar position="sticky" color="transparent" elevation={0}>
         <Box
           sx={{
             p: 1,
@@ -135,63 +132,69 @@ export default function DrawerAppBar(props: Props) {
             >
               <Logo />
             </Box>
-            <CustomMenu />
+            {isMobile ? null : <CustomMenu />}
           </Toolbar>
-          <Toolbar
-            sx={{
-              display: { sm: "flex", xs: "none" },
-            }}
-          >
-            <Box
+          {isMobile ? null : (
+            <Toolbar
               sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: { sm: "flex", xs: "none" },
               }}
             >
-              {menuNavItems.map((item, key) => (
-                <Link
-                  key={key}
-                  href={item.action}
-                  underline="none"
-                  variant="body1"
-                  color={"primary"}
-                  textTransform={"capitalize"}
-                  ml={1}
-                  mr={1}
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </Box>
-          </Toolbar>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {menuNavItems.map((item, key) => (
+                  <Link
+                    key={key}
+                    href={item.action}
+                    underline="none"
+                    variant="body1"
+                    color={"primary"}
+                    textTransform={"capitalize"}
+                    ml={1}
+                    mr={1}
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+              </Box>
+            </Toolbar>
+          )}
         </Box>
       </AppBar>
+      {isMobile ? (
+        <>
+          <nav>
+            <Drawer
+              container={container}
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true, // Better open performance on mobile.
+              }}
+              sx={{
+                display: { xs: "block", sm: "none" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                },
+              }}
+            >
+              {drawer}
+            </Drawer>
+          </nav>
 
-      <nav>
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </nav>
-      <Box sx={{ display: { xs: "block", sm: "none" } }}>
-        <CustomBottomNavigation />
-      </Box>
+          <Box sx={{ display: { xs: "block", sm: "none" } }}>
+            <CustomBottomNavigation />
+          </Box>
+        </>
+      ) : null}
     </Box>
   );
 }

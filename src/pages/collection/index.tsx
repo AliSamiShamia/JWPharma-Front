@@ -2,7 +2,7 @@ import themeColor from "@/components/constant/color";
 import routeConfig from "@/components/constant/route";
 import { get } from "@/handler/api.handler";
 import { useAuth } from "@/hooks/useAuth";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -10,9 +10,14 @@ const CustomLink = dynamic(() => import("@/components/widgets/link"));
 const ComponentSpinner = dynamic(
   () => import("@/components/widgets/spinner/component.spinner")
 );
-const Layout = dynamic(() => import("@/components/design/layout"));
+const Layout = dynamic(() => import("@/components/design/layout"), {
+  loading: () => <CircularProgress />,
+});
 const CollectionItem = dynamic(
-  () => import("@/components/views/collection/item")
+  () => import("@/components/views/collection/item"),
+  {
+    loading: () => <CircularProgress />,
+  }
 );
 
 function Collection({ perPage }: PaginationPropType) {
@@ -26,7 +31,7 @@ function Collection({ perPage }: PaginationPropType) {
 
   const loadData = async (page: number) => {
     setLoadMore(false);
-    const res = await get(routeConfig.collection.list,auth.user?.token, {
+    const res = await get(routeConfig.collection.list, auth.user?.token, {
       page: page,
       per_page: perPage,
     });
