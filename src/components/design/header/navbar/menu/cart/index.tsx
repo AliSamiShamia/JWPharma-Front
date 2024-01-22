@@ -48,10 +48,11 @@ function CartNavItem(props: any) {
     if (!router.isReady) {
       return;
     }
-    if (auth.user) {
-      loadCart();
+    if (document.readyState == "complete") {
+      if (auth?.user) {
+        loadCart();
+      }
     }
-
     return () => {};
   }, [router, auth.user]);
 
