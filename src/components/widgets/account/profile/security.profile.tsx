@@ -79,6 +79,7 @@ function Security(props: any) {
           text: "Your details have been successfully refreshed.",
           icon: "success",
         });
+        auth.setUser(res.data);
         dispatch(
           storeUser({
             ...res.data,

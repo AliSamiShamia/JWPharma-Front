@@ -2,9 +2,14 @@ import React, { useEffect } from "react";
 import { styled } from "@mui/material";
 import themeColor from "@/components/constant/color";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import CustomLink from "@/components/widgets/link";
+import { deleteUser } from "@/store/apps/user";
+import { useAuth } from "@/hooks/useAuth";
+import { resetCart } from "@/store/apps/cart";
+import { resetWishlist } from "@/store/apps/wishlist";
 
 const Profile = dynamic(() => import("@/components/widgets/account/profile"));
 const Address = dynamic(() => import("@/components/widgets/account/address"));
@@ -28,6 +33,8 @@ function a11yProps(index: number) {
 function VerticalTabs(props: any) {
   const router = useRouter();
   const { t } = router.query;
+  const dispatch = useDispatch();
+  const auth = useAuth();
 
   const [value, setValue] = React.useState(0);
 
@@ -95,10 +102,27 @@ function VerticalTabs(props: any) {
     }
   }, [t]);
 
+  const logout = () => {
+    dispatch(deleteUser());
+    dispatch(resetCart());
+    dispatch(resetWishlist());
+    auth.logout();
+  };
+
   return (
     <Layout>
       <Grid display={"flex"} justifyContent={"center"} alignItems={"center"}>
         <Grid container maxWidth={"lg"} mt={3} width={1}>
+          <Grid item xs={12} display={"flex"} justifyContent={"flex-end"}>
+            <CustomLink
+              padding={"auto"}
+              width={200}
+              color={"error"}
+              type="outlined"
+              title="Logout"
+              action={logout}
+            />
+          </Grid>
           <Grid item xs={12} sx={{ borderBottom: 1, borderColor: "divider" }}>
             <AntTabs
               value={value}

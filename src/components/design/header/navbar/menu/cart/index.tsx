@@ -51,6 +51,8 @@ function CartNavItem(props: any) {
     if (document.readyState == "complete") {
       if (auth.user) {
         loadCart();
+      } else {
+        dispatch(resetCart());
       }
     }
     return () => {};
