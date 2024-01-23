@@ -79,12 +79,14 @@ function GeneralInfo(props: any) {
         auth.user?.token
       );
       if (res && res.status_code == 200) {
+        auth.setUser(res.data);
         dispatch(
           storeUser({
             ...res.data,
             isAuth: true,
           })
         );
+
         Swal.fire({
           text: "Your details have been successfully refreshed.",
           icon: "success",
