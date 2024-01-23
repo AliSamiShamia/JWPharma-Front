@@ -21,17 +21,21 @@ function MyOrder() {
 
   const loadData = async () => {
     setLoading(true);
+    console.log(data);
     try {
-      let data = {
+      let params = {
         page: page,
         per_page: 5,
       };
-      const res = await get(routeConfig.order.list, auth.user?.token, data);
+      const res = await get(routeConfig.order.list, auth.user?.token, params);
       if (res && res.status_code == 200) {
-        setData(res.data);
+        setData([...data, ...res.data]);
       }
+      console.log(res);
       setLoading(false);
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -77,6 +81,8 @@ function MyOrder() {
               })}
               <CustomLink
                 url={"#"}
+                padding={"auto"}
+                width={300}
                 title={"Load More"}
                 color={"primary"}
                 type="contained"
