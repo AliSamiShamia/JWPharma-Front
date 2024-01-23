@@ -89,15 +89,14 @@ function Product({ perPage, loadMore }: PaginationPropType) {
       return;
     }
 
-    if (document.readyState == "complete") {
-      if (keys) {
-        loadData(page, keys);
-      } else {
-        loadData(page, JSON.stringify(filterParams));
-      }
+    if (keys) {
+      loadData(page, keys);
+    } else {
+      loadData(page, JSON.stringify(filterParams));
     }
+
     return () => {};
-  }, [page, router]);
+  }, [router.isReady, page]);
 
   return (
     <Layout>
@@ -135,7 +134,7 @@ function Product({ perPage, loadMore }: PaginationPropType) {
                       lg={3}
                       sm={6}
                       xs={12}
-                      p={2}
+                      m={1}
                       justifyContent={"center"}
                       alignItems={"center"}
                       width={"100%"}
