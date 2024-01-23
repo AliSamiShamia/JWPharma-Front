@@ -42,7 +42,7 @@ function Product({ perPage, loadMore }: PaginationPropType) {
       filters = JSON.parse(JSON.stringify(filterData));
     }
 
-    let data = {
+    let params = {
       page: page,
       per_page: perPage ? perPage : 12,
       ...filters,
@@ -66,11 +66,11 @@ function Product({ perPage, loadMore }: PaginationPropType) {
       }
     }
     setLoading(true);
-    const res = await get(routeConfig.product.list, auth.user?.token, data);
+    const res = await get(routeConfig.product.list, auth.user?.token, params);
     setLoading(false);
     action ? action(false) : null;
     if (res && res.status_code == 200) {
-      setData(res.data);
+      setData({ ...data, ...res.data });
       if (!filterParams.price)
         setFilterParam({
           ...filterParams,
@@ -153,7 +153,9 @@ function Product({ perPage, loadMore }: PaginationPropType) {
 
               {loadMore ? (
                 <CustomLink
+                  padding={"auto"}
                   url={"#"}
+                  width={300}
                   title={"Load More"}
                   color={"primary"}
                   type="contained"
