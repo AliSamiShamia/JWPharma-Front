@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 const Typography = dynamic(() => import("@mui/material/Typography"));
 const Grid = dynamic(() => import("@mui/material/Grid"));
-const ComponentSpinner = dynamic(() => import("../../spinner/component.spinner"));
+const ComponentSpinner = dynamic(
+  () => import("../../spinner/component.spinner")
+);
 const OrderItem = dynamic(() => import("@/components/widgets/order"));
 const CustomLink = dynamic(() => import("@/components/widgets/link"));
 
@@ -15,12 +17,16 @@ function MyOrder() {
   const [data, setData] = useState<OrderType[]>([]);
   const router = useRouter();
   const auth = useAuth();
-  
+  const [page, setPage] = useState(1);
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await get(routeConfig.order.list,auth.user?.token);
+      let data = {
+        page: page,
+        per_page: 5,
+      };
+      const res = await get(routeConfig.order.list, auth.user?.token, data);
       if (res && res.status_code == 200) {
         setData(res.data);
       }
@@ -34,7 +40,12 @@ function MyOrder() {
     }
     loadData();
     return () => {};
-  }, [router.route]);
+  }, [page, router]);
+
+  const handleLoadMore = () => {
+    let newPage = page + 1;
+    setPage(newPage);
+  };
 
   return (
     <Grid
@@ -56,13 +67,23 @@ function MyOrder() {
           alignItems={"center"}
         >
           {data.length > 0 ? (
-            data.map((item, key) => {
-              return (
-                <Grid key={key} item xs={12} mb={2}>
-                  <OrderItem {...item} />
-                </Grid>
-              );
-            })
+            <>
+              {data.map((item, key) => {
+                return (
+                  <Grid key={key} item xs={12} mb={2}>
+                    <OrderItem {...item} />
+                  </Grid>
+                );
+              })}
+              <CustomLink
+                url={"#"}
+                title={"Load More"}
+                color={"primary"}
+                type="contained"
+                link={false}
+                action={handleLoadMore}
+              />
+            </>
           ) : (
             <Grid
               item
@@ -74,7 +95,9 @@ function MyOrder() {
               gap={3}
             >
               <Grid>
-                <Typography variant="h5">You don&apos;t have any orders.</Typography>
+                <Typography variant="h5">
+                  You don&apos;t have any orders.
+                </Typography>
                 <Grid mt={4}>
                   <CustomLink link type="contained" url="/products">
                     Shop Now

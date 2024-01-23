@@ -1,7 +1,6 @@
 import { Box, IconButton, Stack, useTheme } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { Fade } from "react-slideshow-image";
 import { MdAddShoppingCart } from "@react-icons/all-files/md/MdAddShoppingCart";
 import { MdFavoriteBorder } from "@react-icons/all-files/md/MdFavoriteBorder";
 import { MdFavorite } from "@react-icons/all-files/md/MdFavorite";
@@ -14,7 +13,6 @@ import { addToCart } from "@/store/apps/cart";
 import { addToWishlist, deleteFromWishlist } from "@/store/apps/wishlist";
 import { useRouter } from "next/router";
 import CustomLink from "@/components/widgets/link";
-import { useAppSelector } from "@/store/hooks";
 import { ClipLoader } from "react-spinners";
 import themeColor from "@/components/constant/color";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,12 +23,7 @@ type PropType = {
 };
 
 function ProductItem({ product, action }: PropType) {
-  const user = useAppSelector((state) => state.user.auth);
-  const properties = {
-    arrows: false,
-    duration: 700,
-    autoplay: false,
-  };
+ 
   const theme = useTheme();
   const [imageLoaded, setImageLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
