@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    // optimizePackageImports: [
+    //   "@mui/material",
+    //   "@react-icons/all-files",
+    //   "@emotion/react",
+    //   "@emotion/styled",
+    //   "@reduxjs/toolkit",
+    //   "react-slideshow-image",
+    // ],
+  },
   images: {
     domains: [
       "localhost",

@@ -401,7 +401,7 @@ const RegisterPage = (props: any) => {
                 />
               </Grid>
 
-              <Divider orientation="horizontal" flexItem sx={{ mt: 2 }} />
+              {/* <Divider orientation="horizontal" flexItem sx={{ mt: 2 }} />
               <Grid
                 mt={2}
                 display={"flex"}
@@ -426,7 +426,7 @@ const RegisterPage = (props: any) => {
                   }
                   size={"small"}
                 />
-              </Grid>
+              </Grid> */}
               {/* </form> */}
             </BoxWrapper>
           </Box>
