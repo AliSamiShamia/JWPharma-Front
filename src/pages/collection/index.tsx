@@ -60,9 +60,8 @@ function Collection({ perPage }: PaginationPropType) {
       return;
     }
 
-    if (document.readyState == "complete") {
-      loadData(page);
-    }
+    loadData(page);
+
     return () => {};
   }, [page]);
 

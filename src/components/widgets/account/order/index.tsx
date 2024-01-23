@@ -21,7 +21,6 @@ function MyOrder() {
 
   const loadData = async () => {
     setLoading(true);
-    console.log(data);
     try {
       let params = {
         page: page,
@@ -31,7 +30,6 @@ function MyOrder() {
       if (res && res.status_code == 200) {
         setData([...data, ...res.data]);
       }
-      console.log(res);
       setLoading(false);
     } catch (e) {
       console.log(e);

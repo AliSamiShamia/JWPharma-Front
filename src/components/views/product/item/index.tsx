@@ -240,7 +240,7 @@ function ProductItem({ product, action }: PropType) {
               alt={"product-" + product.name}
               sx={{
                 height: { xs: 250, sm: 300 },
-                width: { xs: "100%", sm: 282 },
+                width: { xs: "100%", sm: "100%" },
                 objectFit: "cover",
                 borderTopLeftRadius: "1rem",
                 borderTopRightRadius: "1rem",
