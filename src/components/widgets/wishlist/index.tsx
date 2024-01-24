@@ -12,9 +12,10 @@ import ProductItem from "@/components/views/product/item";
 
 type PropType = {
   wishlist: WishListType[];
+  action: () => void;
 };
 
-function WishlistWidget({ wishlist }: PropType) {
+function WishlistWidget({ wishlist, action }: PropType) {
   return (
     <Grid
       mt={6}
@@ -22,16 +23,17 @@ function WishlistWidget({ wishlist }: PropType) {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <Grid container maxWidth={"lg"} spacing={2}>
+      <Grid
+        container
+        maxWidth={"lg"}
+        spacing={2}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         {wishlist.map((item: WishListType, key) => {
           return (
             <Grid key={key} item lg={3} md={3} xs={12}>
-              <ProductItem
-                product={item.product}
-                action={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
+              <ProductItem product={item.product} action={action} />
             </Grid>
           );
         })}
